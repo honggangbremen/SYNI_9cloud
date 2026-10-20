@@ -1,0 +1,717 @@
+MODULE Reg_Drv
+!
+!
+!*****************************************************************************
+! 
+! !F90
+!
+! !Name:
+!   Reg_Drv
+!
+! !Description:
+!   Routine ID - M7.2.2
+!
+!   Purpose - To provide a module of routines to drive processing of
+!             TSI data for a synoptic hour
+!             
+!
+! !Input Parameters:
+!    NONE
+!
+! !Output Parameters:
+!    NONE
+!
+! !Team-Unique Header:
+!
+!  Modules Used:
+!    Ancill_Init       - (SARBlib)  Used by Sbr. Aer_Init  
+!    FL_IO_Params      - (SARBlib)  Used by Sbr. NoProcess_Default_SYN, 
+!                                                Prep_Output_SYN
+!    FL_SetUp          - (SARBlib)  Used by Sbr. Reg_Proc
+!    MATCH_PROFILES    - (SynSARB)  Used by Sbr. Reg_Proc
+!    MOA_IO            - (CERESlib) Used by Sbr. Reg_Proc
+!    Profile_Params    - (SARBlib)  Used by Sbr. NoProcess_Default_SYN,
+!                                                Prep_Output_SYN
+!    QC_Accum          - (SARBlib)  Used by Sbr. Reg_Proc
+!    SARB_IO_Utils     - (SARBlib)  Used by Sbr. Reg_Proc
+!    SARB_MOA_Utils    - (SARBlib)  Used by Sbr. Reg_Proc
+!    SARB_OutVar       - (SARBlib)  Used by Sbr. NoProcess_Default_SYN, 
+!                                                Prep_Output_SYN
+!    SARB_Params       - (CERESlib) Used by Sbr. NoProcess_Default_SYN,  
+!                                                Prep_Output_SYN, Reg_Proc
+!    SARB_QC_Params    - (SARBlib)  Used by Sbr. Reg_Proc
+!    SARB_OutVar       - (SARBlib)  Used by Sbr. NoProcess_Default_SYN, 
+!                                                Prep_Output_SYN
+!    SARB_Var          - (SARBlib)  Used by Sbr. NoProcess_Default_SYN, 
+!                                                Prep_Output_SYN, Reg_Proc
+!    SARBInput_Params  - (SARBlib)  Used by Sbr. Reg_Proc
+!    Spectral_Sfc      - (SARBlib)  Used by Sbr. Reg_Proc
+!    SYN_IO            - (CERESlib) Used by Sbr. Reg_Proc
+!    SynSARB_Ingest    - (SynSARB)  Used by Sbr. Reg_Proc
+!    SynSARB_IO_Params - (SynSARB)  Used by Sbr. Reg_Proc
+!    SYNSPECTRAL       - (SynSARB)  Used by Sbr. Reg_Proc
+!    tsi_type_mod      - (CERESlib) Used by Sbr. NoProcess_Default_SYN, 
+!                                                Prep_Output_SYN, Reg_Proc
+!
+!  Internal Routines:
+!    Reg_Proc              - Drives processing of the region's data
+!    NoProcess_Default_SYN - Assigns CERES default values to SARB SYN parameters
+!                            in the event that the FOV cannot be processed
+!    Prep_Output_SYN       - Prepares SARB SYN parameters for output onto the
+!                            SYN product
+!
+! !Revision History:
+!  Version 5.0   June 23, 2014 - SCCR #1017  
+!                Thomas Caldwell, SSAI, Thomas.E.Caldwell@nasa.gov
+!                 1. Removed SYNS subset process
+!                 2. Removed Prep_Output_SYN and NoProcess_Default_SYN 
+!                    for new Edition4 routines
+!                 3. Added Write_SYNI_ED4 and call to SYNI4_NULL
+!  Version 4.1   October 25, 2007 - SCCR #663  
+!                Thomas Caldwell, SAIC, t.e.caldwell@larc.nasa.gov
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                 1. Increased upper limit of PAR values in UVSW_RangeCheck
+!                 2. Changed actinic flux and error code names in 
+!                    Prep_Output_SYN
+!  Version 4.0   August 16, 2004 - SCCR #550  
+!                Scott Zentz, SAIC, s.m.zentz@larc.nasa.gov
+!                Thomas Caldwell, SAIC, t.e.caldwell@larc.nasa.gov
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                 1. Changed loop of region to Nested format
+!                 2. Added calls to sg_average, sg_structure_fill,
+!                    and sarb_gridmaps_apply to build sg structure 
+!                 3. Added use of vertical match aerosol profiles
+!  Version 3.4   June 20, 2003 - SCCR #445  
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                 Intitial version of Release 3 code 
+!
+! !END
+!
+!*****************************************************************************
+!
+!
+      USE Ancill_Init
+      USE FL_IO_Params
+      USE FL_SetUp
+      USE Lev_Isolate
+
+!      USE MATCH_PROFILES, ONLY: Match_Vert_Ingest
+       USE MATCH_ED4v13 ,only: mpro , open_matchday_netcdf,&
+                              ingest_match_netcdf_month_zone,&
+			      get_mpro_gridboxhr,&
+			      print_mpro_gridboxhr
+       
+      USE MODALBHDF_SYNI,only: msa,open_msahdf_and_intialize,ingest_zone_MCD,get_msa, nearest_MCD_JD, mcd_vers     
+ 
+      USE MOA_IO
+      USE TSI_TYPE_MOD
+      
+      USE Profile_Params
+      USE QC_Accum
+      USE SARB_IO_Utils
+      USE SARB_MOA_Utils
+      USE SARB_Params
+      USE SARBInput_Utils
+      USE SARB_QC_PARAMS
+      USE SARB_OutVar
+      USE SARB_Var
+      USE SARBInput_Params
+      USE intsyn_io
+      USE SynSARB_Ingest
+      USE SynSARB_IO_Params
+      USE SYNSPECTRAL
+      
+      USE JIN_LUTS_INTERFACE, ONLY: jlut
+      
+      USE ed4_syni_structure , only : SYNI4 ,pfp ,SYNI4_print,SYNI4_NULL    ! 20131118 
+
+   IMPLICIT NONE
+
+  INTEGER :: tsi_reclen  !HG
+
+  
+   CONTAINS
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!
+      SUBROUTINE Reg_Proc (fqc)                                          ! I
+!
+!*****************************************************************************
+! 
+! !F90
+!
+! !Name:
+!   Reg_Proc
+!
+! !Description:
+!   Routine ID - 7.2.2
+!
+!   Purpose - Drives processing of data for all regions contained on the
+!             input product through the SARB process 
+!             
+!
+! !Input Parameters:
+!
+! !Output Parameters:
+!    fqc - Accumulated statistics for QC report
+!
+! !Team-Unique Header:
+!
+!  Modules Used:
+!    FL_IO_Params      - (SARBlib)  Parameters: Default_REAL4_FL
+!    FL_SetUp          - (SARBlib)  Sbr. InitTune_Drv
+!    MATCH_PROFILES    - (SynSARB)  Sbr. Match_Vert_Ingest 
+!    MOA_IO            - (CERESlib) Structures: MOA_TYPE 
+!    Profile_Params    - (SARBlib)  Params: ConstrPass1, InitPass
+!    QC_Accum          - (SARBlib)  Sbr. Foot_QC
+!    SARB_IO_Utils     - (SARBlib)  Sbr. DaysPerMonth
+!    SARB_MOA_Utils    - (SARBlib)  Sbr. IntervalMOA_Open
+!                                   Params: MOA_Interval
+!    SARB_PARAMS       - (SARBlib)  Structures: SYN_SARB_PARAMS
+!    SARB_QC_Params    - (SARBlib)  Params: ICnt_Night, ICnt_NoFlux, 
+!                                   ICnt_Sunglint
+!                                   Structures: fqc_type
+!    SARB_Var          - (SARBlib)  Params: DataDay*, DataHour, MOA_GrdIdx, 
+!                                           MOA_Unit
+!    SYN_IO            - (CERESlib) Sbr. SYN_Write_Term
+!    SynSARB_Ingest    - (SynSARB)  Sbr. Ingest_Input
+!    SynSARB_IO_Params - (SynSARB)  Params: LID_MOA, MaxReg_File, IUnit_TSI,
+!                                   NumFiles, NumHeaderRec_TSI, NumReg_Zone, 
+!                                   OUnit_SYN
+!    tsi_type_mod      - (CERESlib) Structures: tsi_type
+!                                   Params: REGIONS_PER_FILE
+!
+!  Internal Routines Called:
+!    NoProcess_Default_SYN
+!    Prep_Output_SYN
+!
+! !Revision History:
+!  Version 5.0   October 3, 2013 - SCCR #1017  
+!                Thomas Caldwell, SSAI, Thomas.E.Caldwell@nasa.gov
+!                Fred Rose, SSAI, Fred.G.Rose@nasa.gov
+!                1. Edition 4 changes
+!                2. Removed SYNS subset process 
+!  Version 4.0   August 16, 2004 - SCCR #550  
+!                Thomas Caldwell, SAIC, t.e.caldwell@larc.nasa.gov
+!                1. Added call to ingest vertical match aerosol data 
+!                2. Added call to perform Fred's stream flux correction 
+!                3. Added error code reporting similar to that used in CRS 
+!                4. Added invalid input QC counter 
+!  Version 3.4   June 20, 2003 - SCCR #445  
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                 Initial version of Release 3 code 
+!
+! !END
+!
+!*****************************************************************************
+!
+
+  USE COMMON_ACCESS , only : TSI, MOA, HrBox, RegionNum_CERES
+
+  TYPE (fqc_type), INTENT (OUT) :: fqc
+!
+  INTEGER                  :: Counter
+  INTEGER                  :: Flag_RTError
+  INTEGER                  :: IBeg
+  INTEGER                  :: IDay
+  INTEGER                  :: IEnd
+  INTEGER                  :: IErr
+  INTEGER                  :: IHour
+  INTEGER                  :: IRec_Subset
+  INTEGER                  :: IRec_SYNI
+  INTEGER                  :: IRec_TSI
+  INTEGER                  :: IReg
+  integer		   :: Jday  !julian day
+  INTEGER                  :: New_IReg
+ 
+  INTEGER                  :: MOAHour
+  INTEGER                  :: Nested_Lon
+  INTEGER                  :: NoProcess
+  INTEGER                  :: NumHours_Mon, NumSites
+  INTEGER                  :: NumTune
+  INTEGER                  :: ZoneLat, IOS
+  
+  CHARACTER (LEN = 1)      :: SubID
+  TYPE (SYN_SARB_PARAMS)   :: SYN_SARB 
+ 
+  TYPE (Flux_CldNoAer)     :: NoAer
+  TYPE (Spectral_TYPE_FOV) :: SpecInt_SW
+  TYPE (SARB_TimeLoc)      :: TimeLoc
+  TYPE (SYNGRID) :: sga
+  LOGICAL :: CosZenithNight
+
+  REAL :: RlatX
+
+  
+  Flag_SpecErr   = 0 
+  CosZenithNight = .FALSE.       
+  IRec_Subset = 2  ! start at 2 to allow header
+
+  Counter = 1
+    
+  NumDays_Mon = DaysPerMonth(DataMonth, DataYear)
+  NumHours_Mon = NumDays_Mon * 24
+!
+  CALL SynGrid_Init (ZoneLat)
+  RlatX= 89.5 - (ZoneLat-1)
+
+! *** Loop through all hours of the month
+
+  
+  HOUR_LOOP : DO IHour = 1,NumHours_Mon 
+
+    MOAHour = IHour - 1
+    IDay = INT ( (REAL (MOAHour)/ 24.0)) + 1
+    DataDay = IDay
+    
+    CALL calcnv(DataYear, DataMonth, Iday, Jday)
+    
+    IF (IDay == Counter) THEN !  Begin a New Day
+ 	  
+!       MODIS SPECTRAL ALBEDO INGEST	  
+        msa%LID_FILE = 704
+   	msa%rlatC = RlatX
+        msa%iver = MCD_Vers(DataMonth,IDay)
+
+        IF ( .NOT. msa%lutinit .OR. msa%iver .NE. msa%iver_loaded ) CALL open_msahdf_and_intialize
+        IF ( msa%rlatC .NE. msa%rlatC_loaded .OR. msa%iver .NE. msa%iver_loaded)  CALL ingest_zone_MCD
+	  	  
+!       MATCH INGEST	   
+  	mpro%iprint =.FALSE. !! Silent
+
+  	mpro%iday   = Iday
+  	mpro%rlat   = RLatX  !! LATITUDE ( -90 : +90)  
+       
+    	IF ( mpro%rlat .NE. mpro%rlat_loaded .OR. mpro%iday .NE. mpro%iday_loaded) THEN       
+     	 CALL open_matchday_netcdf                ! open file for selected day  
+     	 CALL ingest_match_netcdf_month_zone      ! daily-zonal ingest and close day file 
+    	ENDIF
+ 
+        Counter = Counter + 1
+
+    ENDIF  ! Begin a New Day 
+    
+    DataHour = MOD (MOAHour, 24) 
+    mpro%ihour = DataHour +1  !( mpro%ihour is 1-24) DataHour is (0-23)  !
+ 
+    IF (IHour > 1) THEN  !   *** Open a new MOA file if necessary
+        CALL IntervalMOA_Open (MOAHour, LID_MOA,           & ! I
+                               MOA_Interval (MOA_GrdIdx),  & ! I
+                                                 MOA_Unit)   ! I/O
+    ENDIF
+
+
+    LONGITUDE_LOOP : DO Nested_Lon = 1, NumReg_Zone ! loops thru nested longitudes 
+
+      CALL synx(ZoneLat, Nested_Lon, IBeg, IEnd, IErr)      
+
+      IF ( IErr == -1 ) CYCLE   ! cycles loop for regions > zonal max (1,45,etc)
+
+      IReg = Nested_Lon
+!     *** Loop through all regions in the zone for current hour
+! 
+      IRec_TSI = NumHeaderRec_TSI + (NumHours_Mon * (IReg-1)) + IHour
+      IRec_SYNI = NumHeaderRec_SYNI + (NumHours_Mon * (IReg-1)) + IHour
+!
+      CALL Ingest_Input (IRec_TSI, IDay, NoProcess)
+
+!      
+      IF (ValOut_Flag == ValOut_ON  .AND.  ValReg_Flag == ValReg_NO) THEN
+        CYCLE
+      END IF
+
+      CosZenithNight = .FALSE.
+      IF (TSI % timeandloc % cos_sol_zenith <= 0.0) CosZenithNight = .TRUE.
+   
+      CALL get_centroid (TSI % timeandloc % region_num, Colat, RLong)             
+      RLat = 90.0 - Colat
+          
+      mpro%rlon           = RLong  !! Longitude ( 0 : 360)
+      mpro%nv1            = 3      !!  # of LEVELS in model profile ( fi%nv +1 ) 
+      mpro%pp(1:mpro%nv1) = (/1.,100.,1000./)
+
+      CALL get_mpro_gridboxhr         !  get AOTs and Scaled fractional Profile data for selected (lat.lon)
+!      CALL print_mpro_gridboxhr
+      AerOptDepth ( InitPass) = mpro%aots_comb(0)
+      AerSrc_PrimInput        = 2
+
+
+      IF (NoProcess == 0) THEN     !  *** Continue regional processing
+        CALL sg_average(0,sg,sga) !! Initalize
+	
+        EQAREA_AVG : DO New_IReg = IBeg, IEnd
+	  CALL sg_structure_fill(MOA, TSI, ZoneLat, New_IReg)
+	  CALL sarb_gridmaps_apply(New_IReg, ZoneLat, IDay, IHour) 
+	  CALL sg_average(1,sg,sga)  !!! SUM
+        END DO EQAREA_AVG 
+!
+        CALL sg_average(2,sg,sga) !! AVERAGE
+        sg = sga !!!! TRANSFER BACK NOW IS REPRESENTATIVE OF NESTED GRID AREA!!!!
+	
+        bbout ( InitPass) = sg%bba_untuned
+	
+        SpSfcAlb_Clear(InitPass, 1:Num_BndSA, 0:MaxLev_Cld) =                    &
+                                  sg%sfc_spectral_alb ( 1:Num_BndSA, 1, 0:MaxLev_Cld)
+        SpSfcAlb_Pris(InitPass, 1:Num_BndSA, 0:MaxLev_Cld) =                    &
+                                  sg%sfc_spectral_alb ( 1:Num_BndSA, 2, 0:MaxLev_Cld)
+        SfcEmiss ( InitPass, 1:Num_BndSfcEm) = sg%sfc_spectral_emis ( 1:Num_BndSfcEm)
+
+        CALL InitTune_Drv (MOA, IRec_TSI, NumTune, Flag_RTError)  ! The Fu-Liou radiative transfer code 
+  
+        CALL Stream_FluxCorrection
+!
+	IF (Flag_RTError == 0 .OR. Flag_RTError >= 2000) THEN 
+          CALL UVSW_RangeCheck(CosZenithNight, InitPass, Flag_RTError) ! set failure to 1200 
+	  IF (Flag_RTError == 0) THEN
+	   CALL UVSW_RangeCheck (CosZenithNight, ConstrPass1, Flag_RTError) ! set failure to 2200
+          ENDIF	
+	ENDIF
+
+	IF (Flag_RTError == 0 .OR. Flag_RTError >= 2000) THEN
+!         *** Load model results into SYN structure for output. 
+
+          ValidFOV_TotQC = ValidFOV_TotQC + 1
+          CALL Foot_QC (ConstrPass1, InitPass, IRec_TSI,    & ! I
+                                                    fqc)      ! O
+!
+        ELSE    
+!
+          InvalidModel_TotQC = InvalidModel_TotQC + 1
+!
+        END IF
+!
+      ELSE 
+!            *** Load CERES default valaues into SYN structure for output.
+!
+        Flag_RTError = 3000 + Flag_SpecErr
+        
+	InvalidInput_TotQC = InvalidInput_TotQC + 1
+       
+        CALL SYNI4_NULL 
+
+        SYNI4%misc%hr_month    = HrBox
+        SYNI4%misc%regnum      = RegionNum_CERES 
+        SYNI4%misc%error(1:2)  = Flag_RTError   
+        SYNI4%misc%toaswinsolation  = pfp( ssrna * u0 )
+ 
+      END IF
+!
+      ICnt_FOV = ICnt_FOV + 1
+
+
+!      print *, 'HrBox, ', HrBox
+!      print *, 'RegionNum_CERES, ', RegionNum_CERES
+!!      ! test 2013.04.16, HG
+!      IF (HrBox .ge. 361 .and. HrBox .le. 384) THEN
+!        CALL SYNI4_print
+!      ENDIF
+      
+!
+!
+!     *** Write SYNI record to output
+ 
+       CALL Write_SYNI_ED4 ( OUnit_SYN, IRec_SYNI ) !!!  Write SYNI4 structure
+      
+
+    ENDDO  LONGITUDE_LOOP    
+     
+  ENDDO  HOUR_LOOP
+ 
+
+  END SUBROUTINE Reg_Proc
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!
+  SUBROUTINE Write_SYNI_ED4 ( IntSYN_Unit, Rec_Num,  Stat)
+!
+!*****************************************************************************
+!
+! !F90
+!
+! !Name:
+!   Write_SYNI_ED4
+!
+! !Description:
+!    Purpose - Writes Edition4 SYNI record to output file
+!
+! 
+! !Input Parameters:
+!    IntSYN_Unit, Rec_Num
+!
+! !Output Parameters:
+!    Stat
+!
+! !Team-Unique Header:
+!
+!  Modules Used: (Parameters followed by "*" are defined by this routine)
+!                                 
+!  Input Files:
+!    NONE
+!
+! !Revision History:
+!  Version 1.0   October 1, 2013 - SCCR #1017
+!                 Fred Rose, SSAI, Fred.G.Rose@nasa.gov
+!                 Thomas Caldwell, SSAI, Thomas.E.Caldwell@nasa.gov
+!                 Initial Version of Module
+!
+! !END
+!
+!*****************************************************************************
+!
+
+  USE ed4_syni_structure , ONLY : SYNI4  
+
+  INTEGER,                  INTENT (IN)            :: IntSYN_Unit   
+  INTEGER,                  INTENT (IN)            :: Rec_Num
+  INTEGER,                  INTENT (OUT), OPTIONAL :: Stat
+  INTEGER :: IOS
+
+! *** Write SYNI record and check for success
+
+  WRITE (IntSYN_Unit, REC=Rec_Num, IOSTAT=IOS) SYNI4
+
+
+  IF (IOS == 0) THEN   !   *** No error encountered writing file
+
+    IF (PRESENT (Stat)) Stat = IOS  ! *** Set output status flag
+  
+  ELSE   !  *** Error encountered writing file
+
+    IF (PRESENT (Stat)) THEN
+!   *** Set output status flag, issue warning message, and return  control to the calling routine.
+
+        Stat = IOS
+        CALL WriteReport (INTSYNIO_W_FAILED_SYNI_WRITE,  		  &
+    		FuncName = "Write_SYNI_ED4 ()",				  &
+    		StrVar = " Occured at record number (%i7); IOS = (%i4) ", &
+    		Ivar1 = Rec_Num, IVar2 = IOS)
+
+    ELSE !  *** Issue error message and terminate processing.
+
+        CALL WriteReport (INTSYNIO_E_FAILED_SYNI_WRITE,  		  &
+    		FuncName = "Write_SYNI_ED4 ()",				  &
+    		StrVar = " Occured at record number (%i7); IOS = (%i4) ", &
+    		Ivar1 = Rec_Num, IVar2 = IOS)
+
+    ENDIF
+
+  ENDIF
+  
+  END SUBROUTINE Write_SYNI_ED4
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!
+  SUBROUTINE UVSW_RangeCheck (NightFlag, IPass, BadFlux)
+!
+!*****************************************************************************
+!
+! !F90
+!
+! !Name:
+!   UVSW_RangeCheck
+!
+! !Description:
+!    Purpose - Verifies valid UV parameter ranges
+!
+! 
+! !Input Parameters:
+!    IntSYN_Unit, Rec_Num
+!
+! !Output Parameters:
+!    Stat
+!
+! !Team-Unique Header:
+!
+!  Modules Used: (Parameters followed by "*" are defined by this routine)
+!                                 
+!  Input Files:
+!    NONE
+!
+! !Revision History:
+!  Version 1.0   October 1, 2013 - SCCR #1017
+!                 Fred Rose, SSAI, Fred.G.Rose@nasa.gov
+!                 Thomas Caldwell, SSAI, Thomas.E.Caldwell@nasa.gov
+!                 Initial Version of Module
+!
+! !END
+!
+!*****************************************************************************
+!
+
+!
+      INTEGER, INTENT (OUT) :: BadFlux 
+      INTEGER, INTENT (IN)  :: IPass    
+      LOGICAL, INTENT (IN)  :: NightFlag    
+!
+!
+      INTEGER :: CldTypes(1:4) = (/1, 2, 3, 8/)
+      INTEGER :: ISky
+      INTEGER :: NoNAN 
+      REAL    :: DfltLow
+      REAL    :: DfltHigh
+!
+      DfltLow = 9.90E+35
+      DfltHigh = 1.10E+36
+!
+! *** Initialize FOV-level flag
+!
+      BadFlux = 0
+!
+!
+! *** Validate ranges
+!
+    IF (DnUVB_TOA ( IPass, TotSky) >= 0.0                         &
+                  .AND. DnUVB_TOA ( IPass, TotSky) <= 100.0) THEN 
+          NoNAN = 0
+    ELSE 
+      IF (BadFlux == 0) THEN
+        BadFlux = 200
+      END IF
+    END IF
+!
+    IF (DnUVA_TOA ( IPass, TotSky) >= 0.0                         &
+        .AND. DnUVA_TOA ( IPass, TotSky) <= 100.0) THEN 
+      NoNAN = 0
+    ELSE 
+      IF (BadFlux == 0) THEN
+        BadFlux = 200
+      END IF
+    END IF
+!
+    IF (DnPAR_TOA ( IPass, TotSky) >= 0.0                         &
+                  .AND. DnPAR_TOA ( IPass, TotSky) <= 600.0) THEN 
+      NoNAN = 0
+    ELSE 
+      IF (BadFlux == 0) THEN
+        BadFlux = 200
+      END IF
+    ENDIF
+!
+    IF (SW_TOAUP_CORR >= SW_Low .AND. SW_TOAUP_CORR <= SW_High) THEN 
+      NoNAN = 0
+    ELSE 
+     IF (BadFlux == 0) THEN
+      BadFlux = 200
+       IF (NightFlag) THEN 
+        BadFlux = 0
+        SW_TOAUP_CORR = 0
+       ENDIF          
+     END IF
+    ENDIF  
+!  
+    IF (SW_SFCDN_CORR >= SW_Low .AND. SW_SFCDN_CORR <= SW_High) THEN 
+      NoNAN = 0
+    ELSE 
+      IF (BadFlux == 0) THEN
+        BadFlux = 200
+        IF (NightFlag) THEN
+          BadFlux = 0
+          SW_SFCDN_CORR = 0
+        ENDIF
+      END IF
+    ENDIF
+!
+    DO ISky = 1, 4
+      IF (DnUVB_Sfc ( IPass, CldTypes(ISky)) >= 0.0  &                       
+                  .AND. DnUVB_Sfc ( IPass, CldTypes(ISky)) <= 100.0) THEN 
+        NoNAN = 0
+      ELSE 
+        IF (BadFlux == 0) THEN
+          BadFlux = 200
+        END IF
+      END IF
+!
+      IF (DirDiff_UVB_Sfc ( IPass, CldTypes(ISky)) >= 0.0                         &
+                  .AND. DirDiff_UVB_Sfc ( IPass, CldTypes(ISky)) <= 100.0) THEN 
+        NoNAN = 0
+      ELSE 
+        IF (BadFlux == 0) THEN
+          BadFlux = 200
+          IF ( DirDiff_UVB_Sfc ( IPass, CldTypes(ISky)) >= DfltLow  &
+                  .AND. DirDiff_UVB_Sfc ( IPass, CldTypes(ISky)) <= DfltHigh) THEN 
+            BadFlux = 0
+            DirDiff_UVB_Sfc ( IPass, CldTypes(ISky)) = Default_REAL4_FL          
+          ENDIF
+        END IF
+      END IF
+!
+      IF (DnUVA_Sfc ( IPass, CldTypes(ISky)) >= 0.0                         &
+        		.AND. DnUVA_Sfc ( IPass, CldTypes(ISky)) <= 100.0) THEN 
+        NoNAN = 0
+      ELSE 
+        IF (BadFlux == 0) THEN
+          BadFlux = 200
+        END IF
+      END IF
+!
+      IF (DirDiff_UVA_Sfc ( IPass, CldTypes(ISky)) >= 0.0                         &
+              .AND. DirDiff_UVA_Sfc ( IPass, CldTypes(ISky)) <= 100.0) THEN 
+       NoNAN = 0
+      ELSE 
+      IF (BadFlux == 0) THEN
+        BadFlux = 200
+        IF ( DirDiff_UVA_Sfc ( IPass, CldTypes(ISky)) >= DfltLow  &
+          .AND. DirDiff_UVA_Sfc ( IPass, CldTypes(ISky)) <= DfltHigh) THEN 
+         BadFlux = 0
+         DirDiff_UVA_Sfc ( IPass, CldTypes(ISky)) = Default_REAL4_FL  
+        ENDIF
+       END IF
+      END IF
+!
+      IF (PAR_Sfc ( IPass, CldTypes(ISky)) >= 0.0                         &
+           .AND. PAR_Sfc ( IPass, CldTypes(ISky)) <= 600.0) THEN 
+        NoNAN = 0
+      ELSE 
+        IF (BadFlux == 0) THEN
+          BadFlux = 200
+        END IF
+      END IF
+!
+      IF (DirDiff_PAR_Sfc ( IPass, CldTypes(ISky)) >= 0.0                         &
+                .AND. DirDiff_PAR_Sfc ( IPass, CldTypes(ISky)) <= 100.0) THEN 
+        NoNAN = 0
+      ELSE 
+        IF (BadFlux == 0) THEN
+          BadFlux = 200
+          IF ( DirDiff_PAR_Sfc ( IPass, CldTypes(ISky)) >= DfltLow  &
+              .AND. DirDiff_PAR_Sfc ( IPass, CldTypes(ISky)) <= DfltHigh) THEN 
+            BadFlux = 0
+            DirDiff_PAR_Sfc ( IPass, CldTypes(ISky)) = Default_REAL4_FL  
+          ENDIF
+        END IF
+      END IF
+
+      IF (IdxUV_Sfc ( IPass, CldTypes(ISky)) >= 0.0  &
+            .AND. IdxUV_Sfc ( IPass, CldTypes(ISky)) <= 30.0) THEN 
+        NoNAN = 0
+      ELSE 
+        IF (BadFlux == 0) THEN
+          BadFlux = 200
+        END IF
+      END IF  
+!
+      IF (BadFlux == 200 .AND. IPass == ConstrPass1) THEN
+        DnUVB_TOA ( IPass, CldTypes(ISky)) = DnUVB_TOA ( InitPass, CldTypes(ISky)) 
+        DnUVA_TOA ( IPass, CldTypes(ISky)) = DnUVA_TOA ( InitPass, CldTypes(ISky)) 
+        DnPAR_TOA ( IPass, CldTypes(ISky)) = DnPAR_TOA ( InitPass, CldTypes(ISky)) 
+
+        DnUVB_Sfc ( IPass, CldTypes(ISky)) = DnUVB_Sfc ( InitPass, CldTypes(ISky))	  
+        DirDiff_UVB_Sfc ( IPass, CldTypes(ISky)) = DirDiff_UVB_Sfc ( InitPass, CldTypes(ISky))
+        DnUVA_Sfc ( IPass, CldTypes(ISky)) = DnUVA_Sfc ( InitPass, CldTypes(ISky))	   
+        DirDiff_UVA_Sfc ( IPass, CldTypes(ISky)) = DirDiff_UVA_Sfc ( InitPass, CldTypes(ISky))
+        PAR_Sfc ( IPass, CldTypes(ISky)) = PAR_Sfc ( InitPass, CldTypes(ISky))		 
+        DirDiff_PAR_Sfc ( IPass, CldTypes(ISky)) = DirDiff_PAR_Sfc ( InitPass, CldTypes(ISky))
+        ActFlx_Sfc ( IPass, CldTypes(ISky)) = ActFlx_Sfc ( InitPass, CldTypes(ISky))  	
+      ENDIF
+
+      END DO
+  
+      IF (BadFlux /= 0) THEN
+        BadFlux = BadFlux + (IPass*1000)
+      ENDIF
+       
+  END SUBROUTINE UVSW_RangeCheck
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!
+END MODULE Reg_Drv

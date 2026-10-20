@@ -1,0 +1,59 @@
+; qsub -l h=zf16.cluster.net day20130416_100.csh
+pro run_20130416
+
+all_nodes=['zf08.cluster.net', 'zf09.cluster.net', 'zf10.cluster.net', 'zf11.cluster.net', 'zf12.cluster.net', $
+           'zf13.cluster.net', 'zf14.cluster.net', 'zf15.cluster.net', 'zf16.cluster.net', $
+           'zf17.cluster.net', 'zf18.cluster.net']
+
+for ilat=101, 111 do begin
+one_lat=STRING(ilat, FORMAT='(I3.3)')
+
+node_index = (ilat-101)
+
+
+spawn, './cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z'+one_lat
+
+wait, 1
+
+spawn, './CER7.2.1P2_pcfgen.pl -date 201304Z'+one_lat
+
+wait, 1
+
+; Every 10 jobs, except after the last job, wait 5 hours
+;IF (((ilat - 58) mod 10) EQ 0) AND (ilat LT 121) THEN BEGIN
+;        PRINT, 'Submitted 10 jobs, sleeping 5 hours...'
+;        wait, 3600*5
+;     endif else begin
+openw, 1, 'day20130416_'+one_lat+'.csh'  
+
+printf, 1, '#!/bin/csh'
+printf, 1, '#$ -S /bin/csh'
+printf, 1, '#$ -l arch=lx-amd64'
+printf, 1, '#$ -q scf-rhel.q'
+;printf, 1, '#$ -l h=zf14.cluster.net,zf15.cluster.net,zf16.cluster.net,zf17.cluster.net,zf18.cluster.net,zf19.cluster.net'
+printf, 1, '#$ -o /CERES/clouds/workArea/hong/temp/sarb/data/output.log'
+printf, 1, '#$ -e /CERES/clouds/workArea/hong/temp/sarb/data/error.log'
+printf, 1, ' '
+printf, 1, ' '
+ 
+printf, 1, 'set workdir=/homedir/ghong/sarb/CER7.2.1P2/rcf/'
+printf, 1, 'cd ${workdir}'
+printf, 1, '${workdir}run_CER7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z'+one_lat+' > /CERES/clouds/workArea/hong/temp/sarb/data/z'+one_lat+'.dat_print.0416'
+
+close, 1
+
+spawn, 'qsub -l h='+all_nodes(node_index)+' day20130416_'+one_lat+'.csh'
+wait, 1
+
+stop
+
+;endelse
+    
+
+
+endfor
+
+
+  stop
+
+  end

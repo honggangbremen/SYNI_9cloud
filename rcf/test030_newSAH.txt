@@ -1,0 +1,2247 @@
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.241712302      0.594953179      0.520945549      0.749844015      0.756386340      0.243821219    
+ aaa1/aaa0=,    1.00872493    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.251813442    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.04178989    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.449041963      0.623482406      0.520945549      0.731366098      0.739467740      0.454016179    
+ aaa1/aaa0=,    1.01107740    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.475041300    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.05789959    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.400576711      0.620026350      0.513988733      0.711874902      0.718177617      0.404123276    
+ aaa1/aaa0=,    1.00885367    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.424656332    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.06011236    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.656738758      0.588131249      0.513988733      0.694648981      0.699539900      0.661362767    
+ aaa1/aaa0=,    1.00704086    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.684342265    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.04203117    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.549506605      0.596652746      0.506491482      0.680561602      0.687956870      0.555477738    
+ aaa1/aaa0=,    1.01086640    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.577712953    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.05133033    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.540621221      0.591417432      0.506491482      0.628923774      0.633065820      0.544181705    
+ aaa1/aaa0=,    1.00658596    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.566760123    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.04834974    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.491779953      0.577328682      0.498463005      0.595612884      0.600039899      0.495435208    
+ aaa1/aaa0=,    1.00743270    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.513962030    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.04510570    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.521160781      0.582934558      0.498463005      0.619812489      0.624353588      0.524979115    
+ aaa1/aaa0=,    1.00732660    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.546339035    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.04831183    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.513163209      0.591142535      0.489913434      0.590033472      0.595896184      0.518262088    
+ aaa1/aaa0=,    1.00993621    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.543019235    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.05818045    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.559458792      0.582709372      0.489913434      0.579177976      0.586509049      0.566540301    
+ aaa1/aaa0=,    1.01265776    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.589296758    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.05333352    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.584245443      0.584678531      0.480852634      0.640188634      0.654155731      0.596992075    
+ aaa1/aaa0=,    1.02181721    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.619291604    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.05998528    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.264428288      0.616058111      0.480852634      0.491086811      0.501876950      0.270238280    
+ aaa1/aaa0=,    1.02197194    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.285084069    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.07811487    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.335237145      0.604249060      0.471292198      0.375627995      0.384003639      0.342712164    
+ aaa1/aaa0=,    1.02229774    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.361131728    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.07724249    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.456903964      0.595157206      0.461243182      0.475800097      0.492997706      0.473418593    
+ aaa1/aaa0=,    1.03614461    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.492659152    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.07825530    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.412782669      0.610244453      0.461243182      0.442078531      0.456680149      0.426416636    
+ aaa1/aaa0=,    1.03302944    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.448724449    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.08707190    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.362725228      0.608405352      0.439730227      0.363792121      0.375291198      0.374190599    
+ aaa1/aaa0=,    1.03160894    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.398933768    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.09982359    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.337377161      0.610553920      0.439730227      0.504769504      0.518149734      0.346320212    
+ aaa1/aaa0=,    1.02650762    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.371484399    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.10109520    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.580148101      0.606795132      0.428292483      0.617025018      0.633111775      0.595273376    
+ aaa1/aaa0=,    1.02607143    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.641852438    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.10635972    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.534359634      0.618980646      0.428292483      0.610519528      0.629884601      0.551308990    
+ aaa1/aaa0=,    1.03171897    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.595073819    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.11362040    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.662154734      0.612139940      0.416418552      0.691670835      0.709177613      0.678914428    
+ aaa1/aaa0=,    1.02531087    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.739925027    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.11745036    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.649679005      0.589900255      0.416418552      0.718209267      0.735616386      0.665425122    
+ aaa1/aaa0=,    1.02423680    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.717313528    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.10410452    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.620144963      0.578656137      0.404123545      0.717709482      0.734930456      0.635024905    
+ aaa1/aaa0=,    1.02399433    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.685578763    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.10551369    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.516341090      0.564652383      0.404123545      0.628950477      0.644458175      0.529072225    
+ aaa1/aaa0=,    1.02465641    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.566450775    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.09704769    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.475790977      0.574628055      0.391421735      0.525128305      0.540096402      0.489352763    
+ aaa1/aaa0=,    1.02850366    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.528896093    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.11161447    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.449461788      0.576282084      0.391421735      0.516832590      0.531521082      0.462235600    
+ aaa1/aaa0=,    1.02842021    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.500081122    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.11262214    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.419616550      0.580410242      0.378329366      0.517547250      0.535256147      0.433974564    
+ aaa1/aaa0=,    1.03421700    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.471692294    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.12410307    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.317609698      0.578536868      0.378329366      0.320988864      0.336810172      0.333264440    
+ aaa1/aaa0=,    1.04928923    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.356660634    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.12295258    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.307211250      0.576210558      0.364861578      0.297012657      0.310225219      0.320877492    
+ aaa1/aaa0=,    1.04448485    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.347418278    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.13087749    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.312774003      0.581304610      0.364861578      0.282340288      0.293479204      0.325113595    
+ aaa1/aaa0=,    1.03945208    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.354695708    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.13403189    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.388881475      0.587622583      0.351035595      0.441046655      0.453508735      0.399869591    
+ aaa1/aaa0=,    1.02825570    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.446346968    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.14777124    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.337280691      0.569650114      0.351035595      0.358650535      0.369242936      0.347241968    
+ aaa1/aaa0=,    1.02953410    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.383334905    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.13654566    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.266937941      0.553056717      0.336867452      0.257656574      0.267563462      0.277201712    
+ aaa1/aaa0=,    1.03845000    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.303304642    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.13623655    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.259764314      0.550362289      0.336867452      0.244442388      0.253866762      0.269779414    
+ aaa1/aaa0=,    1.03855455    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.294712633    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.13453853    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.267495900      0.555592060      0.322374821      0.270075589      0.279358774      0.276690423    
+ aaa1/aaa0=,    1.03437257    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.307171315    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.14832163    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.281098098      0.569171071      0.322374821      0.265270740      0.276685655      0.293194085    
+ aaa1/aaa0=,    1.04303122    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.325218558    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.15695763    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.281100482      0.575151742      0.307575762      0.258583277      0.270138502      0.293661922    
+ aaa1/aaa0=,    1.04468668    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.329390734    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.17179000    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.311211765      0.571913540      0.307575762      0.329043686      0.344447643      0.325780928    
+ aaa1/aaa0=,    1.04681432    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.364027858    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.16971099    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.242002428      0.568096340      0.292487472      0.239267468      0.256668210      0.259602070    
+ aaa1/aaa0=,    1.07272506    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.285242975    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.17867815    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.290129066      0.584604442      0.292487472      0.310310483      0.316262752      0.295694202    
+ aaa1/aaa0=,    1.01918161    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.345073849    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.18938053    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.332996458      0.592996955      0.277129203      0.396520108      0.403374910      0.338753104    
+ aaa1/aaa0=,    1.01728737    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.401872635    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.20683753    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.357213855      0.595122635      0.277129203      0.404666930      0.410546839      0.362404287    
+ aaa1/aaa0=,    1.01453030    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.431596279    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.20822942    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.396547109      0.603015184      0.261518747      0.439757019      0.451857328      0.407458454    
+ aaa1/aaa0=,    1.02751589    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.486138701    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.22592926    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.377375722      0.603409588      0.261518747      0.411334634      0.425262719      0.390153915    
+ aaa1/aaa0=,    1.03386068    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.462734401    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.22619021    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.587817132      0.603141367      0.245676085      0.408869952      0.429351121      0.617262125    
+ aaa1/aaa0=,    1.05009210    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.728304923    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.23899913    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.495341361      0.601708531      0.245676085      0.506312966      0.525081575      0.513703287    
+ aaa1/aaa0=,    1.03706920    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.613253057    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.23804116    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.465748608      0.600362182      0.229619563      0.583218575      0.577507079      0.461187512    
+ aaa1/aaa0=,   0.990206957    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.582449436    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.25056612    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.483353287      0.615128398      0.229619563      0.467640132      0.493963093      0.510560751    
+ aaa1/aaa0=,    1.05628896    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.609288990    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.26054597    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.406935334      0.622192144      0.213369668      0.455545872      0.482648760      0.431146145    
+ aaa1/aaa0=,    1.05949545    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.520621061    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.27937055    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.410019994      0.619299233      0.213369668      0.430853099      0.466738731      0.444170445    
+ aaa1/aaa0=,    1.08328974    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.523756981    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.27739370    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.428556025      0.610798657      0.196945280      0.450865358      0.466310143      0.443236589    
+ aaa1/aaa0=,    1.03425586    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.551131070    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.28601873    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.441648841      0.614112258      0.196945280      0.476250827      0.492875040      0.457065195    
+ aaa1/aaa0=,    1.03490639    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.568980098    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.28830886    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.446097493      0.614575803      0.180367365      0.494439334      0.510752022      0.460815251    
+ aaa1/aaa0=,    1.03299224    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.581516743    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.30356419    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.476180136      0.609905660      0.180367365      0.496370852      0.510925174      0.490142405    
+ aaa1/aaa0=,    1.02932143    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.619176686    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.30029929    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.517510116      0.605012536      0.163655132      0.556192517      0.574069858      0.534144163    
+ aaa1/aaa0=,    1.03214240    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.679081976    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.31221008    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.555001855      0.608170152      0.163655132      0.594384432      0.619287431      0.578254879    
+ aaa1/aaa0=,    1.04189718    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.729518712    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.31444383    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.580392659      0.614519775      0.146829918      0.603325188      0.630328655      0.606369734    
+ aaa1/aaa0=,    1.04475772    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.774721026    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.33482230    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.588789225      0.618218422      0.146829918      0.621939719      0.655664265      0.620716155    
+ aaa1/aaa0=,    1.05422473    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.787488043    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.33747029    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.605575740      0.612411201      0.129911274      0.611562908      0.637825966      0.631581724    
+ aaa1/aaa0=,    1.04294419    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.817321420    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.34966004    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.628297806      0.608232677      0.129911274      0.668544948      0.685234249      0.643982410    
+ aaa1/aaa0=,    1.02496362    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.846085906    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.34663188    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.654400706      0.618951738      0.122323364      0.677488446      0.694581747      0.670911491    
+ aaa1/aaa0=,    1.02523041    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.891220987    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.36188877    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.690967441      0.625503778      0.122323364      0.701963305      0.716977715      0.705746651    
+ aaa1/aaa0=,    1.02138913    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.944319844    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.36666322    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.709923208      0.626558244       9.98782963E-02  0.748453200      0.760645151      0.721487463    
+ aaa1/aaa0=,    1.01628947    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.986912966    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.39016855    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.702375650      0.629825532       9.98782963E-02  0.765444696      0.773776054      0.710020483    
+ aaa1/aaa0=,    1.01088428    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.978120565    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.39258897    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.688310266      0.625950694       7.96794519E-02  0.740695775      0.749084055      0.696105301    
+ aaa1/aaa0=,    1.01132488    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.971088231    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.41082919    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.699533880      0.625756025       7.96794519E-02  0.759502888      0.765392661      0.704958618    
+ aaa1/aaa0=,    1.00775480    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.986820519    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.41068292    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.552460313      0.626763582       6.17439747E-02  0.782587886      0.786814392      0.555443943    
+ aaa1/aaa0=,    1.00540066    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.790426672    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.43073928    
+  
+ Canada 60N, (95W-60W), (by scene, syni): ilat,ilon,rlat,rlon=
+ ptv(16), msa%ngood,    0.00000000             420
+ msa%rlonW, msa%rlonE:   -94.9900055      -94.0099945    
+ Before assignment:ilon, ilat, sg%bba_source_flag, sg%spec_source_flag
+ Before assignment:         266          30           0          -1
+ After assignment:ilon, ilat, sg%bba_source_flag, sg%spec_source_flag, sg%bbalut_sah
+ After assignment:         266          30           3          -1  0.287812263    
+  
+ Canada 60N, (95W-60W), (by scene, syni): ilat,ilon,rlat,rlon=
+ ptv(16), msa%ngood,    0.00000000             420
+ msa%rlonW, msa%rlonE:   -93.9900055      -93.0099945    
+ Before assignment:ilon, ilat, sg%bba_source_flag, sg%spec_source_flag
+ Before assignment:         267          30           0           4
+ After assignment:ilon, ilat, sg%bba_source_flag, sg%spec_source_flag, sg%bbalut_sah
+ After assignment:         267          30           3           4  0.793009818    
+  
+ Canada 60N, (95W-60W), (by scene, syni): ilat,ilon,rlat,rlon=
+ ptv(16), msa%ngood,    0.00000000             420
+ msa%rlonW, msa%rlonE:   -92.9900055      -92.0099945    
+ Before assignment:ilon, ilat, sg%bba_source_flag, sg%spec_source_flag
+ Before assignment:         268          30           0           4
+ After assignment:ilon, ilat, sg%bba_source_flag, sg%spec_source_flag, sg%bbalut_sah
+ After assignment:         268          30           3           4  0.831804633    
+  
+ Canada 60N, (95W-60W), (by scene, syni): ilat,ilon,rlat,rlon=
+ ptv(16), msa%ngood,    0.00000000             420
+ msa%rlonW, msa%rlonE:   -91.9900055      -91.0099945    
+ Before assignment:ilon, ilat, sg%bba_source_flag, sg%spec_source_flag
+ Before assignment:         269          30           0           4
+ After assignment:ilon, ilat, sg%bba_source_flag, sg%spec_source_flag, sg%bbalut_sah
+ After assignment:         269          30           3           4  0.846798301    
+  
+ Canada 60N, (95W-60W), (by scene, syni): ilat,ilon,rlat,rlon=
+ ptv(16), msa%ngood,    0.00000000             420
+ msa%rlonW, msa%rlonE:   -90.9900055      -90.0099945    
+ Before assignment:ilon, ilat, sg%bba_source_flag, sg%spec_source_flag
+ Before assignment:         270          30           0           4
+ After assignment:ilon, ilat, sg%bba_source_flag, sg%spec_source_flag, sg%bbalut_sah
+ After assignment:         270          30           3           4  0.847281575    
+  
+ Canada 60N, (95W-60W), (by scene, syni): ilat,ilon,rlat,rlon=
+ ptv(16), msa%ngood,    0.00000000             419
+ msa%rlonW, msa%rlonE:   -89.9900055      -89.0099945    
+ Before assignment:ilon, ilat, sg%bba_source_flag, sg%spec_source_flag
+ Before assignment:         271          30           0           4
+ After assignment:ilon, ilat, sg%bba_source_flag, sg%spec_source_flag, sg%bbalut_sah
+ After assignment:         271          30           3           4  0.859440565    
+  
+ Canada 60N, (95W-60W), (by scene, syni): ilat,ilon,rlat,rlon=
+ ptv(16), msa%ngood,    0.00000000             314
+ msa%rlonW, msa%rlonE:   -88.9900055      -88.0099945    
+ Before assignment:ilon, ilat, sg%bba_source_flag, sg%spec_source_flag
+ Before assignment:         272          30           0           4
+ After assignment:ilon, ilat, sg%bba_source_flag, sg%spec_source_flag, sg%bbalut_sah
+ After assignment:         272          30           3           4  0.863125563    
+  
+ Canada 60N, (95W-60W), (by scene, syni): ilat,ilon,rlat,rlon=
+ ptv(16), msa%ngood,    0.00000000              30
+ msa%rlonW, msa%rlonE:   -87.9900055      -87.0099945    
+ Before assignment:ilon, ilat, sg%bba_source_flag, sg%spec_source_flag
+ Before assignment:         273          30           0           4
+ After assignment:ilon, ilat, sg%bba_source_flag, sg%spec_source_flag, sg%bbalut_sah
+ After assignment:         273          30           3           4  0.868339181    
+  
+ Canada 60N, (95W-60W), (by scene, syni): ilat,ilon,rlat,rlon=
+ ptv(16), msa%ngood,    0.00000000               0
+ msa%rlonW, msa%rlonE:   -86.9900055      -86.0099945    
+ Before assignment:ilon, ilat, sg%bba_source_flag, sg%spec_source_flag
+ Before assignment:         274          30           0           4
+ After assignment:ilon, ilat, sg%bba_source_flag, sg%spec_source_flag, sg%bbalut_sah
+ After assignment:         274          30           3           4  0.863441467    
+  
+ Canada 60N, (95W-60W), (by scene, syni): ilat,ilon,rlat,rlon=
+ ptv(16), msa%ngood,    0.00000000              32
+ msa%rlonW, msa%rlonE:   -85.9900055      -85.0099945    
+ Before assignment:ilon, ilat, sg%bba_source_flag, sg%spec_source_flag
+ Before assignment:         275          30           0           4
+ After assignment:ilon, ilat, sg%bba_source_flag, sg%spec_source_flag, sg%bbalut_sah
+ After assignment:         275          30           3           4  0.873059571    
+  
+ Canada 60N, (95W-60W), (by scene, syni): ilat,ilon,rlat,rlon=
+ ptv(16), msa%ngood,    0.00000000             141
+ msa%rlonW, msa%rlonE:   -84.9900055      -84.0099945    
+ Before assignment:ilon, ilat, sg%bba_source_flag, sg%spec_source_flag
+ Before assignment:         276          30           0           4
+ After assignment:ilon, ilat, sg%bba_source_flag, sg%spec_source_flag, sg%bbalut_sah
+ After assignment:         276          30           3           4  0.862565935    
+  
+ Canada 60N, (95W-60W), (by scene, syni): ilat,ilon,rlat,rlon=
+ ptv(16), msa%ngood,    0.00000000             157
+ msa%rlonW, msa%rlonE:   -83.9900055      -83.0099945    
+ Before assignment:ilon, ilat, sg%bba_source_flag, sg%spec_source_flag
+ Before assignment:         277          30           0           4
+ After assignment:ilon, ilat, sg%bba_source_flag, sg%spec_source_flag, sg%bbalut_sah
+ After assignment:         277          30           3           4  0.868491411    
+  
+ Canada 60N, (95W-60W), (by scene, syni): ilat,ilon,rlat,rlon=
+ ptv(16), msa%ngood,    0.00000000             169
+ msa%rlonW, msa%rlonE:   -82.9900055      -82.0099945    
+ Before assignment:ilon, ilat, sg%bba_source_flag, sg%spec_source_flag
+ Before assignment:         278          30           0           4
+ After assignment:ilon, ilat, sg%bba_source_flag, sg%spec_source_flag, sg%bbalut_sah
+ After assignment:         278          30           3           4  0.862095177    
+  
+ Canada 60N, (95W-60W), (by scene, syni): ilat,ilon,rlat,rlon=
+ ptv(16), msa%ngood,    0.00000000             408
+ msa%rlonW, msa%rlonE:   -81.9900055      -81.0099945    
+ Before assignment:ilon, ilat, sg%bba_source_flag, sg%spec_source_flag
+ Before assignment:         279          30           0           4
+ After assignment:ilon, ilat, sg%bba_source_flag, sg%spec_source_flag, sg%bbalut_sah
+ After assignment:         279          30           3           4  0.791064918    
+  
+ Canada 60N, (95W-60W), (by scene, syni): ilat,ilon,rlat,rlon=
+ ptv(16), msa%ngood,    0.00000000             415
+ msa%rlonW, msa%rlonE:   -80.9900055      -80.0099945    
+ Before assignment:ilon, ilat, sg%bba_source_flag, sg%spec_source_flag
+ Before assignment:         280          30           0          -1
+ After assignment:ilon, ilat, sg%bba_source_flag, sg%spec_source_flag, sg%bbalut_sah
+ After assignment:         280          30           3          -1  0.538719237    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.142619282      0.579106271       1.31001556E-02  0.312188715      0.312484741      0.142754510    
+ aaa1/aaa0=,    1.00094819    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.206528202    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.44810855    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.129197106      0.569125414       1.31001556E-02  0.318929225      0.318620473      0.129072025    
+ aaa1/aaa0=,   0.999031901    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.186070532    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.44020677    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.216773123      0.567544699       2.19683386E-02  0.353177845      0.352942109      0.216628432    
+ aaa1/aaa0=,   0.999332547    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.309752077    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.42892289    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.227909446      0.572511673       2.19683386E-02  0.414371878      0.414461643      0.227958813    
+ aaa1/aaa0=,    1.00021660    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.326555014    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.43282783    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.217714369      0.573869348       3.31206061E-02  0.465308607      0.466049999      0.218061268    
+ aaa1/aaa0=,    1.00159335    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.309466273    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.42143250    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.190185264      0.583645821       3.31206061E-02  0.419593871      0.420703739      0.190688327    
+ aaa1/aaa0=,    1.00264513    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.271784604    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.42905176    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.166342810      0.593014956       4.65548299E-02  0.370627761      0.372957587      0.167388469    
+ aaa1/aaa0=,    1.00628614    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.236451462    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.42147088    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.136560783      0.601179063       4.65548299E-02  0.349238485      0.351665616      0.137509853    
+ aaa1/aaa0=,    1.00694978    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.194977075    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.42776763    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.118695706      0.600091338       6.22661002E-02  0.355317175      0.358206332      0.119660839    
+ aaa1/aaa0=,    1.00813115    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.167342514    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.40984464    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.125506252      0.606355667       6.22661002E-02  0.339192688      0.342200071      0.126619026    
+ aaa1/aaa0=,    1.00886631    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.177543432    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.41461825    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.136192113      0.614410222       7.93353021E-02  0.335636646      0.339260131      0.137662426    
+ aaa1/aaa0=,    1.01079583    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.191011235    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.40251315    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.191482246      0.613263905       7.93353021E-02  0.384053111      0.387953192      0.193426758    
+ aaa1/aaa0=,    1.01015508    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.268391222    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.40165079    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.183172464      0.616358876       9.64079499E-02  0.298981994      0.302938730      0.185596570    
+ aaa1/aaa0=,    1.01323402    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.253909320    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.38617635    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.166727558      0.621836841       9.64079499E-02  0.270613432      0.274283290      0.168988585    
+ aaa1/aaa0=,    1.01356125    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.231792122    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.39024484    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.196834937      0.611919522      0.113449059      0.315609246      0.319618821      0.199335575    
+ aaa1/aaa0=,    1.01270425    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.268796831    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.36559510    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.208029449      0.607866883      0.113449059      0.379727840      0.383567929      0.210133195    
+ aaa1/aaa0=,    1.01011276    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.283465683    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.36262286    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.166052803      0.616080344      0.130437881      0.214076892      0.221618861      0.171902865    
+ aaa1/aaa0=,    1.03523016    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.224470690    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.35180318    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.131129086      0.611912072      0.130437881      0.270452201      0.277857065      0.134719342    
+ aaa1/aaa0=,    1.02737951    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.176864758    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.34878361    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.121559896      0.614409685      0.147353724      0.227936655      0.239059389      0.127491713    
+ aaa1/aaa0=,    1.04879749    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.162190467    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.33424330    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.140320837      0.620627344      0.147353724      0.248339519      0.258689344      0.146168873    
+ aaa1/aaa0=,    1.04167616    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.187846497    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.33869278    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.137308329      0.623156965      0.164175943      0.239515394      0.255519390      0.146483034    
+ aaa1/aaa0=,    1.06681824    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.181872740    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.32455730    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.138002455      0.623947144      0.164175943      0.199192107      0.218354434      0.151278317    
+ aaa1/aaa0=,    1.09620023    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.182869256    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.32511592    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.138334557      0.629853904      0.180884346      0.229742020      0.256861567      0.154664040    
+ aaa1/aaa0=,    1.11804342    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.181739882    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.31377077    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.155166849      0.629448533      0.180884346      0.233717978      0.263335586      0.174830154    
+ aaa1/aaa0=,    1.12672365    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.203809708    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.31348741    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.205149323      0.623115480      0.197458014      0.261778742      0.297533751      0.233169615    
+ aaa1/aaa0=,    1.13658488    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.265478075    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.29407239    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.235155314      0.624303699      0.197458014      0.328805476      0.359550327      0.257143438    
+ aaa1/aaa0=,    1.09350467    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.304501057    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.29489338    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.225368202      0.626997888      0.213877067      0.314592957      0.342703849      0.245506302    
+ aaa1/aaa0=,    1.08935642    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.288969368    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.28221011    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.173363268      0.631643713      0.213877067      0.338549584      0.370417535      0.189682111    
+ aaa1/aaa0=,    1.09413087    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.222838312    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.28538370    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.171354473      0.629895270      0.230121464      0.300194234      0.327622175      0.187010676    
+ aaa1/aaa0=,    1.09136736    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.217636511    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.27009535    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.188751057      0.623012006      0.230121464      0.313719213      0.343222022      0.206501588    
+ aaa1/aaa0=,    1.09404206    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.238854036    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.26544487    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.204987466      0.624435008      0.246171415      0.326414049      0.353971153      0.222293288    
+ aaa1/aaa0=,    1.08442378    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.256812602    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.25282109    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.219210625      0.626896560      0.246171415      0.338577896      0.364060551      0.235709235    
+ aaa1/aaa0=,    1.07526374    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.274992347    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.25446630    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.220108584      0.628697634      0.262007356      0.336843401      0.357426196      0.233558297    
+ aaa1/aaa0=,    1.06110489    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.273489058    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.24251878    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.194726840      0.632248044      0.262007356      0.324367255      0.347390592      0.208548397    
+ aaa1/aaa0=,    1.07097924    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.242409021    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.24486697    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.200114429      0.625340581      0.277609408      0.293344587      0.316004544      0.215572655    
+ aaa1/aaa0=,    1.07724690    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.245666683    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.22763097    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.210705847      0.623551309      0.277609408      0.303610057      0.323129833      0.224252611    
+ aaa1/aaa0=,    1.06429231    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.258422226    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.22645962    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.220779210      0.623156786      0.292960435      0.293421656      0.314206481      0.236418337    
+ aaa1/aaa0=,    1.07083607    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.268026352    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.21400177    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.236773670      0.605586529      0.292960435      0.297873586      0.318427801      0.253111780    
+ aaa1/aaa0=,    1.06900311    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.284747452    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.20261443    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.182460904      0.598147333      0.308040500      0.234498739      0.259728491      0.202091902    
+ aaa1/aaa0=,    1.10759020    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.216435105    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.18619978    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.168685794      0.593614519      0.308040500      0.215321720      0.241048381      0.188840389    
+ aaa1/aaa0=,    1.11948013    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.199604303    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.18329048    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.168792456      0.578539670      0.322829813      0.231555715      0.256136149      0.186710358    
+ aaa1/aaa0=,    1.10615349    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.196234658    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.16257954    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.166618571      0.591295660      0.322829813      0.242618844      0.270887345      0.186031982    
+ aaa1/aaa0=,    1.11651409    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.195058644    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.17068970    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.180718869      0.609256864      0.337313175      0.263488084      0.287767440      0.197371379    
+ aaa1/aaa0=,    1.09214592    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.211680233    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.17132330    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.233842582      0.608772814      0.337313175      0.329172254      0.348643124      0.247674614    
+ aaa1/aaa0=,    1.05915105    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.273833960    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.17101836    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.201690242      0.624061942      0.351469994      0.300523818      0.316688448      0.212538794    
+ aaa1/aaa0=,    1.05378819    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.236020669    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.17021358    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.195962861      0.623863637      0.351469994      0.255764633      0.275562376      0.211131573    
+ aaa1/aaa0=,    1.07740605    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.229294136    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.17008972    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.214734524      0.614117563      0.365286112      0.313469023      0.330384374      0.226321980    
+ aaa1/aaa0=,    1.05396175    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.247813910    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.15404785    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.204946145      0.629983366      0.365286112      0.283832073      0.301564038      0.217749834    
+ aaa1/aaa0=,    1.06247342    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.238530695    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.16387022    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.213842407      0.625462353      0.378741503      0.309760600      0.325065047      0.224407792    
+ aaa1/aaa0=,    1.04940736    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.246235147    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.15147948    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.255787969      0.617532492      0.378741503      0.353167534      0.367417306      0.266108632    
+ aaa1/aaa0=,    1.04034853    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.293289244    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.14661074    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.268934458      0.611199200      0.391822368      0.355717510      0.368641436      0.278705388    
+ aaa1/aaa0=,    1.03633201    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.304868877    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.13361776    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.276669234      0.605240285      0.391822368      0.353592336      0.366041750      0.286410302    
+ aaa1/aaa0=,    1.03520834    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.312633038    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.12998843    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.282597333      0.602507889      0.404511392      0.358870983      0.367418230      0.289327979    
+ aaa1/aaa0=,    1.02381706    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.316415936    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.11967063    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.325555414      0.604187846      0.404511392      0.390733182      0.396622956      0.330462724    
+ aaa1/aaa0=,    1.01507366    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.364845425    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.12068605    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.304541349      0.613802612      0.416793883      0.384790659      0.390635282      0.309167057    
+ aaa1/aaa0=,    1.01518905    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.340537012    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.11819625    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.274901837      0.623629391      0.416793883      0.384473890      0.391928673      0.280232042    
+ aaa1/aaa0=,    1.01938951    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.309014916    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.12409186    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.251520246      0.628728151      0.428654194      0.364622653      0.370502263      0.255576074    
+ aaa1/aaa0=,    1.01612520    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.281498224    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.11918712    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.265507281      0.616279066      0.428654194      0.357195884      0.363379449      0.270103604    
+ aaa1/aaa0=,    1.01731145    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.295183301    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.11177099    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.272850215      0.612007499      0.440078467      0.356357664      0.361838758      0.277046889    
+ aaa1/aaa0=,    1.01538086    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.300606847    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.10172844    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.295690149      0.609870255      0.440078467      0.370026529      0.375040561      0.299696892    
+ aaa1/aaa0=,    1.01355052    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.325396299    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.10046387    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.323171645      0.614208996      0.451052189      0.402299225      0.408344030      0.328027487    
+ aaa1/aaa0=,    1.01502562    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.354168743    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.09591520    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.379155755      0.619082451      0.451052189      0.456370056      0.461130738      0.383110970    
+ aaa1/aaa0=,    1.01043165    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.416608840    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.09878016    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.437496156      0.617374659      0.461562634      0.498567194      0.504361570      0.442580760    
+ aaa1/aaa0=,    1.01162207    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.477323592    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.09103501    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.470896363      0.614260435      0.461562634      0.505245268      0.512918890      0.478048265    
+ aaa1/aaa0=,    1.01518786    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.512907624    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.08921552    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.524257481      0.610594034      0.471596360      0.602428734      0.609357357      0.530287087    
+ aaa1/aaa0=,    1.01150119    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.566584766    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.08073759    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.521186650      0.610037088      0.471596360      0.615591049      0.621220767      0.525953054    
+ aaa1/aaa0=,    1.00914526    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.563097477    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.08041418    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.481023192      0.612591147      0.481141716      0.573892713      0.578287899      0.484707147    
+ aaa1/aaa0=,    1.00765860    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.517548382    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.07593215    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.490154415      0.613372207      0.481141716      0.574263990      0.579109907      0.494290560    
+ aaa1/aaa0=,    1.00843847    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.527594030    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.07638335    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.479262620      0.613213241      0.490186810      0.548799217      0.554200649      0.483979642    
+ aaa1/aaa0=,    1.00984228    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.513145149    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.07069719    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.487875521      0.611910284      0.490186810      0.519352376      0.523543596      0.491812736    
+ aaa1/aaa0=,    1.00807011    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.522001684    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.06994843    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.519993722      0.611660957      0.498720348      0.587306619      0.594007075      0.525926232    
+ aaa1/aaa0=,    1.01140881    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.553577363    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.06458461    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.507622719      0.612269044      0.498720348      0.556786954      0.561774969      0.512170315    
+ aaa1/aaa0=,    1.00895858    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.540583849    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.06493247    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.530847490      0.608857095      0.506732404      0.585492492      0.590114236      0.535037875    
+ aaa1/aaa0=,    1.00789380    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.561707437    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.05813324    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.552197754      0.605516613      0.506732404      0.617958546      0.622989833      0.556693614    
+ aaa1/aaa0=,    1.00814176    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.583248794    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.05623174    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.545527160      0.604816437      0.514212847      0.616122425      0.620502889      0.549405754    
+ aaa1/aaa0=,    1.00710976    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.573543429    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.05135632    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.555392802      0.603701949      0.514212847      0.646960914      0.652240515      0.559925139    
+ aaa1/aaa0=,    1.00816059    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.583564878    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.05072463    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.550777793      0.602552652      0.521152914      0.659298599      0.664568543      0.555180311    
+ aaa1/aaa0=,    1.00799322    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.576090753    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.04595864    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.566595137      0.604726493      0.521152914      0.643866181      0.648986995      0.571101427    
+ aaa1/aaa0=,    1.00795329    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.593330503    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.04718602    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.582168818      0.605432630      0.527543783      0.668465853      0.674358368      0.587300599    
+ aaa1/aaa0=,    1.00881493    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.607678473    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.04381835    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.578896582      0.608638048      0.527543783      0.657933831      0.663810372      0.584067166    
+ aaa1/aaa0=,    1.00893176    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.605306745    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.04562163    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.456182599      0.601989329      0.533378065      0.663587749      0.668119788      0.459298164    
+ aaa1/aaa0=,    1.00682962    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.473733157    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.03847265    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.145041525      0.585760355      0.533378065      0.691568613      0.695421159      0.145849511    
+ aaa1/aaa0=,    1.00557077    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.149301752    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.02937245    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.216174930      0.619487047      0.551014841      0.520726562      0.524918139      0.217915028    
+ aaa1/aaa0=,    1.00804949    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.224393606    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.03801870    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.442285895      0.608255029      0.551014841      0.662649572      0.665937662      0.444480568    
+ aaa1/aaa0=,    1.00496209    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.456342697    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.03178215    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.609415829      0.598335028      0.553972185      0.762550712      0.764543951      0.611008763    
+ aaa1/aaa0=,    1.00261390    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.624402404    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.02459180    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.376392424      0.607074916      0.553972185      0.691950381      0.695542097      0.378346175    
+ aaa1/aaa0=,    1.00519073    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.387472153    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.02943659    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.408860803      0.607494533      0.556340575      0.631699800      0.634903252      0.410934210    
+ aaa1/aaa0=,    1.00507116    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.420439422    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.02831912    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.293362200      0.607761323      0.556340575      0.522656560      0.524595559      0.294450551    
+ aaa1/aaa0=,    1.00370991    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.301713288    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.02846682    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.173394680      0.605037272      0.558117092      0.397457361      0.398383707      0.173798800    
+ aaa1/aaa0=,    1.00233066    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.177894235    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.02594972    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.173114598      0.602096856      0.558117092      0.451437563      0.452414900      0.173489377    
+ aaa1/aaa0=,    1.00216496    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.177325368    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.02432358    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.288958490      0.604075730      0.559299469      0.620918036      0.623710752      0.290258169    
+ aaa1/aaa0=,    1.00449777    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.296109617    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.02474785    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.105919331      0.617983341      0.559299469      0.494482994      0.497935116      0.106658779    
+ aaa1/aaa0=,    1.00698125    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.109354787    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.03243458    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.241525158      0.594953179      0.456257701      0.749844015      0.762709916      0.245669290    
+ aaa1/aaa0=,    1.01715815    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.261157840    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.08128631    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.449041963      0.623482406      0.456257701      0.731366098      0.745250463      0.457566679    
+ aaa1/aaa0=,    1.01898420    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.493051082    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.09800673    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.400576711      0.620026350      0.445499271      0.711874902      0.722739041      0.406690031    
+ aaa1/aaa0=,    1.01526129    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.441810250    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.10293543    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.656999171      0.588131249      0.445499271      0.694648981      0.704505324      0.666321337    
+ aaa1/aaa0=,    1.01418900    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.712268472    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.08412385    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.549506605      0.596652746      0.434283972      0.680532098      0.694897771      0.561106384    
+ aaa1/aaa0=,    1.02110946    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.602480352    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.09640229    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.540621221      0.591417432      0.434283972      0.628911853      0.637168229      0.547718525    
+ aaa1/aaa0=,    1.01312804    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.591057897    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.09329391    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.491779953      0.577328682      0.422626138      0.595612884      0.604766309      0.499337673    
+ aaa1/aaa0=,    1.01536810    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.537265062    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.09249079    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.521160781      0.582934558      0.422626138      0.619812489      0.628896475      0.528798938    
+ aaa1/aaa0=,    1.01465607    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.571110070    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.09584236    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.513160229      0.591142535      0.410539269      0.590033472      0.601150870      0.522829175    
+ aaa1/aaa0=,    1.01884198    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.568972468    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.10876179    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.559453845      0.582709372      0.410539269      0.579177976      0.593632340      0.573415995    
+ aaa1/aaa0=,    1.02495670    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.617459834    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.10368323    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.584239483      0.584678531      0.398038417      0.640188634      0.666876495      0.608594954    
+ aaa1/aaa0=,    1.04168749    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.650404513    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.11324978    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.264334589      0.616058111      0.398038417      0.491086811      0.509591639      0.274295062    
+ aaa1/aaa0=,    1.03768134    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.299303532    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.13229036    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.335155427      0.604249060      0.385139227      0.375627995      0.390373260      0.348311961    
+ aaa1/aaa0=,    1.03925502    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.380066484    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.13400066    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.456878662      0.595157206      0.371856689      0.475800097      0.506455123      0.486314595    
+ aaa1/aaa0=,    1.06442833    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.519782603    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.13768196    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.412771136      0.610244453      0.371856689      0.442078531      0.466022104      0.435127348    
+ aaa1/aaa0=,    1.05416131    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.473442078    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.14698446    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.362724990      0.608405352      0.344208032      0.363792121      0.383592367      0.382467151    
+ aaa1/aaa0=,    1.05442739    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.422836959    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.16572320    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.337378532      0.610553920      0.344208032      0.504769504      0.527038932      0.352263004    
+ aaa1/aaa0=,    1.04411805    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.393744707    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.16707098    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.580134869      0.606795132      0.329875708      0.617025018      0.643640757      0.605159342    
+ aaa1/aaa0=,    1.04313564    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.681820512    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.17527926    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.534350395      0.618980646      0.329875708      0.610519528      0.641367376      0.561349630    
+ aaa1/aaa0=,    1.05052722    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.632132411    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.18299222    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.662154734      0.612139940      0.315227270      0.691670835      0.719915271      0.689193904    
+ aaa1/aaa0=,    1.04083514    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.787760913    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.18969309    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.649679005      0.589900255      0.315227270      0.718209267      0.746679544      0.675432742    
+ aaa1/aaa0=,    1.03964067    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.763687611    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.17548454    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.620144963      0.578656137      0.300281465      0.717709482      0.746344328      0.644887209    
+ aaa1/aaa0=,    1.03989756    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.731500685    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.17956400    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.516341090      0.564652383      0.300281465      0.628950477      0.655778825      0.538365960    
+ aaa1/aaa0=,    1.04265571    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.604393184    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.17053092    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.475790977      0.574628055      0.285055548      0.525128305      0.550268471      0.498569161    
+ aaa1/aaa0=,    1.04787433    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.565544128    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.18863988    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.449461788      0.576282084      0.285055548      0.516832590      0.541368544      0.470799387    
+ aaa1/aaa0=,    1.04747367    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.534732461    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.18971729    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.419616550      0.580410242      0.269569039      0.517547250      0.545097888      0.441954017    
+ aaa1/aaa0=,    1.05323303    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.505452812    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.20455885    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.317609698      0.578536868      0.269569039      0.320988864      0.346961677      0.343309075    
+ aaa1/aaa0=,    1.08091497    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.382187992    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.20332599    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.307211250      0.576210558      0.253839850      0.297012657      0.318429649      0.329363644    
+ aaa1/aaa0=,    1.07210803    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.373066634    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.21436512    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.312774003      0.581304610      0.253839850      0.282340288      0.300295770      0.332664907    
+ aaa1/aaa0=,    1.06359518    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.380881310    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.21775246    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.388881475      0.587622583      0.237888098      0.441046655      0.459591001      0.405232459    
+ aaa1/aaa0=,    1.04204619    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.480289727    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.23505425    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.337280691      0.569650114      0.237888098      0.358650535      0.375653267      0.353270322    
+ aaa1/aaa0=,    1.04740751    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.412485868    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.22297513    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.266937941      0.553056717      0.221732274      0.257656574      0.273560643      0.283414900    
+ aaa1/aaa0=,    1.06172585    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.327032477    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.22512555    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.259764314      0.550362289      0.221732274      0.244442388      0.259661973      0.275937855    
+ aaa1/aaa0=,    1.06226242    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.317768335    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.22329473    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.267495900      0.555592060      0.205392987      0.270075589      0.284704328      0.281984925    
+ aaa1/aaa0=,    1.05416536    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.331861198    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.24062169    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.281098098      0.569171071      0.205392987      0.265270740      0.282874644      0.299752325    
+ aaa1/aaa0=,    1.06636202    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.351359040    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.24995172    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.281100482      0.575151742      0.188889220      0.258583277      0.275991589      0.300024688    
+ aaa1/aaa0=,    1.06732190    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.356560498    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.26844490    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.311211765      0.571913540      0.188889220      0.329043686      0.352275312      0.333184391    
+ aaa1/aaa0=,    1.07060349    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.394054621    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.26619446    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.242002428      0.568096340      0.172241539      0.239267468      0.264861643      0.267889142    
+ aaa1/aaa0=,    1.10696888    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.309359372    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.27833164    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.290129066      0.584604442      0.172241539      0.310310483      0.319162637      0.298405528    
+ aaa1/aaa0=,    1.02852678    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.374248743    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.28993881    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.332996458      0.592996955      0.155470714      0.396520108      0.402439237      0.337967336    
+ aaa1/aaa0=,    1.01492774    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.436659008    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.31130230    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.357213855      0.595122635      0.155470714      0.404666930      0.413111448      0.364668131    
+ aaa1/aaa0=,    1.02086782    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.468955576    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.31281471    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.396547109      0.603015184      0.138596222      0.439757019      0.456239969      0.411410451    
+ aaa1/aaa0=,    1.03748190    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.529173076    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.33445203    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.377375722      0.603409588      0.138596222      0.411334634      0.430241674      0.394721836    
+ aaa1/aaa0=,    1.04596508    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.503696978    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.33473611    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.587628186      0.603141367      0.121639557      0.408869952      0.433736026      0.623365700    
+ aaa1/aaa0=,    1.06081653    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.793909848    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.35104108    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.495341361      0.601708531      0.121639557      0.506312966      0.527703106      0.516267955    
+ aaa1/aaa0=,    1.04224682    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.668709099    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.34999657    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.465760320      0.600362182      0.111106105      0.583218575      0.580295801      0.463426203    
+ aaa1/aaa0=,   0.994988561    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.633180082    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.35945475    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.483353287      0.615128398      0.111106105      0.467640132      0.499200076      0.515973687    
+ aaa1/aaa0=,    1.06748772    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.662340701    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.37030351    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.406935334      0.622192144       8.97542387E-02  0.455545872      0.488208741      0.436112791    
+ aaa1/aaa0=,    1.07170045    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.568657398    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.39741468    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.410019994      0.619299233       8.97542387E-02  0.430853099      0.474088907      0.451165229    
+ aaa1/aaa0=,    1.10034931    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.572082639    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.39525545    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.428556025      0.610798657       7.06547573E-02  0.450865358      0.467909306      0.444756597    
+ aaa1/aaa0=,    1.03780270    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.603834152    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.40899706    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.441648841      0.614112258       7.06547573E-02  0.476250827      0.495411277      0.459417194    
+ aaa1/aaa0=,    1.04023182    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.623390079    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.41150618    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.446097493      0.614575803       5.38384318E-02  0.494463027      0.510002732      0.460117161    
+ aaa1/aaa0=,    1.03142738    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.637949109    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.43006647    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.476180136      0.609905660       5.38384318E-02  0.496390998      0.510291994      0.489515156    
+ aaa1/aaa0=,    1.02800417    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.679263711    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.42648470    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.517510116      0.605012536       3.93066183E-02  0.556192517      0.571249306      0.531519771    
+ aaa1/aaa0=,    1.02707124    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.744576752    
+ (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+   1.43876755    
+  
+ HG checking aaa0, aaa1
+ sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+  0.555001855      0.608170152       3.93066183E-02  0.594384432      0.615322590      0.574552655    
+ aaa1/aaa0=,    1.03522658    
+  
+ testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ sahx=   0.799877942    

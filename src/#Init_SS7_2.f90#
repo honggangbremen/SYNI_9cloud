@@ -1,0 +1,473 @@
+MODULE Init7_2
+!
+!
+!*****************************************************************************
+!
+! !F90
+!
+! !Name:
+!    InitSS7_2
+!
+! !Description:
+!    Routine ID - M7.2.1
+!
+!    Purpose - To provide a module of routines to initialize subsystem
+!              processing.
+!
+!
+! !Input Parameters:
+!    NONE
+!
+! !Output Parameters:
+!    NONE
+!
+! !Team-Unique Header:
+!
+!  Internal Routines:
+!    EarthSun_Var_Calc - Calculates values of Earth-Sun distance-related 
+!                        variables
+!    Open_SYN          - Drives the opening of the SYN output file
+!    Open_TSI          - Opens TSI file
+!    Start7_2          - Drives subsystem initialization
+!
+!  Modules Used:
+!    Ancill_Init       - (SARBlib)  Used by Sbr. Start7_2
+!    DrivIngest        - (SARBlib)  Used by Sbr. Start7_2
+!    FL_IO_Params      - (SARBlib)  Used by Sbr. EarthSun_Var_Calc
+!    QC_Init           - (SARBlib)  Used by Sbr. Start7_2 
+!    SARB_Init_Utils   - (SARBlib)  Used by Sbr. Start7_2
+!    SARB_IO_Utils     - (SARBlib)  Used by Sbr. Open_SYN, Open_TSI 
+!    SARB_Params       - (CERESlib) Used by Sbr. Open_SYN
+!    SARB_Var          - (SARBlib)  Used by Sbr. EarthSun_Var_Calc, 
+!                                                Open_SYN
+!    SARBInput_Params  - (SARBlib)  Used bt Sbr. EarthSun_Var_Calc
+!    SigmaIngest       - (SARBlib)  Used by Sbr. Start7_2
+!    SYN_SfcAlb_Init   - (SARBlib)  Used by Sbr. Start7_2
+!    SynSARB_IO_Params - (SynSARB)  Used by Sbr. Open_SYN, Open_TSI
+!    tsi_type_mod      - (CERESlib) Used by Sbr. Open_TSI
+!
+! !Revision History:
+!  Version 3.4  June 20, 2003 - SCCR #445  
+!               Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!               Initial version of code
+!
+! !END
+!
+!*****************************************************************************
+!
+!
+      USE Ancill_Init , only: Open_MOA , OK 
+      USE Control_Mod
+      USE DrivIngest
+      USE ED4_SYNI_STRUCTURE, ONLY : SYNI4
+      USE FL_IO_Params
+      USE QC_Init
+      USE SARB_Params
+      USE SARB_Init_Utils
+      USE SARB_IO_Utils
+      USE SARB_Var
+      USE SARBInput_Params
+      USE SigmaIngest 
+      USE SYN_SfcAlb_Init
+      USE SynSARB_IO_Params
+      USE tsi_type_mod
+!
+      IMPLICIT NONE
+!
+!
+!
+      CONTAINS
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!
+      SUBROUTINE Start7_2 (fqc)                                         ! O
+!
+!*****************************************************************************
+!
+! !F90
+!
+! !Name:
+!   Start7_2
+!
+! !Description:
+!    Routine ID - 7.2.1
+!
+!    Purpose - Initializes subsystem processing.
+!              
+!
+! !Input Parameters:
+!    NONE
+!
+! !Output Parameters:
+!    fqc - Array of QC report variables
+!
+! !Team-Unique Header:
+!
+!  Internal Routines Used:
+!    EarthSun_Var_Calc
+!    Open_SYN
+!    Open_TSI 
+!
+!  Modules Used: (Parameters followed by "*" are defined by this routine)
+!    Ancill_Init       - (SARBlib)  Sbr. AerClim_OpenDrive, Open_MOA
+!    DrivIngest        - (SARBlib)  Sbr. Deriv_Init
+!    FL_IO_Params      - (SARBlib)  Params: Default_REAL4_FL, Inst_Idx*
+!    QC_Init           - (SARBlib)  Sbr. QCSARB_Init
+!    SARB_Init_Utils   - (SARBlib)  Sbr. Define_WidthWN, InstrIdx_Define
+!    SARB_IO_Utils     - (SARBlib)  Sbr. RunTimeVar_DateRetrieve, 
+!                                        RunTimeVar_SatRetrieve
+!    SARB_Var          - (SARBlib)  Params: AerClimSrc_Flag*, CMonth*, CYear*,
+!                                           DataMonth*, DataYear*, IHour*
+!    SYN_SfcAlb_Init   - (InstSARB) Sbr. SfcAlb_IO_Drv 
+!    SigmaIngest       - (SARBlib)  Sbr. Sigma_Init
+!    SynSARB_IO_Params - (SynSARB)  Params: LID_Collins, LID_DrivTab, 
+!                                           LID_GFDLAer, LID_Instrument,  
+!                                           LID_Month, LID_SigTab, 
+!                                           LID_Year, Unit_Aer*
+!
+! !Revision History:
+!  Version 5.0   May 27, 2020 - SCCR #1657
+!                Thomas Caldwell, SSAI, Thomas.E.Caldwell@nasa.gov
+!                Added changes for Entropy, pristine, and tune flags
+!  Version 3.4  June 20, 2003 - SCCR #445  
+!               Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!               Initial version of code
+!
+! !END
+!
+!*****************************************************************************
+!
+!
+      TYPE (fqc_type), INTENT (OUT) :: fqc
+!
+      INTEGER  :: status 
+      CHARACTER (LEN=3) :: Instr_Name
+      CHARACTER (LEN=80) :: PStrat
+      CHARACTER (LEN=7) :: Ent_char, Pris_char, Tune_char
+!
+      FLAG_OP = CERSYN
+!
+! *** Retrieve job parameters identifying current data set
+!
+      CALL RunTimeVar_DateRetrieve (LID_Mn=LID_Month,               & ! I (Opt)
+                                    LID_Yr=LID_Year,                & ! I (Opt)
+                                    IMn=DataMonth,                  & ! O (Opt)
+                                    IYr=DataYear,                   & ! O (Opt)
+                                    CMn=CMonth, CYr=CYear)            ! O (Opt)
+! 
+      CHour = '01'
+      CDay = '01'
+      CALL RunTimeVar_SatRetrieve (LID_Inst=LID_Instrument, LID_Sat=LID_Satellite,  & ! I (Opt)
+                                  CInst=Instr_Name,CSat=Sat_Name)   ! O (Opt)
+!
+      CALL InstrIdx_Define (Instr_Name,                             & ! I
+                                        Instr_Idx)                    ! O
+!
+!
+! *** Call GetParam to determine if in Subset mode
+!  
+      CALL GetParam (143, PStrat, status)
+      IF (PStrat (2:7) == 'Subset') THEN
+!     *** Only Process those FOVs coinciding with a CERES Validation Region
+          ValOut_Flag = ValOut_ON
+      ELSE
+!     *** Process all FOVs provided on input
+          ValOut_Flag = ValOut_OFF
+      END IF
+
+! *** Retrieve processing parameters
+!  
+      CALL GetParam (604, Ent_char, status)
+      IF (Ent_char (2:6) == 'false' .OR. Ent_char (2:6) == 'FALSE') THEN
+!     *** Process using entropy code
+          Entropy = .FALSE.
+      ELSE
+          Entropy = .TRUE.
+      END IF
+
+      CALL GetParam (605, Pris_char, status)
+      IF (Pris_char (2:6) == 'false' .OR. Pris_char (2:6) == 'FALSE') THEN
+!     *** Process using pristine code
+          Pristine = .FALSE.
+      ELSE
+          Pristine = .TRUE.
+      END IF
+
+      CALL GetParam (606, Tune_char, status)
+      IF (Tune_char (2:6) == 'false' .OR. Tune_char (2:6) == 'FALSE') THEN
+!     *** Process using tuning code
+          Tuning = .FALSE.
+      ELSE
+          Tuning = .TRUE.
+      END IF
+!  
+! *** Open control file and read data source rules 
+!
+      CALL Control_Init (LID_RuleFile)
+!
+!
+! *** Open ancillary input data files necessary for constrainment process
+      CALL Deriv_Init (LID_DrivTab)                                      ! I
+      CALL Sigma_Init (LID_SigTab)                                       ! I
+!
+!
+! *** Open solar constant file and read values
+!
+      CALL Get_SolConst 
+!
+! *** Open input file for the current zone
+!
+      CALL Open_TSI 
+!
+!
+! *** Define window channel width and flux range values
+!
+      CALL Define_WidthWN (Instr_Idx,                                  & ! I
+                           WN_Width, WNflx_Low, WNflx_High)              ! O
+!
+!
+! *** Initialize surface albedo history map 
+!
+      CALL SfcAlb_IO_Drv
+! 
+!
+! *** Determine availability of aerosol climatologies
+!      CALL AerClim_OpenDrive (LID_Collins, LID_AerCollinsBackup, DataMonth, & ! I
+!                                           AerClimSrc_Flag, IUnit_Aer)        ! O
+!
+!
+! *** Open Hour 0 MOA file and retrieve required parameters from the header
+!
+      IHour = 0
+      CALL Open_MOA (LID_MOA)
+!
+!
+! *** Initialize QC report parameters
+! 
+      CALL QCSARB_Init (Default_REAL4_FL,                               & ! I
+                                          fqc)                              ! O
+
+! *** Open output file
+      CALL Open_SYN
+!
+!
+      END SUBROUTINE Start7_2
+!
+!
+!! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!!
+!      SUBROUTINE Open_TSI 
+!!
+!!*****************************************************************************
+!!
+!! !F90
+!!
+!! !Name:
+!!   Open_TSI
+!!
+!! !Description:
+!!    Routine ID - 7.2.1.5
+!!
+!!    Purpose - Opens the TSI input file
+!!
+!! !Input Parameters:
+!!    NONE 
+!!
+!! !Output Parameters:
+!!    NONE 
+!!
+!! !Team-Unique Header:
+!!
+!!  Modules Used: (Parameters followed by "*" are defined by this routine)
+!!   SARB_IO_Utils     - (SARBlib) Params: Flag_File_Direct, Flag_File_Read, 
+!!                                         Flag_File_Unformat
+!!                                 Sbr. SARB_GenOpen
+!!   SynSARB_IO_Params - (SARBlib) Params: RecLen_TSI*, IUnit_TSI* 
+!!   tsi_type_mod      - (CERESlib) Structures: TSI_TYPE
+!!
+!! !Revision History:
+!!  Version 3.4  June 20, 2003 - SCCR #445  
+!!               Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!!               Initial version of code
+!!
+!! !END
+!!
+!!*****************************************************************************
+!!
+!!
+!      CHARACTER (LEN=11), PARAMETER :: Name_Sbr = 'Open_TSI ()'
+!      TYPE (TSI_TYPE)               :: TSI_DATA
+!!
+!!
+!! *** Get TSI record length
+!!
+!      TSI_DATA % timeandloc % julhr = 0.0
+!      INQUIRE (IOLENGTH = RecLen_TSI) TSI_DATA!
+!
+!!!      print *, 'RecLen_TSI = ', RecLen_TSI
+!!
+!!
+!! *** Open TSI file
+!!
+      CALL SARB_GenOpen (LID_TSI, Flag_File_Read, Flag_File_Direct,  & ! I
+                         Flag_File_Unformat, Name_Sbr,               & ! I
+                                                       IUnit_TSI,    & ! O
+                         RLength = RecLen_TSI)                         ! I (Opt)  
+!
+!
+      END SUBROUTINE Open_TSI
+!
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!
+      SUBROUTINE Get_SolConst 
+!
+!*****************************************************************************
+!
+! !F90
+!
+! !Name:
+!   Open_TSI
+!
+! !Description:
+!    Routine ID - 7.2.1.5
+!
+!    Purpose - Opens the solar const file and reads in parameters
+!
+! !Input Parameters:
+!    NONE 
+!
+! !Output Parameters:
+!    NONE 
+!
+! !Team-Unique Header:
+!
+!  Modules Used: (Parameters followed by "*" are defined by this routine)
+!
+! !Revision History:
+!  Version 1.1   June 4, 2014 - SCCR #1017
+!                Thomas Caldwell, SSAI, Thomas.E.Caldwell@nasa.gov
+!                 Added variable solar constant provided by TISA group 
+!  Version 1.0  February 6, 2014 - SCCR #nn  
+!               Thomas Caldwell, SSAI, Thomas.E.Caldwell@nasa.gov
+!               Initial version of code
+!
+! !END
+!
+!*****************************************************************************
+!
+!
+     INTEGER :: I, IOS, IYear, IMonth, IDay
+     INTEGER :: fyear, fmonth, fday, dateflag
+     CHARACTER (LEN= 28) :: header
+!
+!
+! *** Open Solar constant file
+!
+     CALL OpenFile (LogicID = LID_SolConst, status = IOS,	 & ! I
+     		    handle = IUnit_SolConst,		  	 & ! I
+     		    mode = "R", access ="S",		         & ! I
+     		    format = "F")			           ! I
+
+     Solar_Constant = Default_REAL4_FL
+     
+     IYear = 2000
+     IMonth = 1
+     
+     dateflag = 0
+     
+     READ (IUnit_SolConst, 100) header
+     
+     DO WHILE (dateflag == 0)
+      NumDays_Mon = DaysPerMonth(IMonth, IYear)
+      
+      DO IDay = 1, NumDays_Mon 
+       READ (IUnit_SolConst, 101) fyear, fmonth, fday, Solar_Constant(IYear, IMonth, IDay)
+       IF (IYear == fyear .AND. IMonth == fmonth .AND. IDay == fday) THEN
+        continue
+       ELSE
+        print*,'error reading solar constant file ',IYear, IMonth, IDay
+	stop 
+       ENDIF
+      ENDDO
+      
+      IF (IYear == DataYear .AND. IMonth == DataMonth) dateflag = 1
+      
+      IF (IMonth == 12) THEN 
+       IYear = IYear + 1
+       IMonth = 1
+      ELSE
+       IMonth = Imonth + 1
+      ENDIF
+            
+     ENDDO
+!
+     CALL CloseFile (file_handle = IUnit_SolConst, status = IOS)
+!
+ 100 FORMAT (a28)
+ 101 FORMAT (4x,i4,2x,i2,2x,i2,2x,f10.5)
+!
+     END SUBROUTINE Get_SolConst
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!
+      SUBROUTINE Open_SYN 
+!
+!
+!*****************************************************************************
+!
+! !F90
+!
+! !Name:
+!   Open_SYN
+!
+! !Description:
+!    Routine ID - 7.2.1.2
+!
+!    Purpose - Drives the opening of the SYN output file.
+!              
+!
+! !Input Parameters:
+!    NONE
+!
+! !Output Parameters:
+!    NONE
+!
+! !Team-Unique Header:
+!
+!  Modules Used: (Parameters followed by "*" are defined by this routine)
+!   SARB_IO_Utils     - (SARBlib)  Params: Flag_File_Direct, Flag_File_Write, 
+!                                          Flag_File_Unformat
+!                                  Sbr. SARB_GenOpen
+!   SynSARB_IO_Params - (SARBlib)  Params: LID_SYN, RecLen_SYN*, RecLen_TSI, 
+!                                          OUnit_SYN* 
+!   SARB_Params       - (CERESlib) Structures: Flux_CldNoAer, SARB_TimeLoc, 
+!                                              Spectral_TYPE_FOV, 
+!                                              SYN_SARB_PARAMS
+!
+! !Revision History:
+!  Version 4.0  June 23, 2014 - SCCR #1017  
+!               Thomas Caldwell, Thomas.E.Caldwell@nasa.gov
+!               Changed from Edition2 version to Edition4 version
+!  Version 3.4  June 20, 2003 - SCCR #445  
+!               Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!               Initial version of code
+!
+! !END
+!
+!*****************************************************************************
+!
+       INTEGER SYNI4_reclen
+ 
+       INQUIRE (IOLENGTH= SYNI4_reclen) SYNI4
+
+       CALL SARB_GenOpen (LID_SYN, Flag_File_Write, Flag_File_Direct, & ! I
+                               Flag_File_Unformat,'Open_SYN',   & ! I
+                               OUnit_SYN, RLength = SYNI4_reclen)
+			  
+!
+      END SUBROUTINE Open_SYN
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!
+END MODULE Init7_2

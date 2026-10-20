@@ -1,0 +1,493 @@
+
+package CER7_2_1P2_PCF;
+
+use Exporter;
+use Dates;
+use PCF_Env;
+use File::Path;
+use File::Basename;
+use CERES::PCFEntries;
+use strict;
+use warnings;
+
+our @ISA = qw(Exporter);
+our @EXPORT_OK= qw(ConstructPCF);
+
+sub scanSiteList {
+	my ($site_list, $run_zone) = @_;
+	
+	open SITE_LIST_FILE, "<$site_list";
+	my @siteList = <SITE_LIST_FILE>;
+	close SITE_LIST_FILE;
+	
+	for my $site (@siteList) {
+		if ($site =~ /Z$run_zone/) {
+			return 1;
+		}
+	}
+	
+	return 0;
+}
+
+sub add_mcd_file {
+    my ($pcf, $lid, $class, $dir, $file, $seq) = @_;
+
+    # get list of matching files
+    my @files = glob("$dir/$file");
+
+    # filter out non-HDF files
+    @files = grep { $_ =~ /\.hdf$/ } @files;
+
+    if ( scalar @files == 0 ) {
+        # add the record anyway, so the file is listed as missing if its missing
+        $pcf->addInputFile(lid => $lid, class => $class, dir => $dir, file => $file, seq => $seq);
+    }
+    else {
+        # sort list of with newest on top
+        @files = reverse sort @files;
+
+        # get the dirname and filename of the file we want
+        my $dirname = dirname($files[0]);
+        my $filename = basename($files[0]);
+
+        # add the file to the PCF object
+        $pcf->addInputFile(lid => $lid, class => $class, dir => $dirname, file => $filename, seq => $seq);
+    }
+}
+
+sub add_sorce_file {
+    my ($pcf, $lid, $class, $dir, $file) = @_;
+
+    # get list of matching files
+    my @files = glob("$dir/$file");
+
+    if ( scalar @files == 0 ) {
+        # add the record anyway, so the file is listed as missing if its missing
+        $pcf->addInputFile(lid => $lid, class => $class, dir => $dir, file => $file);
+    }
+    else {
+        # sort list of with newest on top
+        @files = reverse sort @files;
+
+        # get the dirname and filename of the file we want
+        my $dirname = dirname($files[0]);
+        my $filename = basename($files[0]);
+
+        # add the file to the PCF object
+        $pcf->addInputFile(lid => $lid, class => $class, dir => $dirname, file => $filename);
+    }
+}
+
+sub ConstructPCF {
+	my %args = @_;
+	
+	my $pcf = $args{pcf};
+	
+	$pcf->setAttributes(reverseSequencing => 1);
+
+	my %Sarb = %{$args{environment}};
+	my %Vault = PCF_Env::setUpPcfHash($ENV{'CERESHOME'}, $ENV{'PGSMSG'}, $ENV{'PGSINC'}, $ENV{'CPUTYPE'});
+	
+	my $pge = $Sarb{PGE};
+	
+	my ($run_year, $run_month, $run_zone, $run_date);
+	
+	if ($args{instance} =~ /(\d{4})(\d{2})Z(\d{3})/) {
+		$run_date = $args{instance};
+		$run_year = $1;
+		$run_month = $2;
+		$run_zone = $3;
+	}
+	else {
+		die "Enter a date in the form YYYYMMZxxx for this subroutine!\n";
+	}
+	
+	my $instance = "$Sarb{'SS7_2'}_$Sarb{'PS7_2'}_$Sarb{'CC7_2'}\.$run_date";
+
+	my $SFlag = 0;
+	if ($Sarb{'PS7_2'} =~ "Subset") {
+		$SFlag = 1;
+	}
+
+	my $synanc_path = "$Sarb{'ANCDIR'}/CER7.2.1P2";
+	
+        my $syn_tsiinpath = "/CERES/sarb/hong/temp/sarb/tsi_test/09_09_202004/netcdf_9";
+
+	my $syn_moainpath = "$Sarb{InputArchive}/CERES/MOA/$Sarb{'SS12'}_$Sarb{'PS12'}/$run_year/$run_month";
+
+	my $syn_ecs63inpath = "$Sarb{InputArchive}/CERES/ECS-OA0063SFSCm/$Sarb{'SS4_2'}_$Sarb{'PS4_2'}/$run_year/$run_month";
+	my $syn_ecs160inpath = "$Sarb{InputArchive}/CERES/ECS-OA0160SFm/$Sarb{'SS4_2'}_$Sarb{'PS4_2'}/$run_year/$run_month";
+
+	my $syn_snowinpath = "$Sarb{InputArchive}/CERES/ESNOW/$Sarb{'SS4_0'}_$Sarb{'PS4_0_8'}/$run_year/$run_month";
+	my $syn_iceinpath = "$Sarb{InputArchive}/CERES/EICE/$Sarb{'SS4_0'}_$Sarb{'PS4_0_8'}/$run_year/$run_month";
+	my $syn_nesdisinpath = "$Sarb{InputArchive}/NCEP/NOAA_SNOW/$run_year/$run_month";
+
+	my $syn_afwamapinpath = "$Sarb{InputArchive}/CERES/ICEAGE/$Sarb{'SS5_5'}_$Sarb{'PS5_5'}/$run_year/$run_month";
+	
+	my $sah_outpath_T = "/CERES/sarb/hong/temp/sarb/tsi_test/09_09_202004/netcdf_sah/$Sarb{'SS5'}_$Sarb{'PS5'}/$run_year/$run_month";
+
+	my $matchaer_path = "$Sarb{InputArchive}/CERES/MATCH-hourly/$Sarb{'SS_MATCH'}_$Sarb{'PS_MATCH'}/$run_year/$run_month";
+	my $syn_outpath = "$Sarb{OutputArchive}/CERES/SYNI/$Sarb{'SS7_2'}_$Sarb{'PS7_2'}/$run_year/$run_month";
+	my $qa_path = "$Sarb{OutputArchive}/CERES/KQCR/$Sarb{'SS7_2'}_$Sarb{'PS7_2'}/$run_year/$run_month";
+
+	# Test for existence of output paths and create if necessary
+	mkpath($syn_outpath) if (! -e $syn_outpath);
+	mkpath($qa_path) if (! -e $qa_path);
+
+
+	my $log_status = "$pge\_LogStatus_$instance";
+	my $log_report = "$pge\_LogReport_$instance";
+	my $log_user = "$pge\_LogUser_$instance";
+
+	my $sp_model = 1;
+	my $surf_alg = 1;
+	my $pge_ver = "2.0";
+	my $option_code = 0;
+			
+
+	# ----  SARB Data Files
+	$pcf->addInputFile(lid => 1, class => 'Mandatory', dir => $synanc_path, file => "SS5_DrivTab_19990315");
+	$pcf->addInputFile(lid => 2, class => 'Mandatory', dir => $synanc_path, file => "SigTab_Synoptic_20141204");
+	$pcf->addInputFile(lid => 13, class => 'Mandatory', dir => $synanc_path, file => "IGBP_Ver3.0");
+	
+	$pcf->addInputFile(lid => 18, class => 'Mandatory', dir => $synanc_path, file => "flsa0404_lut.2s.coef", seq => 1);
+	$pcf->addInputFile(lid => 18, class => 'Mandatory', dir => $synanc_path, file => "flsa3_lut.4s.coef_19991215", seq => 2);
+	$pcf->addInputFile(lid => 6, class => 'Mandatory', dir => $synanc_path, file => "flsa200508c.fubin.tab");
+
+	$pcf->addInputFile(lid => 22, class => 'Mandatory', dir => $synanc_path, file => "ControlFile_20141204");
+        add_sorce_file($pcf, 23, 'Mandatory', "$Sarb{InputArchive}/CERES/SORCE", "sorce_tsi_v15.txt\.*");
+	
+# Make Terra File Mandatory 
+
+	$pcf->addInputFile(lid => 17, class => 'Mandatory', dir => "$sah_outpath_T", file => "CER_SAH_$Sarb{'SS5'}_$Sarb{'PS5'}_$Sarb{'CC5'}.$run_year$run_month.nc4");
+
+## Secondary SAH will be used if available
+        	 
+         if (lc $Sarb{SS5_2} ne "null" ) { # include secondary SAH file for merged processing
+          my $sah_outpath_A = "$Sarb{InputArchive}/CERES/SAH/$Sarb{'SS5_2'}_$Sarb{'PS5_2'}/$run_year/$run_month";
+	  $pcf->addInputFile(lid => 17, class => 'Mandatory' , dir => "$sah_outpath_A", file => "CER_SAH_$Sarb{'SS5_2'}_$Sarb{'PS5_2'}_$Sarb{'CC5_2'}.$run_year$run_month", seq => 2 );
+	 }
+
+	my $tsi_zone = "Z$run_zone";
+	$pcf->addInputFile(lid => 12, class => 'Mandatory', dir => $syn_tsiinpath, file => "CER_TSIB_$Sarb{'SS7_3_4'}_$Sarb{'PS7_3_4'}_$Sarb{'CC7_3_4'}\.$run_year$run_month$tsi_zone");
+	
+	
+	# Collins aerosol files
+	
+	my $iday;
+	my $cday;
+	my $in_collins;
+
+        my $match_aer = "CER_MATCH-hourly_$Sarb{'SS_MATCH'}_$Sarb{'PS_MATCH'}_$Sarb{'CC_MATCH'}\.$run_year$run_month" ;
+	
+	my $yy = substr ($run_year, 2, 2);
+
+	my $totdays = Dates::Get_Days_In_Month($run_year,$run_month); 
+	
+	
+	
+	$iday = 1;
+	while ($iday <= $totdays) {
+		$cday = sprintf("%02d", $iday);
+		$pcf->addInputFile(lid => 4, class => 'Mandatory', dir => "$matchaer_path", file => "$match_aer$cday.nc", seq => $iday);
+		$iday++;
+	}
+
+	# MOA files for entire month
+
+	my $iver = 1;
+	$iday = 1;
+	my $moa_name;
+	my $curr_moa;
+	my $ihr;
+	my $chr;
+	while ($iday <= $totdays) {
+		$ihr = 1;
+		$cday = sprintf("%02d", $iday);
+		while ($ihr <= 4) { 
+			$chr = "00" if ($ihr == 1);
+			$chr = "06" if ($ihr == 2);
+			$chr = "12" if ($ihr == 3);
+			$chr = "18" if ($ihr == 4);
+			$pcf->addInputFile(lid => 1000, class => 'Mandatory', dir => $syn_moainpath, file => "CER_MOA_$Sarb{'SS12'}_$Sarb{'PS12'}_$Sarb{'CC12'}\.$run_year$run_month$cday$chr", seq => $iver);
+			$iver++;
+			$ihr++;
+		}
+		$iday++;
+	}
+
+	###  MOA for Hour 00 of day 1 of next month
+	$cday = "01";
+	$chr = "00";
+	my ($next_date) = Dates::Get_Next_Date_Month($run_year,$run_month);
+	my ($next_year, $next_month) = Dates::Split_Date_Month ($next_date);
+	$syn_moainpath = "$Sarb{InputArchive}/CERES/MOA/$Sarb{'SS12'}_$Sarb{'PS12'}/$next_year/$next_month";
+	$pcf->addInputFile(lid => 1000, class => 'Mandatory', dir => $syn_moainpath, file => "CER_MOA_$Sarb{'SS12'}_$Sarb{'PS12'}_$Sarb{'CC12'}\.$next_year$next_month$cday$chr", seq => $iver);
+
+
+#NOAA NESDIS north and south files
+
+	$iver = 1;
+
+	my @NOAAver = ( 14, 15, 13); 
+	my @Days = ( 15, 16, 14, 17, 13, 18, 12, 19, 11, 20, 10, 21, "09", 22, "08",
+			23, "07", 24, "06", 25, "05", 26, "04", 27, "03", 28, "02", 29, "01", 30);
+	my @Hours = ("00","01","02","03","04","05","06","07","08","09","10","11",
+		"12","13","14","15","16","17","18","19","20","21","22","23");
+	
+	my $file_flag = 0;
+	my $nver = 0;
+	my $Noaa_north;
+	my $snowver;
+	my $status;
+	my $NOAAfile;
+	my $file;
+	my $Day1 = "15";
+	my $Day2 = "16";
+	my $Day3 = "17";
+	
+	my $Date1 = "$run_year$run_month$Day1";
+	my $Date2 = "$run_year$run_month$Day2";
+	my $Date3 = "$run_year$run_month$Day3";
+	my $Hour;
+        
+	my $Jday1 = Dates::Get_Julian_Day($Date1); 
+	my $Jday2 = Dates::Get_Julian_Day($Date2); 
+	my $Jday3 = Dates::Get_Julian_Day($Date3); 
+        
+#	
+        if (($run_year < 2013) || (($run_year == 2013) && ($run_month <= 3))) {
+	 $syn_nesdisinpath = "$Sarb{InputArchive}/NCEP/NOAA_SNOW/$run_year/$run_month";
+         $pcf->addInputFile(lid => 701, class => 'Mandatory', dir => [$syn_nesdisinpath, $syn_nesdisinpath, $syn_nesdisinpath], file => ["noaa_snow_f14*north\.$run_year$run_month*",
+																	 "noaa_snow_f15*north\.$run_year$run_month*",
+	        															 "noaa_snow_f13*north\.$run_year$run_month*"]);
+         $pcf->addInputFile(lid => 702, class => 'Mandatory', dir => [$syn_nesdisinpath, $syn_nesdisinpath, $syn_nesdisinpath], file => ["noaa_snow_f14*south\.$run_year$run_month*",
+	        															 "noaa_snow_f15*south\.$run_year$run_month*",
+	 																 "noaa_snow_f13*south\.$run_year$run_month*"]);
+        }  
+	         
+	if ((($run_year == 2013) && ($run_month > 3)) || ($run_year > 2013)){ 
+         if ((($run_year == 2021) && ($run_month < 8)) || ($run_year < 2021)){ 
+	 $syn_nesdisinpath = "$Sarb{InputArchive}/NCEP/CLASS_MESH8/$run_year";
+         $pcf->addInputFile(lid => 701, class => 'Mandatory', dir => [$syn_nesdisinpath, $syn_nesdisinpath, $syn_nesdisinpath], file => ["PRD.SPPROD.EDR15N.S$yy${Jday1}06.E$yy${Jday1}12",
+	        									      "PRD.SPPROD.EDR15N.S$yy${Jday2}06.E$yy${Jday2}12","PRD.SPPROD.EDR15N.S$yy${Jday3}06.E$yy${Jday3}12"]);
+         $pcf->addInputFile(lid => 702, class => 'Mandatory', dir => [$syn_nesdisinpath, $syn_nesdisinpath, $syn_nesdisinpath], file => ["PRD.SPPROD.EDR15S.S$yy${Jday1}06.E$yy${Jday1}12",
+	        									      "PRD.SPPROD.EDR15S.S$yy${Jday2}06.E$yy${Jday2}12","PRD.SPPROD.EDR15S.S$yy${Jday3}06.E$yy${Jday3}12"]);
+         }
+
+         if ((($run_year == 2021) && ($run_month >=8)) || ($run_year > 2021)){ 
+         $pcf->addInputFile(lid => 705, class => 'Mandatory', dir => [$syn_afwamapinpath], file => ["CER_ICEAGE_$Sarb{'SS5_5'}_$Sarb{'PS5_5'}_$Sarb{'CC5_5'}.$run_year$run_month$Day1.nc4"]);
+         }
+
+	}
+
+
+#MCD43C1 LUT
+
+       $pcf->addInputFile(lid => 706, class => 'Mandatory', dir => $synanc_path, file => "skyl_lut.dat" ) ;
+
+
+# MCD43C1 Files
+
+	my $syn_MCD_inpath = "$Sarb{InputArchive}/MODIS/LAND/$Sarb{'MCD_Col'}/$run_year/";
+		
+	my $firstday = "01";
+	my $rundate = "$run_year$run_month$firstday";
+	
+	my $firstmcd_jd = Dates::Get_Julian_Day ($rundate);
+	
+	my $lastday = Dates::Get_Days_In_Month ($run_year,$run_month);
+	$rundate = "$run_year$run_month$lastday";
+	
+	my $lastmcd_jd = Dates::Get_Julian_Day ($rundate);
+		
+	$lastmcd_jd = $lastmcd_jd + 8;  # allow next month file if needed 
+	
+	my $mcd_jd = 1 ;
+	my $mcd_jd_C = ""; 
+	$iver = 1;
+	
+	my $mcdver = 1;
+	
+	my $prevmcd_year = 1;
+	
+	if ($run_month eq '01') 
+	{
+	 $mcd_jd = 361 ;	
+         $prevmcd_year = $run_year - 1;
+	 $mcd_jd_C = sprintf("%03d", $mcd_jd);
+	 $syn_MCD_inpath = "$Sarb{InputArchive}/MODIS/LAND/$Sarb{'MCD_Col'}/$prevmcd_year/";
+	 
+	 if ($run_year == 2000) {
+         $prevmcd_year = $run_year;
+	 $mcd_jd_C = "049";
+	 $syn_MCD_inpath = "$Sarb{InputArchive}/MODIS/LAND/$Sarb{'MCD_Col'}/$run_year/";
+	 }
+	 
+         add_mcd_file($pcf, 704, 'Mandatory', $syn_MCD_inpath, "MCD43C1.A$prevmcd_year$mcd_jd_C*", $mcdver);
+	 $mcdver++;	
+	 $firstmcd_jd = 1;
+	} 
+	
+	else {
+	 $firstmcd_jd = $firstmcd_jd - 8;  # last day of previous month
+	}
+	
+		
+	while ( $iver <= 46 ) {
+		
+	$mcd_jd = 1 + ($iver - 1 ) * 8 ;
+	
+	$mcd_jd_C = sprintf("%03d", $mcd_jd);
+
+## TRICK CODE BEFORE MAR 2000 
+        $mcd_jd_C = "049" if ($mcd_jd < 49 && $run_year == 2000 );
+
+	 if ($mcd_jd >= $firstmcd_jd and $mcd_jd <= $lastmcd_jd and $mcdver <= 5){
+	  $syn_MCD_inpath = "$Sarb{InputArchive}/MODIS/LAND/$Sarb{'MCD_Col'}/$run_year/";
+          add_mcd_file($pcf, 704, 'Mandatory', $syn_MCD_inpath, "MCD43C1.A$run_year$mcd_jd_C*", $mcdver);
+	  $mcdver++;
+	 }
+	$iver++ ;
+	}
+
+
+	# ECS, Snow/Ice, and MATCH vertical files
+	
+	my $snow_file = "CER_ESNOW";
+	my $ice_file =  "CER_EICE";
+	
+	$iday = 1;
+	my $kind = 1;
+	while ($kind < 6) {
+		while ($iday <= $totdays) {
+			$iver = $iday;
+			$cday = sprintf("%02d", $iday);
+			
+			if ( $kind == 1 ) {
+				$pcf->addInputFile(lid => 101, class => 'Optional', dir => $syn_ecs63inpath, file => "CER_ECS-OA0063SFSCm_$Sarb{'SS4_2'}_$Sarb{'PS4_2'}_$Sarb{'CC4_2'}.$run_year$run_month$cday", seq => $iver);
+			}
+			elsif ( $kind == 2 ) {			  
+			        $pcf->addInputFile(lid => 102, class => 'Optional', dir => $syn_ecs160inpath, file => "CER_ECS-OA0160SFm_$Sarb{'SS4_2'}_$Sarb{'PS4_2'}_$Sarb{'CC4_2'}.$run_year$run_month$cday", seq => $iver);
+
+			}
+			elsif ( $kind == 3) {
+ 								
+				$syn_snowinpath = "$Sarb{InputArchive}/CERES/ESNOW/$Sarb{'SS4_0'}_$Sarb{'PS4_0_8'}/$run_year/$run_month";
+	                        $snow_file = "CER_ESNOW_$Sarb{'SS4_0'}_$Sarb{'PS4_0_8'}_$Sarb{'CC4_0P1_8'}.$run_year$run_month$cday";
+
+				if (! -e "$syn_snowinpath/$snow_file"){
+				$syn_snowinpath = "$Sarb{InputArchive}/CERES/ESNOW/$Sarb{'SS4_0'}_$Sarb{'PS4_0_16'}/$run_year/$run_month"; 
+				$snow_file = "CER_ESNOW_$Sarb{'SS4_0'}_$Sarb{'PS4_0_16'}_$Sarb{'CC4_0P1_16'}.$run_year$run_month$cday";
+				};
+				$pcf->addInputFile(lid => 103, class => 'Mandatory', dir => $syn_snowinpath, file => "$snow_file", seq => $iver);
+                                
+			}
+			elsif ( $kind == 4) {
+                                
+				$syn_iceinpath = "$Sarb{InputArchive}/CERES/EICE/$Sarb{'SS4_0'}_$Sarb{'PS4_0_8'}/$run_year/$run_month";
+				$ice_file = "CER_EICE_$Sarb{'SS4_0'}_$Sarb{'PS4_0_8'}_$Sarb{'CC4_0P1_8'}.$run_year$run_month$cday";
+
+				if (! -e "$syn_iceinpath/$ice_file"){
+				$syn_iceinpath = "$Sarb{InputArchive}/CERES/EICE/$Sarb{'SS4_0'}_$Sarb{'PS4_0_16'}/$run_year/$run_month"; 
+				$ice_file = "CER_EICE_$Sarb{'SS4_0'}_$Sarb{'PS4_0_16'}_$Sarb{'CC4_0P1_16'}.$run_year$run_month$cday";
+				};
+				$pcf->addInputFile(lid => 104, class => 'Mandatory', dir => $syn_iceinpath, file => "$ice_file", seq => $iver);
+				
+			}
+
+			$iday++;  
+		}
+		 
+		$kind++;
+		$iday = 1; 
+	}
+
+	$pcf->addInputFile(lid => 1001, class => 'Mandatory', dir => "$synanc_path/zjin", file => "zjin.snow.bin.1");
+	$pcf->addInputFile(lid => 1002, class => 'Mandatory', dir => "$synanc_path/zjin", file => "zjin.ice.bin.1");
+	$pcf->addInputFile(lid => 1004, class => 'Mandatory', dir => "$synanc_path/zjin", file => "zjin_ocean_feb04.bin");
+	
+	$pcf->addInputFile(lid => 1101, class => 'Mandatory', dir => "$synanc_path/emiss", file => "CER_EM0855_CERES_015000.XXXX$run_month");
+	$pcf->addInputFile(lid => 1102, class => 'Mandatory', dir => "$synanc_path/emiss", file => "CER_EM1080_CERES_015000.XXXX$run_month");
+	$pcf->addInputFile(lid => 1103, class => 'Mandatory', dir => "$synanc_path/emiss", file => "CER_EM1190_CERES_015000.XXXX$run_month");
+	
+	$pcf->addInputFile(lid => 1200, class => 'Mandatory', dir => "$synanc_path", file => "flsa0404_lut.2s.coef");
+
+	$pcf->addInputFile(lid => 801, class => 'Mandatory', dir => "$synanc_path/chlor_clim", file => "chlor_clim.$run_month");
+
+	$pcf->addInputFile(lid => 703, class => 'Mandatory', dir => "$synanc_path/iceage", file => "indxs_nesds.dat");
+	
+	
+	$pcf->addInputFile(lid => 100, dir => "$Sarb{'SCRDIR'}", file => "CER_SARBCRH_$instance", check => 'off');
+	$pcf->addOutputFile(lid => -100, dir => "$Sarb{'SCRDIR'}", file => "CER_SARBCRH_$instance");
+
+	$pcf->addInputFile(lid => 160, dir => "$run_zone", file => "Z$run_zone", check => 'off');
+
+	my $mcfDir = $Sarb{MCFDIR};
+
+	# ***  Meta Data Control Files*** #
+	$pcf->addInputFile(lid => 250, class => 'Mandatory', dir => $mcfDir, file => "mcf_sarbsyn");
+	$pcf->addInputFile(lid => 251, class => 'Mandatory', dir => $mcfDir, file => "mcf_sarbsynqc");
+	$pcf->addInputFile(lid => 10251, dir => "~/runtime", file => "data_dictionary", check => 'off');
+	$pcf->addInputFile(lid => 10252, dir => $Sarb{'SCRDIR'}, file => "GetAttr.temp.$run_date", check => 'off');
+	$pcf->addInputFile(lid => 10254, dir => $Sarb{'SCRDIR'}, file => "MCFWrite.temp.$run_date", check => 'off');
+		
+
+	#    Sarb files used for input to the Metadata linked to the Binary file
+	$pcf->addInputFile(lid => 2000, dir => $Sarb{'RUNDIR'}, file => "CER_SYNI_$instance", met => "CER_SYNI_$instance.met", check => 'off');
+	$pcf->addInputFile(lid => 2001, dir => $Sarb{'RUNDIR'}, file => "CER_KQCR_$instance", met => "CER_KQCR_$instance.met", check => 'off');
+
+	# *** SYNI Output Files *** #
+	if ($SFlag == 1) {
+		$pcf->addOutputFile(lid => 27, dir => "$syn_outpath", file => "CER_SYNV_$instance");
+	}
+	else {
+		$pcf->addOutputFile(lid => 27, dir => "$syn_outpath", file => "CER_SYNI_$instance");
+	}
+
+	$pcf->addOutputFile(lid => 57, dir => "$qa_path", file => "CER_KQCR_$instance");
+	
+	# *** SARB Support Input Files *** #
+	CERES::PCFEntries::attachToolkitData(pcf => $pcf, brand => $Vault{'BRAND'}, dir => $Vault{'PGSDIR'});
+
+	# *** SARB Support Output Files *** #
+	CERES::PCFEntries::attachLogFiles(pcf => $pcf, environment => $args{'environment'}, instance => $args{'instance'}, dir => $Sarb{'runlogdir'}, status => $log_status, report => $log_report, user => $log_user, sgelog_lid => 1755);
+
+	# *** SARB User Variables *** #
+	$pcf->addUserDefinedRuntimeParameter(lid => 601, name => "SP_MODEL_NUM", value => "\"$sp_model\"");
+	$pcf->addUserDefinedRuntimeParameter(lid => 602, name => "RUN_SURF_ALG", value => "\"$surf_alg\"");
+	$pcf->addUserDefinedRuntimeParameter(lid => 603, name => "PGE_VERSION", value => "\"$pge_ver\"");
+	$pcf->addUserDefinedRuntimeParameter(lid => 604, name => "Entropy", value => "\"$Sarb{'EntropyCode'}\"");
+	$pcf->addUserDefinedRuntimeParameter(lid => 605, name => "Pristine", value => "\"$Sarb{'PristineCode'}\"");
+	$pcf->addUserDefinedRuntimeParameter(lid => 606, name => "Tuning", value => "\"$Sarb{'TuningCode'}\"");
+	$pcf->addUserDefinedRuntimeParameter(lid => 9991, name => "Subsystem", value => "\"7.2/SYNI\"");
+	$pcf->addUserDefinedRuntimeParameter(lid => 9992, name => "CERES  ID", value => "\"SYNI\"");
+	$pcf->addUserDefinedRuntimeParameter(lid => 9993, name => "Software Version", value => "\"$pge_ver\"");
+	$pcf->addUserDefinedRuntimeParameter(lid => 9994, name => "EOSDIS ID", value => "\"CER4\"");
+	$pcf->addUserDefinedRuntimeParameter(lid => 9995, name => "Satellite Intrument", value => "\"$Sarb{'SAT'}\"");
+	$pcf->addUserDefinedRuntimeParameter(lid => 9996, name => "Ancillary Data Set", value => "\"DER3/SIG4\"");
+
+	# *** SARB Meta Data *** #
+	CERES::PCFEntries::attachCERESMetadata(pcf => $pcf, lid => 141, name => "CERPGEName", value => "\"$pge\"");	
+	CERES::PCFEntries::attachCERESMetadata(pcf => $pcf, lid => 142, name => "SamplingStrategy", value => "\"$Sarb{'SS7_2'}\"");
+	CERES::PCFEntries::attachCERESMetadata(pcf => $pcf, lid => 143, name => "ProductionStrategyOUTPUT", value => "\"$Sarb{'PS7_2'}\"");
+	CERES::PCFEntries::attachCERESMetadata(pcf => $pcf, lid => 144, name => "CERDataDateYear", value => "\"$run_year\"");
+	CERES::PCFEntries::attachCERESMetadata(pcf => $pcf, lid => 145, name => "CERDataDateMonth", value => "\"$run_month\"");
+	CERES::PCFEntries::attachCERESMetadata(pcf => $pcf, lid => 148, name => "ConfigurationCode", value => "\"$Sarb{'CC7_2'}\"");
+	CERES::PCFEntries::attachCERESMetadata(pcf => $pcf, lid => 149, name => "SWsccr", value => "\"$Sarb{'SW7_2'}\"");
+	CERES::PCFEntries::attachCERESMetadata(pcf => $pcf, lid => 150, name => "DATAsccr", value => "\"$Sarb{'DATA7_2'}\"");
+	CERES::PCFEntries::attachCERESMetadata(pcf => $pcf, lid => 151, name => "Satellite", value => "\"$Sarb{'SAT'}\"");
+
+	CERES::PCFEntries::attachCERESMetadata(pcf => $pcf, lid => 152, name => "Instrument", value => "\"$Sarb{'INST'}\"");
+
+	CERES::PCFEntries::attachCERESMetadata(pcf => $pcf, lid => 153, name => "Imager", value => "\"$Sarb{'IMAG'}\"");
+
+	
+	$pcf->addOutputMetadataFile(lid => 11200, met => "CER_SYNI_$instance.met", ref_lid => 27, seq => 1);
+	$pcf->addOutputMetadataFile(lid => 11201, met => "CER_KQCR_$instance.met", ref_lid => 57, seq => 1);
+
+	CERES::PCFEntries::attachRuntimeParameters(pcf => $pcf, ver => $Vault{'TK_Ver'});
+}
+
+1;
+

@@ -1,0 +1,350 @@
+GROUP = INVENTORYMETADATA
+    GROUPTYPE = MASTERGROUP
+
+    GROUP = ECSDataGranule
+        OBJECT = SizeMBECSDataGranule
+            Data_Location = "DSS"
+            NUM_VAL = 1
+            TYPE = "DOUBLE"
+            Mandatory = "FALSE"
+        END_OBJECT = SizeMBECSDataGranule
+
+        OBJECT = LocalGranuleID
+            Data_Location = "PGE"
+            NUM_VAL = 1
+            TYPE = "STRING"
+            Mandatory = "TRUE"
+        END_OBJECT = LocalGranuleID
+
+        OBJECT = LocalVersionID
+            Data_Location = "PGE"
+            NUM_VAL = 1
+            TYPE = "STRING"
+            Mandatory = "TRUE"
+        END_OBJECT = LocalVersionID
+
+        OBJECT = ProductionDateTime
+            Data_Location = "TK"
+            NUM_VAL = 1
+            TYPE = "DATETIME"
+            Mandatory = "TRUE"
+        END_OBJECT = ProductionDateTime
+    END_GROUP = ECSDataGranule
+
+    GROUP = MeasuredParameter
+        OBJECT = MeasuredParameterContainer
+
+            Data_Location = "NONE"
+            Class = "M"
+            Mandatory = "TRUE"
+
+            OBJECT = ParameterName
+                Data_Location = "PGE"
+                Class = "M"
+                TYPE = "STRING"
+                NUM_VAL = 1
+                Mandatory = "TRUE"
+            END_OBJECT = ParameterName
+
+            GROUP = QAFlags
+
+                Class = "M"
+
+                OBJECT = AutomaticQualityFlag
+                    Data_Location = "PGE"
+                    Mandatory = "TRUE"
+                    TYPE = "STRING"
+                    NUM_VAL = 1
+                END_OBJECT = AutomaticQualityFlag
+
+                OBJECT = AutomaticQualityFlagExplanation
+                    Data_Location = "PGE"
+                    Mandatory = "TRUE"
+                    TYPE = "STRING"
+                    NUM_VAL = 1
+                END_OBJECT = AutomaticQualityFlagExplanation
+
+                OBJECT = OperationalQualityFlag
+                    Data_Location = "DAAC"
+                    Mandatory = "FALSE"
+                    TYPE = "STRING"
+                    NUM_VAL = 1
+                END_OBJECT = OperationalQualityFlag
+
+                OBJECT = OperationalQualityFlagExplanation
+                    Data_Location = "DAAC"
+                    Mandatory = "FALSE"
+                    TYPE = "STRING"
+                    NUM_VAL = 1
+                END_OBJECT = OperationalQualityFlagExplanation
+
+                OBJECT = ScienceQualityFlag
+                    Data_Location = "DP"
+                    Mandatory = "FALSE"
+                    TYPE = "STRING"
+                    NUM_VAL = 1
+                END_OBJECT = ScienceQualityFlag
+
+                OBJECT = ScienceQualityFlagExplanation
+                    Data_Location = "DP"
+                    Mandatory = "FALSE"
+                    TYPE = "STRING"
+                    NUM_VAL = 1
+                END_OBJECT = ScienceQualityFlagExplanation
+            END_GROUP = QAFlags
+        END_OBJECT = MeasuredParameterContainer
+    END_GROUP = MeasuredParameter
+
+    GROUP = CollectionDescriptionClass
+        OBJECT = ShortName
+            Data_Location = "MCF"
+            NUM_VAL = 1
+            TYPE = "STRING"
+            Mandatory = "TRUE"
+            Value = "SYNI"
+        END_OBJECT = ShortName
+
+        OBJECT = VersionID
+            Data_Location = "MCF"
+            NUM_VAL = 1
+            TYPE = "INTEGER"
+            Mandatory = "TRUE"
+            Value = 1
+        END_OBJECT = VersionID
+    END_GROUP = CollectionDescriptionClass
+
+    GROUP = InputGranule
+        OBJECT = InputPointer
+            Data_Location = "PGE"
+            NUM_VAL = 800
+            TYPE = "STRING"
+            Mandatory = "TRUE"
+        END_OBJECT = InputPointer
+    END_GROUP = InputGranule
+
+    GROUP = SpatialDomainContainer
+        GROUP = HorizontalSpatialDomainContainer
+
+                  GROUP = BoundingRectangle           
+                      OBJECT = WestBoundingCoordinate  
+                          Data_Location = "PGE"         
+                          TYPE = "DOUBLE"
+                          Mandatory = "TRUE"             
+                          NUM_VAL = 1                     
+                      END_OBJECT = WestBoundingCoordinate  
+ 
+                      OBJECT = NorthBoundingCoordinate 
+                          Data_Location = "PGE"         
+                          TYPE = "DOUBLE"
+                          Mandatory = "TRUE"             
+                          NUM_VAL = 1                     
+                      END_OBJECT = NorthBoundingCoordinate 
+ 
+                      OBJECT = EastBoundingCoordinate  
+                          Data_Location = "PGE"         
+                          TYPE = "DOUBLE"
+                          Mandatory = "TRUE"             
+                          NUM_VAL = 1                     
+                      END_OBJECT = EastBoundingCoordinate  
+ 
+                      OBJECT = SouthBoundingCoordinate 
+                          Data_Location = "PGE"         
+                          TYPE = "DOUBLE"
+                          Mandatory = "TRUE"             
+                          NUM_VAL = 1                     
+                      END_OBJECT = SouthBoundingCoordinate 
+                  END_GROUP = BoundingRectangle             
+
+        END_GROUP = HorizontalSpatialDomainContainer
+    END_GROUP = SpatialDomainContainer
+
+    GROUP = RangeDateTime
+        OBJECT = RangeBeginningTime
+            Data_Location = "PGE"
+            NUM_VAL = 1
+            TYPE = "TIME"
+            Mandatory = "TRUE"
+        END_OBJECT = RangeBeginningTime
+
+        OBJECT = RangeEndingTime
+            Data_Location = "PGE"
+            NUM_VAL = 1
+            TYPE = "TIME"
+            Mandatory = "TRUE"
+        END_OBJECT = RangeEndingTime
+
+        OBJECT = RangeBeginningDate
+            Data_Location = "PGE"
+            NUM_VAL = 1
+            TYPE = "DATE"
+            Mandatory = "TRUE"
+        END_OBJECT = RangeBeginningDate
+
+        OBJECT = RangeEndingDate
+            Data_Location = "PGE"
+            NUM_VAL = 1
+            TYPE = "DATE"
+            Mandatory = "TRUE"
+        END_OBJECT = RangeEndingDate
+    END_GROUP = RangeDateTime
+
+    GROUP = PGEVersionClass
+        OBJECT = PGEVersion
+            Data_Location = "PGE"
+            NUM_VAL = 1
+            TYPE = "STRING"
+            Mandatory = "TRUE"
+        END_OBJECT = PGEVersion
+    END_GROUP = PGEVersionClass
+
+        GROUP = AncillaryInputGranule
+            OBJECT = AncillaryInputGranuleContainer
+
+                Data_Location = "NONE"
+                Class = "M"
+                Mandatory = "FALSE"
+
+                OBJECT = AncillaryInputType
+                    Data_Location = "PGE"
+                    Class = "M"
+                    TYPE = "STRING"
+                    NUM_VAL = 1
+                    Mandatory = "FALSE"
+                END_OBJECT = AncillaryInputType
+
+                OBJECT = AncillaryInputPointer
+                    Data_Location = "PGE"
+                    Class = "M"
+                    TYPE = "STRING"
+                    NUM_VAL = 1
+                    Mandatory = "FALSE"
+                END_OBJECT = AncillaryInputPointer
+            END_OBJECT = AncillaryInputGranuleContainer
+        END_GROUP = AncillaryInputGranule
+
+        GROUP = AdditionalAttributes
+            OBJECT = AdditionalAttributesContainer
+
+               Data_Location = "NONE"
+               Class = "M"
+               Mandatory = "TRUE"
+
+                OBJECT = AdditionalAttributeName
+                    Data_Location = "PGE"
+                    Mandatory = "TRUE"
+                    TYPE = "STRING"
+                    Class = "M"
+                    NUM_VAL = 1
+                END_OBJECT = AdditionalAttributeName
+
+                GROUP = InformationContent
+
+                    Class = "M"
+
+                    OBJECT = ParameterValue
+                        Data_Location = "PGE"
+                        Mandatory = "TRUE"
+                        TYPE = "STRING"
+                        NUM_VAL = 1
+                    END_OBJECT = ParameterValue
+                END_GROUP = InformationContent
+            END_OBJECT = AdditionalAttributesContainer
+        END_GROUP = AdditionalAttributes
+
+        GROUP = AssociatedPlatformInstrumentSensor
+            OBJECT = AssociatedPlatformInstrumentSensorContainer
+
+                Data_Location = "NONE"
+                Class = "M"
+                Mandatory = "TRUE"
+
+                OBJECT = AssociatedPlatformShortName
+                    Data_Location = "PGE"
+                    Mandatory = "TRUE"
+                    Class = "M"
+                    TYPE = "STRING"
+                    NUM_VAL = 1
+                END_OBJECT = AssociatedPlatformShortName
+
+                OBJECT = AssociatedInstrumentShortName
+                    Data_Location = "PGE"
+                    Mandatory = "TRUE"
+                    Class = "M"
+                    TYPE = "STRING"
+                    NUM_VAL = 1
+                END_OBJECT = AssociatedInstrumentShortName
+
+                OBJECT = AssociatedSensorShortName
+                    Data_Location = "PGE"
+                    Mandatory = "TRUE"
+                    Class = "M"
+                    TYPE = "STRING"
+                    NUM_VAL = 1
+                END_OBJECT = AssociatedSensorShortName
+
+                OBJECT = OperationMode
+                    Data_Location = "PGE"
+                    Mandatory = "FALSE"
+                    Class = "M"
+                    TYPE = "STRING"
+                    NUM_VAL = 1
+                END_OBJECT = OperationMode
+            END_OBJECT = AssociatedPlatformInstrumentSensorContainer
+        END_GROUP = AssociatedPlatformInstrumentSensor
+
+END_GROUP = INVENTORYMETADATA
+
+GROUP = ARCHIVEDMETADATA
+    GROUPTYPE = MASTERGROUP
+  OBJECT = CEREastBoundingCoordinate      
+      Data_Location = "PGE"              
+      NUM_VAL = 1                       
+      TYPE = "DOUBLE"                  
+      Mandatory = "FALSE"              
+  END_OBJECT = CEREastBoundingCoordinate  
+
+  OBJECT = CERNorthBoundingCoordinate    
+      Data_Location = "PGE"             
+      NUM_VAL = 1                      
+      TYPE = "DOUBLE"                 
+      Mandatory = "FALSE"             
+  END_OBJECT = CERNorthBoundingCoordinate 
+
+  OBJECT = CERSouthBoundingCoordinate    
+      Data_Location = "PGE"             
+      NUM_VAL = 1                      
+      TYPE = "DOUBLE"                 
+      Mandatory = "FALSE"             
+  END_OBJECT = CERSouthBoundingCoordinate 
+
+  OBJECT = CERWestBoundingCoordinate     
+      Data_Location = "PGE"             
+      NUM_VAL = 1                      
+      TYPE = "DOUBLE"                 
+      Mandatory = "FALSE"             
+  END_OBJECT = CERWestBoundingCoordinate  
+
+    OBJECT = CERProductionDateTime
+        Data_Location = "PGE"
+        TYPE = "DATETIME"
+        NUM_VAL = 1
+        Mandatory = "FALSE"
+    END_OBJECT = CERProductionDateTime
+
+    OBJECT = NumberofRecords
+        Data_Location = "PGE"
+        TYPE = "INTEGER"
+        NUM_VAL = 1
+        Mandatory = "FALSE"
+    END_OBJECT = NumberofRecords
+
+    OBJECT = ProductGenerationLOC
+        Data_Location = "PGE"
+        TYPE = "STRING"
+        NUM_VAL = 1
+        Mandatory = "FALSE"
+    END_OBJECT = ProductGenerationLOC
+
+END_GROUP = ARCHIVEDMETADATA
+
+END

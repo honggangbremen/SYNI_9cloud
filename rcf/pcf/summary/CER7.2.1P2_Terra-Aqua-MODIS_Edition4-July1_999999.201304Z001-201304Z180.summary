@@ -1,0 +1,226 @@
+###################################################################################
+# CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z001-201304Z180.summary #
+###################################################################################
+
+##################
+#### OVERVIEW ####
+##################
+Submission Timestamp   = "2025-07-23 17:41:47"
+Submission Directory   = "/homedir/ghong/sarb/CER7.2.1P2/rcf"
+Submission Command     = "./CER7.2.1P2-SGE_Driver.pl -date 201304 -start_zone 1 -end_zone 180 -clean"
+Environment            = {"VENDOR":"unknown","InputArchive":"/CERES_prd","PGSRUN":"/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/TOOLKIT/runtime","PGSDIR":"/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/TOOLKIT","CLICOLOR":"TRUE","ZLIBLIB":"/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/packages/zlib-1.2.11/lib","SGE_ROOT":"/SPG_ops/utils/altair/ge-2024.1.0","ZLIBBIN":"/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/packages/zlib-1.2.11/zlib/bin","executables":"/homedir/ghong/sarb/CER7.2.1P2/bin/CER7.2.1P2_x86_64.exe","LANG":"en_US.UTF-8","SS4_0":"CERES","F90LIB":"","PS5_2":"Edition4A","NETCDFHOME":"/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64","SAT":"Terra-Aqua","ADA":"/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/bin/gcc","SSH_CLIENT":"192.168.20.13 44742 22","DISPLAY":"localhost:15.0","XDG_SESSION_ID":"1982","CERES_STARTUP_SCRIPT":"ceres-env.csh","ADA_INCLUDE_PATH":"/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/packages/gcc-8.2.0/lib/gcc/x86_64-pc-linux-gnu/8.2.0/adainclude","HDFLIBS":"-lmfhdf -ldf","CC4_0P1_8":"200200","HDFEOS_HOME":"/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/TOOLKIT/hdfeos","USE_SYSTEMD":"true","CC7_3_4":"401405","PS7_3_4":"Edition4A","PS5":"Edition4A","temp_ostype":"Linux","PS5_5":"AFWA-Mesh16","pgetype":"monthly-zonal","NETCDFLIBS":"-lnetcdff -lnetcdf","CC5":"405406","HDFEOS5_HOME":"/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/TOOLKIT/hdfeos5","PGSOBJ":"/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/TOOLKIT/obj/linux64","CERESENV":"/CERES/lib/x86-gnu/ceres-env.csh","BRAND":"linux64","REMOTEHOST":"192.168.20.13","PS_MATCH":"Edition4","PS7_2":"Edition4-July1","MainRCF":"/homedir/ghong/sarb/rcf","PS4_0_8":"NSIDC-CLASS","OutputArchive":"/homedir/ghong/sarb/data","SW7_2":"1185","HOME":"/homedir/ghong","PATH":"/CERES/tools/bin:/CERES/tools/doxygen/bin:/CERES/tools/ghostview/bin:/CERES/tools/bin:/CERES/ceres_cm/cm_bin:/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/bin:/SPG_ops/utils/altair/ge-2024.1.0/bin/lx-amd64:/CERES/tools/doxygen/bin:/CERES/tools/ghostview/bin:/CERES/tools/bin:/usr/local/anaconda3-2.5.0/bin:./:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/CERES/lib/x86-gnu/bin:/usr/X11R6/bin:/usr/include:/usr/local/include:.:/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/TOOLKIT/bin/linux64:/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/packages/hdf-4.2.13/bin:/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/packages/zlib-1.2.11/zlib/bin:/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/packages/jpeg-9b/bin:/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/packages/hdf5-1.8.19/bin:/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/packages/szip-2.1.1/szip/bin:/bin:/etc:/usr/etc:/usr/X11/bin","CC5_2":"405406","HDFEOSDIR":"-L/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/lib","SZIPBIN":"/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/packages/szip-2.1.1/szip/bin","pcfdir":"/homedir/ghong/sarb/CER7.2.1P2/rcf/pcf","PWD":"/homedir/ghong/sarb/CER7.2.1P2/rcf","HDFHOME":"/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/packages/hdf-4.2.13","ADACOMP":"-gnatE","MAIL":"/var/spool/mail/ghong","ADD_LIBS":"-ljpeg -lz -lsz  -lgcc -ldl","F90LOAD":"","LOGDIR":"/homedir/ghong/sarb/runlogs","SSH_TTY":"/dev/pts/5","HDF5BIN":"/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/packages/hdf5-1.8.19/bin","FCOMP":"-c -O2 -ffixed-line-length-80 -fno-second-underscore -Wall","HDF5DIR":"/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/lib/libhdf5_fortran.a /SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/lib/libhdf5.a -L/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/lib","DATA7_2":"1185","SZIPHOME":"/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/packages/szip-2.1.1","SS4_2":"Terra-MODIS","CLOAD":"","IDL_STARTUP":"/homedir/ghong/idl_startup.pro","HDFBIN":"/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/packages/hdf-4.2.13/bin","SS5_2":"Aqua-FM3-MODIS","CFLAGS":"-c -DLINUX -Wall","PGSMSG":"/homedir/ghong/PGS/x86_64/message","GROUP":"clouds","MCD_Col":"C6","JPEGBIN":"/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/packages/jpeg-9b/bin","MACHTYPE":"x86_64","F77_C_CFH":"","LSCOLORS":"Gxfxbxdxcxegedabagacad","HDF5LIBS":"-lhdf5hl_fortran -lhdf5_hl -lhdf5_fortran -lhdf5","HDFEOS5LIB":"-lGctp -lhe5_hdfeos","F90MEM":"-mcmodel=medium","GNUF90":"/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/bin/gfortran","MCFDIR":"/homedir/ghong/sarb/CER7.2.1P2/rcf/mcf","pcfname_prefix":"CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-July1_999999","PGSINC":"/homedir/ghong/PGS/x86_64/include","hdf4_netcdf":"disabled","F90COMP":"-c -O2 -fno-second-underscore -Wall","LD_LIBRARY_PATH":"/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/lib:/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/lib-compat","S_COLORS":"auto","LS_COLORS":"rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=01;05;37;41:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=01;36:*.au=01;36:*.flac=01;36:*.m4a=01;36:*.mid=01;36:*.midi=01;36:*.mka=01;36:*.mp3=01;36:*.mpc=01;36:*.ogg=01;36:*.ra=01;36:*.wav=01;36:*.oga=01;36:*.opus=01;36:*.spx=01;36:*.xspf=01;36:","NETCDFDIR":"-L/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/lib","CC4_2":"400401","MACHINE":"x86_64","F77":"/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/bin/gfortran","InputArchiveSS":"","HOSTNAME":"bn14.cluster.net","PERL_USE_UNSAFE_INC":"1","InputCheck":"Enable","HDFEOS_INC":"/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/TOOLKIT/hdfeos/include","F77_CFH":"-fno-second-underscore","LESSOPEN":"||/usr/bin/lesspipe.sh %s","CC_MATCH":"402402","TKLIBS":"-L/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/TOOLKIT/lib/linux64/libPGSTK.a","XDG_RUNTIME_DIR":"/run/user/25617541","CFHFLAGS":"-O2 -DH5_USE_16_API  -ansi -Df2cFortran -DHDF4_NETCDF_HAVE_SD","DBUS_SESSION_BUS_ADDRESS":"unix:path=/run/user/25617541/bus","HDFEOS_BIN":"/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/TOOLKIT/hdfeos/bin/linux64","F90SWAP":"-fconvert=swap","HDFINC":"/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/include","SZIPINC":"/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/packages/szip-2.1.1/include","HOSTTYPE":"x86_64-linux","PGS_PC_INFO_FILE":"/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/TOOLKIT/runtime/linux64/PCF.relB0","PS4_0_16":"NSIDC-AFWA-Mesh16th","HDF5LIB":"/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/packages/hdf5-1.8.19/lib","GGEO_Dir":"/ASDC_archive/CERES","PS12":"GMAO-G541-Ed4","F77_C_LIB":"","HDF5HOME":"/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/packages/hdf5-1.8.19","SS_MATCH":"Terra-Aqua-MODIS","ANCDIR":"/homedir/ghong/sarb/ancillary","bindir":"/homedir/ghong/sarb/CER7.2.1P2/bin","PCFDIR":"/homedir/ghong/sarb/CER7.2.1P2/rcf/pcf","CERESLIB":"/CERES/lib/x86-gnu","HDFEOSLIB":"-lhdfeos -lGctp","SS5_5":"CERES","AA_install":"0","JPEGINC":"/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/packages/jpeg-9b/include","Sarblib":"/homedir/ghong/sarb/lib","F77FLAGS":"-O2 -DH5_USE_16_API  -fno-second-underscore","ZLIBHOME":"/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/packages/zlib-1.2.11","PGSCONSDIR":"/CERES/lib/x86-gnu/data","ADA_OBJECTS_PATH":"/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/packages/gcc-8.2.0/lib/gcc/x86_64-pc-linux-gnu/8.2.0/adalib","SHLVL":"1","PGSHOME":"/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/TOOLKIT","ADD_LFLAGS":"-L/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/lib","PGSBIN":"/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/TOOLKIT/bin/linux64","ZLIBINC":"/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/packages/zlib-1.2.11/include","SS7_3_4":"Terra-Aqua-MODIS","CPP":"/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/bin/g++","instance_prefix":"CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999","MANPATH":"/SPG_ops/utils/altair/ge-2024.1.0/man:/SPG_ops/utils/altair/ge-2024.1.0/man:/SPG_ops/utils/altair/ge-2024.1.0/man:/SPG_ops/utils/altair/ge-2024.1.0/man:/SPG_ops/utils/altair/ge-2024.1.0/man:/SPG_ops/utils/altair/ge-2024.1.0/man:/usr/share/man:/usr/local/share/man","SZIPLIB":"/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/packages/szip-2.1.1/lib","CC5_5":"400400","PROD":"no","SSH_CONNECTION":"192.168.20.13 44742 192.168.21.91 22","SGELOGdir":"/homedir/ghong/sarb/sge_logs","CC4_0P1_16":"200200","TERM":"xterm","F90":"/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/bin/gfortran","HDFDIR":"-L/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/lib","TuningCode":"true","HDFEOS_LIB":"/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/TOOLKIT/hdfeos/lib/linux64","PGSSRC":"/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/TOOLKIT/src","PGE":"CER7.2.1P2","INST":"FM1","HOST":"bn14.cluster.net","sgelogdir":"/homedir/ghong/sarb/sge_logs/CER7.2.1P2","CYGPL":"Linux","NETCDFINC":"/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/include","FFLAGS":"-c -O2 -fno-second-underscore -Wall","CC7_2":"999999","HDFSYS":"LINUX64","IMAG":"MODIS","PERL5LIB":"/CERES/lib/rhel/perl-lib","CC12":"400400","SHELL":"/bin/tcsh","SGE_CELL":"default","C_CFH":"-Df2cFortran","LOGNAME":"ghong","InputArchiveInt":"","SS12":"CERES","SARB_HOME":"/homedir/ghong/sarb","CC":"/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/bin/gcc","SCRDIR":"/homedir/ghong/sarb/data/scr","SS7_2":"Terra-Aqua-MODIS","fc_path":"/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/packages/gcc-8.2.0/bin","CERESHOME":"/homedir/ghong","runlogdir":"/homedir/ghong/sarb/runlogs/CER7.2.1P2","DS_FILE_PATH":"/homedir/ghong/sarb/data/input","PGSLIB":"/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/TOOLKIT/lib/linux64","SGE_CLUSTER_NAME":"ami-new_uge","OSTYPE":"Linux","DATE":"202108","PGSTST":"/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/TOOLKIT/test","EntropyCode":"true","USER":"ghong","HDFEOS5_INC":"/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/TOOLKIT/hdfeos5/include","TKROOT":"/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64","PristineCode":"true","HDF5INC":"/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/include","HDFLIB":"/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/packages/hdf-4.2.13/lib","PGSDAT":"/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/TOOLKIT/database/linux64","HDFEOS5_LIB":"/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/TOOLKIT/hdfeos5/lib/linux64","TKSTUFF":"/SPG_ops/utils/CERES/TOOLKIT","HDFEOS5DIR":"-L/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/lib","JPEGHOME":"/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/packages/jpeg-9b","SS5":"Terra-FM1-MODIS","CPUTYPE":"x86_64","HDFEOS5_BIN":"/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/TOOLKIT/hdfeos5/bin/linux64","RUNDIR":".","F90_CPP":"-DGNU_FORTRAN","PS4_2":"Beta2-Ed4","platform":"x86","JPEGLIB":"/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/packages/jpeg-9b/lib"}
+
+Total Submissions      = 180
+Successful Submissions = 180
+Failed Submissions     = 0
+#################
+#### DETAILS ####
+#################
+
+####################################################################
+#                      SUCCESSFUL SUBMISSIONS                      #
+# JOB PROGESS CAN BE MONITORED BY EXAMINING THE FILES LISTED BELOW #
+####################################################################
+201304Z001 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z001.o1206735
+201304Z002 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z002.o1206736
+201304Z003 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z003.o1206737
+201304Z004 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z004.o1206738
+201304Z005 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z005.o1206739
+201304Z006 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z006.o1206740
+201304Z007 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z007.o1206741
+201304Z008 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z008.o1206742
+201304Z009 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z009.o1206743
+201304Z010 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z010.o1206744
+201304Z011 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z011.o1206745
+201304Z012 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z012.o1206746
+201304Z013 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z013.o1206747
+201304Z014 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z014.o1206748
+201304Z015 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z015.o1206749
+201304Z016 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z016.o1206750
+201304Z017 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z017.o1206751
+201304Z018 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z018.o1206752
+201304Z019 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z019.o1206753
+201304Z020 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z020.o1206754
+201304Z021 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z021.o1206755
+201304Z022 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z022.o1206756
+201304Z023 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z023.o1206757
+201304Z024 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z024.o1206758
+201304Z025 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z025.o1206759
+201304Z026 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z026.o1206760
+201304Z027 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z027.o1206761
+201304Z028 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z028.o1206762
+201304Z029 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z029.o1206763
+201304Z030 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z030.o1206764
+201304Z031 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z031.o1206765
+201304Z032 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z032.o1206766
+201304Z033 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z033.o1206767
+201304Z034 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z034.o1206768
+201304Z035 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z035.o1206769
+201304Z036 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z036.o1206770
+201304Z037 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z037.o1206771
+201304Z038 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z038.o1206772
+201304Z039 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z039.o1206773
+201304Z040 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z040.o1206774
+201304Z041 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z041.o1206775
+201304Z042 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z042.o1206776
+201304Z043 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z043.o1206777
+201304Z044 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z044.o1206778
+201304Z045 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z045.o1206779
+201304Z046 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z046.o1206780
+201304Z047 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z047.o1206781
+201304Z048 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z048.o1206782
+201304Z049 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z049.o1206783
+201304Z050 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z050.o1206784
+201304Z051 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z051.o1206785
+201304Z052 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z052.o1206786
+201304Z053 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z053.o1206788
+201304Z054 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z054.o1206789
+201304Z055 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z055.o1206790
+201304Z056 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z056.o1206791
+201304Z057 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z057.o1206793
+201304Z058 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z058.o1206794
+201304Z059 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z059.o1206795
+201304Z060 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z060.o1206797
+201304Z061 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z061.o1206798
+201304Z062 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z062.o1206799
+201304Z063 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z063.o1206800
+201304Z064 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z064.o1206801
+201304Z065 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z065.o1206802
+201304Z066 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z066.o1206803
+201304Z067 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z067.o1206804
+201304Z068 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z068.o1206805
+201304Z069 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z069.o1206806
+201304Z070 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z070.o1206807
+201304Z071 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z071.o1206808
+201304Z072 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z072.o1206809
+201304Z073 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z073.o1206810
+201304Z074 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z074.o1206811
+201304Z075 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z075.o1206812
+201304Z076 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z076.o1206813
+201304Z077 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z077.o1206814
+201304Z078 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z078.o1206815
+201304Z079 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z079.o1206816
+201304Z080 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z080.o1206817
+201304Z081 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z081.o1206818
+201304Z082 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z082.o1206819
+201304Z083 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z083.o1206820
+201304Z084 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z084.o1206821
+201304Z085 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z085.o1206822
+201304Z086 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z086.o1206823
+201304Z087 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z087.o1206824
+201304Z088 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z088.o1206825
+201304Z089 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z089.o1206826
+201304Z090 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z090.o1206827
+201304Z091 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z091.o1206828
+201304Z092 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z092.o1206829
+201304Z093 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z093.o1206830
+201304Z094 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z094.o1206831
+201304Z095 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z095.o1206832
+201304Z096 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z096.o1206833
+201304Z097 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z097.o1206834
+201304Z098 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z098.o1206835
+201304Z099 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z099.o1206836
+201304Z100 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z100.o1206837
+201304Z101 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z101.o1206838
+201304Z102 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z102.o1206839
+201304Z103 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z103.o1206840
+201304Z104 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z104.o1206841
+201304Z105 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z105.o1206842
+201304Z106 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z106.o1206843
+201304Z107 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z107.o1206844
+201304Z108 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z108.o1206845
+201304Z109 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z109.o1206846
+201304Z110 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z110.o1206847
+201304Z111 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z111.o1206848
+201304Z112 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z112.o1206849
+201304Z113 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z113.o1206850
+201304Z114 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z114.o1206851
+201304Z115 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z115.o1206852
+201304Z116 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z116.o1206853
+201304Z117 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z117.o1206854
+201304Z118 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z118.o1206855
+201304Z119 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z119.o1206856
+201304Z120 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z120.o1206857
+201304Z121 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z121.o1206858
+201304Z122 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z122.o1206859
+201304Z123 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z123.o1206860
+201304Z124 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z124.o1206861
+201304Z125 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z125.o1206862
+201304Z126 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z126.o1206863
+201304Z127 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z127.o1206864
+201304Z128 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z128.o1206865
+201304Z129 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z129.o1206866
+201304Z130 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z130.o1206867
+201304Z131 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z131.o1206868
+201304Z132 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z132.o1206869
+201304Z133 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z133.o1206870
+201304Z134 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z134.o1206871
+201304Z135 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z135.o1206872
+201304Z136 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z136.o1206873
+201304Z137 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z137.o1206874
+201304Z138 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z138.o1206875
+201304Z139 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z139.o1206876
+201304Z140 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z140.o1206877
+201304Z141 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z141.o1206878
+201304Z142 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z142.o1206879
+201304Z143 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z143.o1206880
+201304Z144 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z144.o1206881
+201304Z145 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z145.o1206882
+201304Z146 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z146.o1206883
+201304Z147 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z147.o1206884
+201304Z148 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z148.o1206885
+201304Z149 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z149.o1206886
+201304Z150 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z150.o1206887
+201304Z151 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z151.o1206888
+201304Z152 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z152.o1206889
+201304Z153 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z153.o1206890
+201304Z154 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z154.o1206891
+201304Z155 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z155.o1206892
+201304Z156 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z156.o1206893
+201304Z157 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z157.o1206894
+201304Z158 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z158.o1206895
+201304Z159 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z159.o1206896
+201304Z160 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z160.o1206897
+201304Z161 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z161.o1206898
+201304Z162 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z162.o1206899
+201304Z163 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z163.o1206900
+201304Z164 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z164.o1206901
+201304Z165 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z165.o1206902
+201304Z166 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z166.o1206903
+201304Z167 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z167.o1206904
+201304Z168 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z168.o1206905
+201304Z169 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z169.o1206906
+201304Z170 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z170.o1206907
+201304Z171 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z171.o1206908
+201304Z172 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z172.o1206909
+201304Z173 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z173.o1206910
+201304Z174 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z174.o1206911
+201304Z175 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z175.o1206912
+201304Z176 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z176.o1206913
+201304Z177 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z177.o1206914
+201304Z178 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z178.o1206915
+201304Z179 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z179.o1206916
+201304Z180 - /homedir/ghong/sarb/sge_logs/CER7.2.1P2/CER7.2.1P2_Terra-Aqua-MODIS_Edition4-July1_999999.201304Z180.o1206917
+
+#########################################################
+# FAILED SUBMISSIONS DUE TO SUN GRID ENGINE MALFUNCTION #
+#             LOG FILE WILL NOT BE PRODUCED             #
+#########################################################
+-none-
+
+####################################################
+#     FAILED SUBMISSIONS DUE TO MISSING INPUT      #
+# THESE MAY ALSO APPEAR IN EXISTING OUTPUT SECTION #
+####################################################
+-none-
+
+##################################################
+#    FAILED SUBMISSIONS DUE TO EXISTING OUTPUT   #
+# THESE MAY ALSO APPEAR IN MISSING INPUT SECTION #
+##################################################
+-none-
+
+##################
+# END OF SUMMARY #
+##################
+

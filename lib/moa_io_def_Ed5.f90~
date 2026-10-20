@@ -1,0 +1,345 @@
+MODULE MOA_IO_DEF
+!
+!**************************************************************************
+!
+! !F90
+!
+! !Name:
+!   MOA_IO_DEF
+!
+! !Description:
+!      Routine ID -
+!
+!      Purpose - To define the MOA structures and associated parameters
+!
+! !Input Parameters:
+!     NONE
+!
+! !Output Parameters:
+!     NONE
+!
+! !Team-Unique Header:
+!
+!  Internal Subroutines:
+!     None
+!
+!  Called Modules:
+!     ceres_defaults   - Used by Sbr. MOA_to_TISA,
+!     ceres_status     - Used by Sbr. MOA_Close, MOA_Close_Wrapper,
+!                                     MOA_Open, MOA_Open_Term, MOA_Open_Wrapper,  
+!                                     MOARead_Region, MOARead_Region_Wrap,
+!                                     MOARead_LatLon, MOARead_LatLon_Wrap,
+!                                     MOA_Read_Term, MOA_to_TISA, MOA_Write
+!     ceres_time       - Used by Sbr. MOA_FileInterp_Check
+!     f90_kind         - Used by Module main body
+!     IO               - Used by Sbr. MOA_Close, MOA_Close_Term,
+!                                     MOA_Open, MOA_Open_Term
+!     MSG              - Used by Sbr. LatLong_Reg, MOA_Close,
+!                                     MOA_Close_Term, MOA_Close_Wrapper,
+!                                     MOA_Open, MOA_Open_Term, MOA_Open_Wrapper,
+!                                     MOARead_LatLon, MOARead_LatLon_Wrap,
+!                                     MOARead_Region, MOARead_Region_Wrap,
+!                                     MOA_Read_Term, MOA_to_TISA, MOA_Write,
+!                                     MOA_Write_Term, Region_LatLon
+!     reference_grid   - Used by Sbr. CERES_to_MOA, MOA_to_TISA
+!
+!  External Files:
+!     PGS_MOAIO_26500.f - Used by Sbr. LatLong_Reg, MOA_Close,
+!                                      MOA_Close_Term, MOA_Close_Wrapper,
+!                                      MOA_Open, MOA_Open_Wrapper,
+!                                      MOA_Open_Term,
+!                                      MOARead_LatLon, MOARead_LatLon_Wrap,
+!                                      MOARead_Region, MOARead_Region_Wrap,
+!                                      MOA_Read_Term, MOA_to_TISA, MOA_Write,
+!                                      MOA_Write_Term,
+!                                      Region_LatLon, MOA_Interpolate_Reg,
+!                                      MOA_FileInterp_Hour,
+!                                      MOARead_Coord_Interp, MOARead_Reg_Interp
+!
+!
+!  Comments:
+!     moa_io_def is a subset of the older moa_io.  This subsetting was done
+!     to reorganize the moa interfaces and make them more managable.
+!
+! !Revision History:
+!  Version 3.8   May ?, 2026  -  SCCR# nnnn
+!                Tom Caldwell, SSAI, Thomas.E.Caldwell@nasa.gov
+!                Rita Smith, SSAI, Rita.A.Smith@nasa.gov
+!                Updates for processing ERA5 data 
+!  Version 3.7   March 8, 2023  -  SCCR# 2167
+!                Tom Caldwell, SSAI, Thomas.E.Caldwell@nasa.gov
+!                Rita Smith, SSAI, Rita.A.Smith@nasa.gov
+!                Updates for processing GEOSIT data and Edition5 MOA 
+!                netcdf data
+!  Version 3.6   February 11, 2015 - SCCR #1858
+!                Tom Caldwell, SSAI, Thomas.E.Caldwell@nasa.gov
+!                Added parameters used in reading MERRA MOA files
+!  Version 3.5   February 22, 2007 - SCCR #656
+!                Tom Caldwell, SAIC, t.e.caldwell@larc.nasa.gov
+!                Added parameters used in reading G5 MOA files
+!  Version 3.4   September 23, 2002 - SCCR #?
+!                Tom Caldwell, SAIC, t.e.caldwell@larc.nasa.gov
+!                Added parameters used in reading DAO-GEOS4 MOA files
+!  Version 3.1   April 11, 2001 - SCCR #?
+!                Tom Caldwell, SAIC, t.e.caldwell@larc.nasa.gov
+!                Added parameters used in checking data value ranges
+!  Version 3.0   March 24, 2000 - SCCR #?
+!                Tom Caldwell, SAIC, t.e.caldwell@larc.nasa.gov
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                Initial version of code
+!
+! !END
+!
+!**************************************************************************
+!
+ USE ceres_defaults, ONLY: REAL4_DFLT, INT4_DFLT
+ USE ceres_status, ONLY: BAD, OK, READ_FILE, WRITE_FILE
+ USE ceres_time, ONLY: day_of_year
+ USE ceres_meteor, ONLY: g_eln_inter, e_log_inter, e_lin_inter
+ USE f90_kind, ONLY: INT2, INT4, REAL4
+ USE IO,  ONLY: OpenFile, CloseFile
+ USE MSG, ONLY: WriteReport
+ USE reference_grid, ONLY: get_centroid, get_nested_centroid,             &
+                           get_nested_borders, NESTING_FACTOR,            &
+                           nested_region_number, sequence_number,         &
+                           nested_number
+!	
+ IMPLICIT NONE			
+!			
+ INCLUDE 'PGS_MOAIO_26500.f'
+!
+!
+! *** Module Wide Parameters
+!
+  REAL,    PARAMETER :: Default_MOA = Real4_Dflt
+  INTEGER, PARAMETER :: Default_MOA_INT = INT4_DFLT
+!
+!
+! EDITION5 Grid Indexes
+!
+!  Input indexes
+!
+  INTEGER, PARAMETER :: Index_GEOSIT  = 25   ! GEOS 0.5x0.67-deg Grid 
+  INTEGER, PARAMETER :: Index_ERA5    = 26   ! ECMWF 0.25x0.25-deg Grid 
+!
+!  Output indexes
+!
+  INTEGER, PARAMETER :: Index_CERES05Deg = 35   ! CERES 0.5x0.5-deg Grid 
+  INTEGER, PARAMETER :: Index_CERESNESTED =  36  ! Not in any MOA file, 
+                                                 ! a flag for conversion to 
+                                                 ! nested grid format
+!
+  INTEGER, PARAMETER :: NL = 58             ! Number of profile levels for
+                                            ! temperature, specific humidity,
+                                            ! and ozone mixing ratio
+  INTEGER, PARAMETER :: NW = 18             ! Number of profile levels for
+                                            ! Wind speeds
+  INTEGER, PARAMETER :: MaxMOA_NCDF = 3     ! Number of MOA files needed for
+                                            ! temporal interpolation
+  INTEGER, PARAMETER :: NH = 3              ! Number of hourly data sets
+                                            ! in certain MOA output fields
+!
+! *** Widely used Grid Parameters
+!
+  INTEGER, PARAMETER :: NumBands_GEOSIT = 361
+  INTEGER, PARAMETER :: NumReg_GEOSIT   = 576
+
+  INTEGER, PARAMETER :: NumBands_ERA5 = 721
+  INTEGER, PARAMETER :: NumReg_ERA5   = 1440
+
+  INTEGER, PARAMETER :: NumBands_CERES05Deg = 360
+  INTEGER, PARAMETER :: NumReg_CERES05Deg   = 720
+!
+!
+  INTEGER, PARAMETER :: NumReg_Global_CERES05Deg = 259200  ! (360x720)
+  INTEGER, PARAMETER :: NumReg_Global_CERES1Deg = 64800    ! (180x360)
+!HG  INTEGER, PARAMETER :: NumReg_Global_CERESNested = 176044 ! 0.5 deg nested
+!  INTEGER, PARAMETER :: NumReg_Global_CERESNested = 44012  ! 1 deg nested
+
+  INTEGER, PARAMETER :: NumReg_Global_GEOSIT = 207936      ! (361x576)
+  INTEGER, PARAMETER :: NumReg_Global_ERA5 = 1038240       ! (721x1440)
+!
+  REAL (KIND=REAL4) :: Pres_MP ( NL) = (/   -999., -999., -999.,       &  ! Pressure levels of the vertical   (hPa)
+  	 1000., 975., 950., 920., 900., 875., 850., 825., 800.,        &  ! temperature, specific humidity,
+  	  780., 750., 725., 700., 670., 650., 620., 600., 570.,        &  ! and ozone mixing ratio profiles
+  	  550., 500., 475., 450., 430., 400., 350., 300., 275.,        &
+  	  250., 225., 200., 175., 150., 135., 125., 115., 100.,        &
+  	   85.,  70.,  60.,  50.,  30.,  25.,  20.,  15.,  10.,        &
+  	   7.,   5.,   4.,   3.,   2.,  1.5,   1.,   .5,   .2,  .1 /)
+
+!
+! *** Grid origin and coordinate definitions
+!
+  CHARACTER (LEN=2), PARAMETER :: Mercator = 'MR'
+  CHARACTER (LEN=2), PARAMETER :: CoLng_DL = 'ID'
+  CHARACTER (LEN=2), PARAMETER :: CoLng_GM = 'GM'
+!
+! *** MOA Product definition
+!
+!  *  Header Record
+!
+  TYPE MOA_HEADER_TYPE
+   SEQUENCE
+   CHARACTER (LEN=27)  :: DataDate          ! MOA data date
+   CHARACTER (LEN=19)  :: ProcDate          ! MOA processing date
+   INTEGER (KIND=INT4) :: GridIdx_Input     ! Input grid index
+   INTEGER (KIND=INT4) :: GridIdx_Output    ! MOA grid index
+!
+   INTEGER (KIND=INT4) :: NumReg_MOA        ! Number of MOA regions, globally
+   REAL (KIND=REAL4)   :: Pres_MP ( NL)     ! Pressure levels of the vertical   (hPa)
+                                            ! temperature, specific humidity,
+                                            ! and ozone mixing ratio profiles
+   REAL (KIND=REAL4)   :: WindLev ( NW)     ! Pressure levels of the vertical   (hPa)
+                                            ! wind speed profiles
+  END TYPE MOA_HEADER_TYPE
+!
+!  *  Region Records ( data)
+!
+  TYPE MOA_TYPE
+   SEQUENCE
+   INTEGER (KIND=INT4) :: RegIdx            ! Region number index
+   REAL (KIND=REAL4)   :: SfcPres           ! Surface pressure			(hPa)
+   REAL (KIND=REAL4)   :: SfcGeoPt          ! Surface geopotential height	(m)
+   REAL (KIND=REAL4)   :: SfcSknTemp        ! Surface skin temperature		(K)
+   REAL (KIND=REAL4)   :: SfcUwind          ! Surface U Wind Vector		(m/sec)		
+   REAL (KIND=REAL4)   :: SfcVwind          ! Surface V Wind Vector		(m/sec)		
+   REAL (KIND=REAL4)   :: Temp_MP  ( NL)    ! Vert profile of temperature	(K)
+   REAL (KIND=REAL4)   :: Humid_MP ( NL)    ! Vert profile of humidity		(g/g)
+   REAL (KIND=REAL4)   :: UWind_MP ( NW)    ! Vert profile of wind, u-vector	(m/sec)
+   REAL (KIND=REAL4)   :: VWind_MP ( NW)    ! Vert profile of wind, v-vector	(m/sec)
+   REAL (KIND=REAL4)   :: TropHt            ! Tropospheric height		(hPa)
+   INTEGER (KIND=INT4) :: AirMassIdx        ! Air Mass Index
+                                            !  ( Options...
+                                            !  = 1; Equatorial
+                                            !  = 2; Continental Tropical
+                                            !  = 3; Maritime Tropical
+                                            !  = 4; Continental Polar
+                                            !  = 5; Maritime Polar
+                                            !  = 6; Arctic
+                                            !  = 7; Frontal(Transitional) )
+   REAL (KIND=REAL4)   :: Precip_H2O        ! Precipitable water from humidity	(cm)
+                                            ! profile
+   REAL (KIND=REAL4)   :: RelHum_ColAvg     ! Column averaged relative humidity
+   REAL (KIND=REAL4)   :: PO3 ( NL)         ! Vert profile of O3 data		(g/g)
+   REAL (KIND=REAL4)   :: CO3               ! Total Col O3
+   REAL (KIND=REAL4)   :: CA_OptDepth       ! Col Aer optical depth
+   REAL (KIND=REAL4)   :: Cld_Frac          ! Cloud Fraction
+   REAL (KIND=REAL4)   :: UTRH              ! Upper tropospheric relative humidity
+   REAL (KIND=REAL4)   :: EIS               ! Estimated inversion strength
+   REAL (KIND=REAL4)   :: PotTemp           ! Potential temperature
+   REAL (KIND=REAL4)   :: DailyTwoMeterTemp ! Daily averaged two meter temperature
+
+  END TYPE MOA_TYPE
+!
+!
+! *** MOA Product allowable ranges
+!
+!  *  Header Record Ranges
+!
+   INTEGER, PARAMETER  :: GridIdx_Min = 1
+   INTEGER, PARAMETER  :: GridIdx_Max = 45
+!
+   INTEGER, PARAMETER  :: NumReg_Min  = 13104
+   INTEGER, PARAMETER  :: NumReg_Max  = 259200
+!
+   REAL,    PARAMETER  :: Pres_MP_Min = 0
+   REAL,    PARAMETER  :: Pres_MP_Max = 1100
+!
+   REAL,    PARAMETER  :: WindLev_Min = 0
+   REAL,    PARAMETER  :: WindLev_Max = 1100
+!
+!  *  Region Record Ranges (Data)
+!
+   INTEGER, PARAMETER  :: RegIdx_Min            =  1
+   INTEGER, PARAMETER  :: RegIdx_Max            =  259200
+!
+   REAL,    PARAMETER  :: SfcPres_Min           =  0			
+   REAL,    PARAMETER  :: SfcPres_Max           =  1500			
+!
+   REAL,    PARAMETER  :: SfcGeoPt_Min          = -1000
+   REAL,    PARAMETER  :: SfcGeoPt_Max          =  10000
+!
+   INTEGER, PARAMETER  :: MinSkinTemp           =  100
+   INTEGER, PARAMETER  :: MaxSkinTemp           =  400
+!
+   REAL,    PARAMETER  :: SfcUwind_Min          = -500	
+   REAL,    PARAMETER  :: SfcUwind_Max          =  500	
+!
+   REAL,    PARAMETER  :: SfcVwind_Min          = -500	
+   REAL,    PARAMETER  :: SfcVwind_Max          =  500	
+!
+   REAL,    PARAMETER  :: Temp_MP_Min		=  100
+   REAL,    PARAMETER  :: Temp_MP_Max  		=  400
+!
+   REAL,    PARAMETER  :: Humid_MP_Min 		=  0
+   REAL,    PARAMETER  :: Humid_MP_Max 		=  0.5
+!
+   REAL,    PARAMETER  :: UWind_MP_Min 		= -500
+   REAL,    PARAMETER  :: UWind_MP_Max 		=  500
+!
+   REAL,    PARAMETER  :: VWind_MP_Min 		= -500
+   REAL,    PARAMETER  :: VWind_MP_Max 		=  500
+!
+   INTEGER, PARAMETER  :: Flag_MP_Min          	=  0
+   INTEGER, PARAMETER  :: Flag_MP_Max           =  35	
+!
+   REAL,    PARAMETER  :: TropHt_Min            =  0
+   REAL,    PARAMETER  :: TropHt_Max            =  1000
+!
+   INTEGER, PARAMETER  :: AirMassIdx_Min        =  0
+   INTEGER, PARAMETER  :: AirMassIdx_Max        =  10
+!
+   REAL,    PARAMETER  :: Precip_H2O_Min        =  0
+   REAL,    PARAMETER  :: Precip_H2O_Max        =  50.000
+!
+   REAL,    PARAMETER  :: RelHum_ColAvg_Min     =  0
+   REAL,    PARAMETER  :: RelHum_ColAvg_Max     =  500
+!
+   REAL,    PARAMETER  :: PO3_Min         	=  0.0
+   REAL,    PARAMETER  :: PO3_Max        	=  0.001
+!
+   REAL,    PARAMETER  :: CO3_Min               =  0
+   REAL,    PARAMETER  :: CO3_Max               =  1000
+!
+   REAL,    PARAMETER  :: CA_OptDepth_Min       =  0
+   REAL,    PARAMETER  :: CA_OptDepth_Max       =  1000
+!
+   REAL,    PARAMETER  :: Cld_Frac_Min          =  0
+   REAL,    PARAMETER  :: Cld_Frac_Max          =  1.5
+!
+   REAL,    PARAMETER  :: UTRH_Min              =  0
+   REAL,    PARAMETER  :: UTRH_Max              =  500
+!			
+   REAL,    PARAMETER  :: EIS_Min               =  -200.0
+   REAL,    PARAMETER  :: EIS_Max               =  200.0
+!
+   REAL,    PARAMETER  :: PotTemp_Min		=  100
+   REAL,    PARAMETER  :: PotTemp_Max  		=  400
+!			
+! *** NULL MOA STRUCTURE
+  TYPE ( MOA_TYPE), PARAMETER :: MOA_NULL = MOA_TYPE ( &
+                            Int4_Dflt,    & ! RegIdx
+                           Real4_Dflt,    & ! SfcPres
+                           Real4_Dflt,    & ! SfcGeoPt
+                           Real4_Dflt,    & ! SfcSknTemp
+                           Real4_Dflt,    & ! SfcUwind
+                           Real4_Dflt,    & ! SfcVwind
+                           Real4_Dflt,    & ! Temp_MP  ( NL)
+                           Real4_Dflt,    & ! Humid_MP ( NL)
+                           Real4_Dflt,    & ! UWind_MP ( NW)
+                           Real4_Dflt,    & ! VWind_MP ( NW)
+                           Real4_Dflt,    & ! TropHt
+                            Int4_Dflt,    & ! AirMassIdx
+                           Real4_Dflt,    & ! Precip_H2O
+                           Real4_Dflt,    & ! RelHum_ColAvg
+                           Real4_Dflt,    & ! PO3 ( NL)
+                           Real4_Dflt,    & ! CO3
+                           Real4_Dflt,    & ! CA_OptDepth
+                           Real4_Dflt,    & ! Cld_Frac
+                           Real4_Dflt,    & ! UTRH
+                           Real4_Dflt,    & ! EIS
+                           Real4_Dflt,    & ! PotTemp
+                           Real4_Dflt)      ! DailyTwoMeterTemp
+!
+!
+END MODULE MOA_IO_DEF

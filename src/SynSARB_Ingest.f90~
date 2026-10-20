@@ -1,0 +1,1868 @@
+MODULE SynSARB_Ingest
+!
+!
+!*****************************************************************************
+!
+! !F90
+!
+! !Name:
+!    SynSARB_Ingest
+!
+! !Description:
+!    Routine ID - M7.2.2.1
+!
+!    Purpose - To provide a module of routines to Retrieve the TSI data
+!
+!
+! !Input Parameters:
+!    NONE
+!
+! !Output Parameters:
+!    NONE
+!
+! !Team-Unique Header:
+!
+!  Internal Routines:
+!    CheckTSI_Data     - Verifies that only proper input data is processed
+!    CloudProp_Init    - Loads cloud property values from the TSI into
+!                        SARB variables
+!    EarthSun_Var_Calc - Retrieves daily earth-sun distance values
+!    GetTSI_Data       - Retrieves TSI data
+!    Ingest_Input      - Drives the ingestion of regional input data 
+!    MOA_Ingest        - Ingests MOA input data
+!    Scene_Init        - Loads TSI values into SARB scene variables
+!    SkinTemp_Calc     - Corrects MOA-provided skin temperature according to 
+!                        TSI surface elevation
+!    SynSceneType      - Defines scene type array elements in order of area 
+!                        percent coverage
+!    TOA_Init          - Loads TSI values into SARB TOA variables
+!
+!  Modules Used:
+!    ceres_meteor       - (CERESlib) Used by Sbr. SkinTemp_Calc
+!    MOA_IO             - (CERESlib) Used by Sbr. Ingest_Input, MOA_Ingest,
+!                                                 SkinTemp_Calc
+!    MSG                - (CERESlib) Used by Sbr. GetTSI_Data, GetTSI_RecNum
+!    No_Cloud           - (SARBlib)  Used by Sbr. Ingest_Input
+!    Profile_Params     - (SARBlib)  Used by Sbr. CloudProp_Init, Ingest_Input,
+!                                                 Scene_Init, SceneSnow
+!    reference_grid     - (CERESlib) Used by Sbr. Scene_Init
+!    SARBInput_Params   - (SARBlib)  Used by Sbr. Scene_Init, 
+!                                                 SynSceneType
+!    SARBInput_Utils    - (SARBlib)  Used by Sbr. CloudProp_Init, MOA_Ingest, 
+!                                                 Scene_Init, TOA_Init
+!    SARB_QC_Params     - (SARBlib)  Used by Sbr. Scene_Init, TOA_Init
+!    SARB_Var           - (SARBlib)  Used by Sbr. CloudProp_Init, 
+!                                                 GetTSI_RecNum, Ingest_Input,
+!                                                 MOA_Ingest, Scene_Init, 
+!                                                 SkinTemp_Calc, TOA_Init
+!    solar_declination  - (CERESlib) Used by Sbr. EarthSun_Var_Calc
+!    SYN_Index          - (CERESlib) Used by Sbr. GetTSI_RecNum
+!    SynSARB_Albedo     - (SynSARB)  Used by Sbr. Ingest_Input
+!    SynSARB_IO_Params  - (SynSARB)  Used by Sbr. GetTSI_Data, GetTSI_RecNum,
+!                                                 Ingest_Input
+!    tsi_type_mod       - (CERESlib) Used by Sbr. CloudProp_Init,
+!                                                 GetTSI_Data, GetTSI_RecNum, 
+!                                                 Ingest_Input, Scene_Init, 
+!                                                 TOA_Init
+!
+!  External Files Used:
+!    PGS_TSIRET_26004 - Used by Sbr. GetTSI_Data
+!
+! !Revision History:
+!  Version 4.1   June 23, 2014 - SCCR #1017  
+!                Thomas Caldwell, SSAI, Thomas.E.Caldwell@nasa.gov
+!                 1. Updated CloudProp_Init for Edition4 SYNI processing
+!                 2. Updated EarthSun_Var_Calc to use daily solar constant
+!                    values provided by CERES
+!                 3. Removed Aer_Init to use only Edition4 MATCH aerosols
+!  Version 4.0   August 16, 2004 - SCCR #550  
+!                Thomas Caldwell, SAIC, t.e.caldwell@larc.nasa.gov
+!                 1. Added subroutine CheckTSI_Data
+!  Version 3.4   June 20, 2003 - SCCR #445  
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                 Initial version of Release 3 code 
+!  Version 1.0   March 28, 1996
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                Ed Daniels, SAIC, e.f.daniels@larc.nasa.gov
+!
+! !END
+!
+!*****************************************************************************
+!
+      USE TSI_FLAG_ED4,only : src
+      
+      USE ceres_meteor, ONLY: t0_t1
+      USE ceres_time
+      USE aotfit
+
+!      USE COLLINS_ASSIMILATION, ONLY: get_collins
+!       USE MATCH_ED4v13 ,only: mpro , get_mpro_gridboxhr,print_mpro_gridboxhr
+       
+      USE Control_Mod
+      USE FL_IO_Params
+      USE IGBP_AdjSnowIce, ONLY: AdjIGBP_Drv 
+!      USE MATCH_PROFILES    
+!      USE MOA_IO
+      USE MOA_IO_NESTED
+!      USE MonMODISAer_Params
+!      USE Monthly_AerHist_Utils
+      USE MSG, ONLY: WriteReport
+      USE No_Cloud
+      USE Profile_Params
+      USE reference_grid, ONLY: get_centroid
+      USE SARB_QC_Params
+      USE SARB_Var
+!      USE SARB_FOV_Albedo
+      USE SARBAer_Utils
+      USE SARBAer_Var
+      USE SARBInput_Params
+      USE SARBInput_Utils
+      USE solar_declination, ONLY: solar_dec
+ !     USE Spectral_Sfc, ONLY: spectral_surface
+      USE SYNSPECTRAL
+      USE SynSARB_IO_Params
+      USE TSI_TYPE_MOD
+      USE ValReg_Utils, ONLY: ValReg_Check
+
+      USE read_zonal_tsi_file
+      USE NETCDF
+
+      USE nclouds_params  ! HG-2025.0722
+!
+      IMPLICIT NONE
+!
+      INCLUDE 'PGS_TSIRET_26004.f'
+!
+      CONTAINS
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!
+!      SUBROUTINE Ingest_Input (IRec_TSI, IDay,NoProcess)      ! O
+
+!BB-netcdf TISA        
+        SUBROUTINE Ingest_Input (iHour, iReg, IDay,NoProcess)      ! O
+!
+!
+!***************************************************************************
+! 
+! !F90
+!
+! !Name:
+!   Ingest_Input
+!
+! !Description:
+!   Routine ID - 7.2.2.1
+!
+!   Purpose - To drive the ingestion of the next TSI record of regional data, 
+!             along with the correspoding MOA data, surface skin temperature, 
+!             and enhanced surface albedo data 
+!             
+!
+! !Input Parameters:
+!    IDay     - Day of the month
+!    IRec_TSI - TSI record number
+!
+! !Output Parameters:
+!    FOV_SS          - Data structure for surface spectral albedo data
+!    HrBox           - Hour box number
+!    MOA             - MOA record contents
+!    NoProcess       - Flag indicating whether or not to continue processing
+!                      the current footprint
+!                        = 0; Continue processing
+!                        = 1; Set output values to default and go to next FOV
+!    RegionNum_CERES - CERES region index
+!    TSI             - Synoptic regional data from the TSI product
+!
+! !Team-Unique Header:
+!
+!  Modules Used: (Parameters followed by "*" are defined by this routine)
+!    MOA_IO            - (CERESlib) Structures: MOA_TYPE
+!    No_Cloud          - (SARBlib)  Sbr. NoCloud_Profile_Build
+!    SARB_QC_Params    - (SARBlib)  Params: ICnt_Night*, ICnt_NoFlux*,  
+!                                           ICnt_NoPres*, ICnt_SunGlint*
+!    SARB_Var          - (SARBlib)  Params: DayNite
+!    SARBInput_Params  - (SARBlib)  Params: Nighttime
+!    Spectral_Sfc      - (InstSARB) Structures: spectral_surface
+!    SynSARB_IO_Params - (SynSARB)  Params: IUnit_TSI
+!    tsi_typ_mod       - (CERESlib) Structures: tsi_type
+!
+!  Internal Routines Called:
+!    CloudProp_Init
+!    GetTSI_Data
+!    MOA_Ingest
+!    Scene_Init
+!    SkinTemp_Calc
+!    TOA_Init
+!
+! !Revision History:
+!  Version 4.1   June 23, 2014 - SCCR #1017  
+!                Thomas Caldwell, SSAI, Thomas.E.Caldwell@nasa.gov
+!                 1. Removed call to Aer_Init 
+!                 2. Only TSI and Edition4 MATCH aerosol values are used  
+!  Version 4.0   August 16, 2004 - SCCR #550  
+!                Thomas Caldwell, SAIC, t.e.caldwell@larc.nasa.gov
+!                 1. Added call to CheckTSI_Data
+!                 2. Added RETURN statement to exit on bad data  
+!  Version 3.4   June 20, 2003 - SCCR #445  
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                 Initial version of Release 3 code 
+!  Version 2.1   June 16, 1998 - SCCR #89
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                Shalini Gupta, SAIC, s.gupta@larc.nasa.gov
+!                 1. Breakdown into multiple routines and own module
+!
+! !END
+!
+!***************************************************************************
+!
+	USE COMMON_ACCESS ,only : TSI, MOA , HrBox,RegionNum_CERES
+
+!      INTEGER,                 INTENT (OUT) :: HrBox
+      INTEGER,                 INTENT (IN)  :: IDay
+!      TYPE (spectral_surface), INTENT (OUT) :: FOV_SS
+!      INTEGER,                 INTENT (IN)  :: IRec_TSI
+      INTEGER,                 INTENT (IN)  :: iHour, iReg
+!      TYPE (MOA_TYPE),         INTENT (OUT) :: MOA
+      INTEGER,                 INTENT (OUT) :: NoProcess
+!      INTEGER,                 INTENT (OUT) :: RegionNum_CERES
+
+!      TYPE (tsi_type),         INTENT (OUT) :: TSI
+!      TYPE (MOA_TYPE),         INTENT (OUT) :: MOA
+
+
+
+
+      INTEGER :: NoProcess_Cld
+      INTEGER :: NoProcess_SunGlint
+      INTEGER :: NoProcess_TOA
+      INTEGER, SAVE :: Bad_Count
+!
+!
+! *** Initialize
+!
+      NoProcess          = 0
+      NoProcess_SunGlint = 0 
+      NoProcess_TOA      = 0 
+      NoProcess_Cld      = 0
+!
+!
+! *** Calculate value of radiative transfer model variable, ssrna
+!
+      CALL EarthSun_Var_Calc (IDay)
+!
+!
+! *** Ingest TSI input data and load TSI scene, TOA, and cloud property 
+!     information into SARB variables.
+!
+!      CALL GetTSI_Data (IUnit_TSI, IRec_TSI,                          & ! I
+!                                             TSI)                       ! O
+!      !
+!BHB 20260428
+      CALL GetTSI_Data (iHour, iReg,                          & ! I
+                                             TSI)                       ! O
+!
+! *** Assign cos solar zenith angle regardless of TSI input check
+!
+      u0 = TSI % timeandloc % cos_sol_zenith
+!
+!
+! *** Set NoProcess flags if TSI data is invalid.
+!  
+      CALL CheckTSI_Data (TSI,                                        & ! I
+                               RegionNum_CERES, HrBox, NoProcess)       ! O
+!
+      IF (NoProcess == 1) THEN
+       RETURN
+      ENDIF
+!
+! *** Load TSI scene information into SARB variables.
+!  
+      CALL Scene_Init (TSI,                                           & ! I
+                            HrBox, RegionNum_CERES)                     ! O
+!
+! *** Retrieve MOA data
+!
+      CALL MOA_Ingest (RegionNum_CERES,                               & ! I
+                                        MOA)                            ! O
+!
+! 
+! *** Retrieve initial aerosol optical depth value.
+!      
+      AerRatio(InitPass)    = 1.0
+      AerSrc_PrimInput      = AerSrc_ClimOnly
+      AOT_Obs               = Default_REAL4_FL
+      AerOptDepth(InitPass) = Default_REAL4_FL
+      AOT_Stowe             = TSI % clrsky_area_data % aero_vis_opdep063
+
+!
+! *** Load TSI TOA and cloud property information into SARB variables.
+!
+      CALL TOA_Init (TSI,                                             & ! I
+                          NoProcess_SunGlint, NoProcess_TOA)            ! O
+!
+      CALL CloudProp_Init (TSI,                                       & ! I
+                                NoProcess_Cld)                          ! O
+!
+! *** Build initial vertical profiles without clouds
+!
+      CALL NoCloud_Profile_Build (MOA)                                  ! I
+!
+! *** Select sigma table from data file based on inputs
+!
+      CALL Sig_Rule_Select (igbp_sid, RLat, Cloud_Frac, u0,      & ! I 
+          SnowIce_Flag,TSI%fluxestsi%data_flg)! I
+!
+! *** Isolate input surface flux values
+!
+      CALL SfcFlux_Init
+!
+!
+! *** Calculate skin temperature
+!
+      CALL SkinTemp_Calc (MOA, pts(InitPass)  ) 
+
+!     USE TSI MODIS/GEO Skint if valid and not Ocean
+
+      IF( igbp_sid .NE. 17 .AND. TSI%surface%sfc_skin_temp > 150 .AND. TSI%surface%sfc_skin_temp < 400) THEN     
+        pts(InitPass)=TSI%surface%sfc_skin_temp
+      ENDIF
+
+! *** Determine initial surface albedo value.
+!
+!      CALL SfcAlb_Drv ( FOV_SS)
+!
+!
+! *** Update applicable QC Report counters
+!
+      IF (DayNite == Nighttime) ICnt_Night = ICnt_Night + 1
+!
+      IF (NoProcess_SunGlint /= 0) THEN
+!     *** Unallowable sunglint percentage value
+!
+          NoProcess = 1
+          ICnt_SunGlint ( DayNite) = ICnt_SunGlint ( DayNite) + 1
+!
+      ELSE IF (NoProcess_TOA /= 0) THEN
+!     *** Invalid CERES TOA Flux data
+!
+          NoProcess = 1
+          ICnt_NoFlux ( DayNite) = ICnt_NoFlux ( DayNite) + 1
+!
+      ELSE IF (NoProcess_Cld /= 0) THEN
+!     *** Invalid cloud property
+!
+          NoProcess = 1
+          ICnt_NoPres ( DayNite) = ICnt_NoPres ( DayNite) + 1
+!
+      END IF
+!
+!
+      END SUBROUTINE Ingest_Input
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+!
+!! BB-20260428 read netcdf tsib     
+      SUBROUTINE GetTSI_Data (iHour, iReg,                  & ! I
+                                                  TSI_Data)          ! O
+!
+!*****************************************************************************
+!
+! !F90
+!
+! !Name:
+!    GetTSI_Data
+!
+! !Description:
+!    Routine ID - 7.2.2.1.1
+!
+!    Purpose - To retrieve the TSI data (netcdf) for the indicated region
+!
+!
+
+!
+! !Revision History:
+!  Version 3.4   June 20, 2003 - SCCR #445  
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                 Initial version of Release 3 code 
+!  Version 1.0   March 28, 1996
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                Ed Daniels, SAIC, e.f.daniels@larc.nasa.gov
+!
+! !END
+!
+!*****************************************************************************
+!
+!
+        USE read_zonal_tsi_file
+        INTEGER,         INTENT (IN)    :: iHour
+        INTEGER,         INTENT (IN)    :: iReg
+        
+!      INTEGER,         INTENT (IN)    :: IRec_TSI
+!      INTEGER,         INTENT (IN)    :: TSI_Unit
+      TYPE (tsi_type), INTENT (OUT)   :: TSI_Data
+!
+!      INTEGER :: IOS
+      INTEGER :: IOS
+      INTEGER :: num_cld_layers
+      LOGICAL :: ed5_cld_flag, tsi_struct_debug
+
+      
+!  PRINT *, 'TSI record length =', tsi_reclen      
+!
+!
+! *** Read data regional record from TSI file
+!
+     !get the number of cloud layers from the TSI_Data struc
+      !num_cld_layers = SIZE(TSI_Data%cld_layer)
+      
+      num_cld_layers = 9
+      
+     !the ed5_cld_flag is true if the number of cloud layers
+     ! as 3x3 is only available from edition 5 files
+    ed5_cld_flag = (num_cld_layers == 9)
+     
+    tsi_struct_debug = .false. !set to true for debug print statements, set to false otherwise
+
+    
+      !replacing NetCDF read  -BB
+!      CALL fill_tsi_struct(TSI_Data,iReg,iHour)
+
+     CALL fill_tsi_struct(TSI_Data,iReg,iHour,num_cld_layers,ed5_cld_flag,tsi_struct_debug)
+
+    
+!      CALL TSI_read (TSI_Unit, IRec_TSI, TSI_Data, IOS)
+!
+!      
+!      IF (IOS /= 0) THEN
+!          CALL WriteReport (TSIRET_E_FAILED_TSI_READ,            & ! I
+!                            FuncName = "ReadTSI_Data():")          ! I
+!      END IF
+!!
+!!      OptDepthLin_mn ( InitPass, 1:MaxLev_Cld) = &
+!!      TSI_Data % cld_layer (MaxLev_Cld:1:-1) % optdepth_mn_lnr                             
+!
+!
+      END SUBROUTINE GetTSI_Data
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+!
+      SUBROUTINE CheckTSI_Data (TSI_Data,                 & ! I
+                                        RegionNum_CERES, HrBox, NoProcess)  ! O
+!
+!*****************************************************************************
+!
+! !F90
+!
+! !Name:
+!    CheckTSI_Data
+!
+! !Description:
+!    Routine ID - ?
+!
+!    Purpose - To check the TSI data for invalid values
+!
+!
+! !Input Parameters:
+!    TSI_Data - TSI structure read from file
+!
+! !Output Parameters:
+!    Region    - region box number from TSI
+!    Hour      - hour number from TSI
+!    NoProcess - flag indicating valid or invalid TSI data
+!
+! !Team-Unique Header:
+!
+!  Internal Routines:
+!    
+!
+! !Revision History:
+!  Version 4.0   August 16, 2004 - SCCR #550  
+!                Thomas Caldwell, SAIC, t.e.caldwell@larc.nasa.gov
+!                 Initial version of code, Release 4.0 
+!
+! !END
+!
+!*****************************************************************************
+!
+!
+      TYPE (tsi_type), INTENT (IN)   :: TSI_Data
+      INTEGER,         INTENT (OUT)  :: RegionNum_CERES
+      INTEGER,         INTENT (OUT)  :: HrBox
+      INTEGER,         INTENT (OUT)  :: NoProcess
+!
+      INTEGER :: Bad_TSI
+      INTEGER :: Bad_SW
+      INTEGER :: Bad_LW
+      REAL    :: TSI_Cld_Sum
+      REAL    :: TSI_SW_Diff
+      REAL    :: TSI_LW_Diff
+!      
+!     Initialize variables
+!      
+      Bad_TSI = 0
+      Bad_SW = 0
+      Bad_LW = 0
+!
+      TSI_Cld_Sum = SUM(TSI_Data % cld_layer(1:nclouds) % areafrac_total) !HG
+      TSI_SW_Diff = ABS(TSI_Data % fluxestsi % clear_sw_mn - &
+      TSI_Data % fluxestsi % total_sw_mn) 
+      TSI_LW_Diff = ABS(TSI_Data % fluxestsi % clear_lw_mn - & 
+      TSI_Data % fluxestsi % total_lw_mn)
+!
+      IF (TSI_Data % timeandloc % hour_box_num == Default_INT4_FL) THEN
+       Bad_TSI = 1
+      ELSEIF (TSI_Data % timeandloc % hour_box_num < 1) THEN
+       Bad_TSI = 1 
+      ELSEIF (TSI_Data % timeandloc % region_num <= 0) THEN      
+       Bad_TSI = 1 
+      ELSEIF (TSI_Data % timeandloc % region_num > 64800) THEN      
+       Bad_TSI = 1
+      ELSEIF (TSI_Data % timeandloc % region_num == Default_INT4_FL) THEN   
+       Bad_TSI = 1 
+      ELSEIF (TSI_Data % timeandloc % sfc_alt == Default_Real4_FL) THEN     
+       Bad_TSI = 1 
+!         
+      ELSEIF (TSI_Data % timeandloc % cos_sol_zenith > 0 .AND. & !!! DAYTIME SW
+         (TSI_Cld_Sum == 0.0 .AND. TSI_SW_Diff > 5.0)) THEN !!! CLEAR & CLR/=TOT ! Changed to =/-5 20131112
+          Bad_SW = 1
+!         
+      ELSEIF (TSI_Cld_Sum == 0.0 .AND. & !!! CLEAR
+       TSI_LW_Diff > 5.0 .OR.         & !!! CLR/=TOT 
+       TSI_Data%fluxestsi%total_lw_mn == REAL4_DFLT) THEN ! Changed to =/-5 20131112
+          Bad_LW = 1
+      ENDIF
+!
+      IF (Bad_TSI == 1) THEN
+        InvalidTSI_SSF_TotQC = InvalidTSI_SSF_TotQC + 1
+      ELSEIF (Bad_SW == 1 .OR. Bad_LW == 1) THEN 
+        CloudInconsist_TotQC = CloudInconsist_TotQC + 1
+      ENDIF  
+!
+      IF (Bad_TSI == 1 .OR. Bad_SW == 1 .OR. Bad_LW == 1) THEN
+        RegionNum_CERES = TSI_Data % timeandloc % region_num
+        HrBox = TSI_Data % timeandloc % hour_box_num
+        NoProcess = 1
+      ENDIF
+!
+      END SUBROUTINE CheckTSI_Data
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+!
+      SUBROUTINE Scene_Init (TSI,                                & ! I
+                                  HrBox, RegionNum_CERES)          ! O
+!
+!***************************************************************************
+! 
+! !F90
+!
+! !Name:
+!   Scene_Ingest
+!
+! !Description:
+!   Routine ID - 7.2.2.1.2
+!
+!   Purpose - To load scene data from the TSI into SARB parameters
+!             
+!
+! !Input Parameters:
+!    TSI - TSI regional data
+!
+! !Output Parameters:
+!    HrBox           - Hour box number
+!    RegionNum_CERES - CERES region number of sample
+!
+! !Team-Unique Header:
+!
+!  Modules Used: (Parameters followed by "*" are defined by this routine)
+!    Profile_Params    - (SARBlib)  Params: Num_SfcTyp
+!    reference_grid    - (CERESlib) Sbr. get_centroid
+!    SARB_Var          - (SARBlib)  Params: Colat*, DayNite*, Daytime, 
+!                                           Input_Time*, isc*, itp_scene*, 
+!                                           Nighttime, RLat*, RLong*, 
+!                                           SfcAlt_mn*, u0*
+!    SARBInput_Params  - (SARBlib)  Params: SceneNumCERES
+!    tsi_typ_mod       - (CERESlib) Structures: tsi_type
+!    ValReg_Utils       - (CERESlib) Sbr. ValReg_Check
+!    SARB_QC_Params     - (SARBlib)  Parameters: ValSite_Pass*, ValSite_PassCnt*
+!
+! !Revision History:
+!  Version 3.4   June 20, 2003 - SCCR #445  
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                 Initial version of Release 3 code 
+!
+! !END
+!
+!***************************************************************************
+!
+!
+      INTEGER,         INTENT (OUT) :: HrBox
+      INTEGER,         INTENT (OUT) :: RegionNum_CERES
+      TYPE (tsi_type), INTENT (IN)  :: TSI
+!
+      INTEGER       :: I
+      INTEGER (IN2) :: SnowIce
+      INTEGER       :: ValID_Exist
+!
+      TYPE (date_type) :: date
+      REAL (real8)     :: wjd
+      REAL (real8)     :: fjd
+!
+      date%year = DataYear
+      date%month = DataMonth
+      date%day = 1
+      date%hour = 1
+      date%minute = 1
+      date%seconds = 1.0
+      
+      CALL caljul (date, wjd, fjd)
+
+!      Input_Time   = TSI % timeandloc % julday + TSI % timeandloc % julhr
+      Input_Time   = wjd
+
+!	  SnowIce_Flag = TSI % clrsky_area_data % snow_ice_cov
+      SnowIce_Flag = sg%ptv(15)+sg%ptv(19)+sg%ptv(20)+sg%ptv(21)+sg%ptv(22)
+
+	  RegionNum_CERES = TSI % timeandloc % region_num
+      HrBox = TSI % timeandloc % hour_box_num
+!
+! *** Determine whether it is day or night
+! 
+      u0 = TSI % timeandloc % cos_sol_zenith
+      CALL DayNite_Define 
+!
+      SfcAlt_mn = TSI % timeandloc % sfc_alt
+!
+! *** Determine latitudinal and longitudinal coordinates for the 
+!     center of the region
+!
+      CALL get_centroid (RegionNum_CERES,                         & ! I
+                                          Colat, RLong)             ! O
+      RLat = 90.0 - Colat
+!
+! *** Determine whether FOV coordinates coincide with a CERES validation region
+!
+      CALL ValReg_Check (ValID_Exist,                       & ! O
+                         Colat=Colat, Long=RLong)             ! I -Opt  
+!
+      IF (ValID_Exist > 0) THEN
+!     *** Update validation region pass over statistics
+!
+          DO I = 1, NumValReg_AWG
+              IF (ValSite_Pass ( I) == ValID_Exist) THEN
+!             *** Region has already been passed over 
+!
+                  ValSite_PassCnt ( I) = ValSite_PassCnt ( I) + 1
+                  EXIT
+!
+              ELSE IF (ValSite_Pass ( I) == 0) THEN
+!             *** This is the first time current region has been passed over
+!
+                  ValSite_Pass ( I) = ValID_Exist
+                  ValSite_PassCnt ( I) = ValSite_PassCnt ( I) + 1
+                  EXIT
+!
+              END IF
+!
+          END DO
+!
+      END IF
+!
+      IF (ValID_Exist > 0) THEN
+!      *** FOV coincides with a CERES Validation Region
+!
+        ValReg_Flag = ValReg_YES
+!
+      ELSE
+!      *** FOV does not coincide any with CERES Validation Region
+!
+        ValReg_Flag = ValReg_NO
+!
+      END IF
+!
+! *** Determine snow/ice contribution to the FOV scene makeup
+!
+      CALL SceneSnow (TSI)
+!
+!
+! *** Determine ERBE geo-scene type needed for surface albedo retrieval
+!
+      CALL SynSceneType ( SceneNumCERES, Num_SfcTyp,               & ! I
+                          TSI % timeandloc % surf_perc_cov,        & ! I
+                                         SfcArea,  SfcType)          ! O
+!
+      igbp_sid = SfcType ( 1)
+      igbp_prc = SfcArea ( 1)
+!
+!
+! *** Assign sigma scene type used by constrainment process
+!
+      isid = SfcType ( 1)
+!
+!
+      END SUBROUTINE Scene_Init
+!
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!
+      SUBROUTINE SynSceneType (NumScene_In, NumScene_Out,            & ! I
+                               AreaPercent_In,                       & ! I
+                                  AreaPercent_Out, AreaType_Out)       ! O
+!
+!******************************************************************************
+!
+! !F90
+!
+! !Name:
+!    SynSceneType
+!
+! !Description:
+!   Routine ID -
+!
+!   Purpose - Defines scene type array elements in order of area percent
+!             coverage
+!
+!
+! !Input Parameters:
+!   NumScene_In    - Number of possible input scene types
+!   NumScene_Out   - Number of possible output scene types
+!   AreaPercent_In - Array of area percentages for each input scene type
+!
+! !Output Parameters:
+!   AreaPercent_Out - Array of output area percentages
+!   AreaType_Out    - Array of output scene type indicies
+!
+! !Team-Unique Header:
+!
+!  Modules Used:
+!   FL_IO_Params     - (SARBlib) Params: Default_INT2_FL
+!   SARBInput_Params - (SARBlib) Params: IN2
+!
+! !Revision History:
+!  Version 3.4   June 20, 2003 - SCCR #445  
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                 Initial version of code 
+!
+! !END
+!
+!******************************************************************************
+!
+!
+      INTEGER,       INTENT (IN)  :: NumScene_In
+      INTEGER,       INTENT (IN)  :: NumScene_Out
+      REAL,          INTENT (IN)  :: AreaPercent_In ( NumScene_In)
+      INTEGER (IN2), INTENT (OUT) :: AreaPercent_Out ( NumScene_Out)
+      INTEGER (IN2), INTENT (OUT) :: AreaType_Out ( NumScene_Out)
+!
+      INTEGER :: AdjFactor
+      INTEGER :: AreaPercent_Temp ( NumScene_In)
+      INTEGER :: I
+      INTEGER :: IScene
+!
+!
+      AreaPercent_Out ( 1:NumScene_Out) = 0
+      AreaType_Out ( 1:NumScene_Out) = 0
+!
+      WHERE (AreaPercent_In == REAL4_DFLT) AreaPercent_Temp = 0.0
+      WHERE (AreaPercent_In /= REAL4_DFLT) AreaPercent_Temp = INT (AreaPercent_In) 
+!
+      DO IScene = 1, NumScene_Out
+!
+        DO I = 1, NumScene_In
+          IF (SUM (AreaPercent_Out) >= 100) EXIT
+          IF (AreaPercent_Temp ( I) == MAXVAL (AreaPercent_Temp)) THEN
+!
+              AreaPercent_Out ( IScene) = INT (AreaPercent_Temp ( I))
+              AreaType_Out ( IScene) = I
+              AreaPercent_Temp ( I) = 0
+              EXIT
+!
+          END IF
+!   
+        END DO
+!
+        IF (AreaPercent_Out ( IScene) <= 0  .AND. IScene < NumScene_Out) THEN
+!
+        	AreaPercent_Out ( IScene+1:NumScene_Out) = 0
+!
+!   *** Ensure that percentages add up to 100.
+!
+        	AdjFactor = 100 - SUM (AreaPercent_Out (1:IScene-1))		 
+        	AreaPercent_Out ( 1) =  AreaPercent_Out ( 1) + AdjFactor
+!
+!
+        	EXIT
+!
+        END IF
+!
+      END DO
+!
+!
+      END SUBROUTINE SynSceneType
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+!
+      SUBROUTINE EarthSun_Var_Calc (IDay)
+!
+!
+!*****************************************************************************
+!
+! !F90
+!
+! !Name:
+!   EarthSun_Var_Calc
+!
+! !Description:
+!    Routine ID - 7.2.1.6
+!
+!    Purpose - To calculate values of Earth-Sun distance-related variables.
+!
+! !Input Parameters:
+!    IDay - Day of the month 
+!
+! !Output Parameters:
+!    NONE 
+!
+! !Team-Unique Header:
+!
+!  Modules Used: (Parameters followed by "*" are defined by this routine)
+!    FL_IO_Params      - (SARBlib)  Params: ss*
+!    SARBInput_Params  - (SARBlib)  Params: RL8, SolCon
+!    SARB_Var          - (SARBlib)  Params: DataDay, DataMonth, DataYear,  
+!                                           EarthSun_Sqr*
+!    solar_declination - (CERESlib) Sbr. solar_dec
+!
+! !Revision History:
+!  Version 3.5   June 4, 2014 - SCCR #1017
+!                Thomas Caldwell, SSAI, Thomas.E.Caldwell@nasa.gov
+!                 Added variable solar constant provided by TISA group 
+!  Version 3.4  June 20, 2003 - SCCR #445  
+!               Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!
+! !END
+!
+!*****************************************************************************
+!
+!
+      INTEGER, INTENT (IN) :: IDay
+!
+      REAL*8  :: dc (31)
+      REAL*8  :: delta_long ( 31)
+      REAL    :: EarthSun_dist 
+      INTEGER :: IOS
+      REAL*8  :: SolDec ( 31)
+      INTEGER :: tot_days
+!
+!
+! *** Get Earth-Sun distance for the day
+!
+      CALL solar_dec (DataYear, DataMonth,                               &  ! I
+                                SolDec, dc, delta_long, tot_days, IOS)      ! O
+!
+      EarthSun_dist = 1./SQRT (dc ( IDay)) 
+!
+      EarthSun_Sqr = EarthSun_dist**2
+!
+      ssrna = ( (1.0 / EarthSun_dist)**2 ) * Solar_Constant(DataYear, DataMonth, IDay)
+!
+!
+      END SUBROUTINE EarthSun_Var_Calc
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!
+      SUBROUTINE TOA_Init (TSI,                                       & ! I
+                           NoProcess_SunGlint, NoProcess_TOA)           ! O
+!
+!***************************************************************************
+! 
+! !F90
+!
+! !Name:
+!   TOA_Init
+!
+! !Description:
+!   Routine ID - 7.2.2.1.3
+!
+!   Purpose - To load TOA and Sunglint data from the TSI into SARB parameters
+!
+!
+! !Input Parameters:
+!    TSI - TSI regional data
+!
+! !Output Parameters:
+!    NoProcess_SunGlint - Flag indicating whether or not the sunglint 
+!                         percentage exceeds the maximum percentage allowed 
+!                         for processing
+!                          = 0; Percentage value good
+!                          = 1; Percentage value exceeds the maximum 
+!                               percentage allowed
+!    NoProcess_TOA      - Flag indicating whether or not all the the TOA 
+!                         values obtained from the input product are within 
+!                         the allowable range for processing
+!                          = 0; All TOA values within range
+!                          = 1; All TOA values not within range
+!
+! !Team-Unique Header:
+!
+!  Modules Used: (Parameters followed by "*" are defined by this routine)
+!    SARB_Var        - (SARBlib)  Params: LW_TOA_flux*, Sunglint_Percent*,
+!                                         SW_TOA_flux*, WN_TOA_flux*, WN_Width
+!    SARBInput_Utils - (SARBlib)  Sbr. TOAInput_Process
+!    tsi_typ_mod     - (CERESlib) Structures: tsi_type
+!
+! !Revision History:
+!  Version 3.4   June 20, 2003 - SCCR #445  
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                 Initial version of Release 3 code 
+!
+! !END
+!
+!***************************************************************************
+! 
+! 
+      INTEGER,         INTENT (OUT) :: NoProcess_SunGlint
+      INTEGER,         INTENT (OUT) :: NoProcess_TOA
+      TYPE (tsi_type), INTENT (IN)  :: TSI
+!
+!
+      NoProcess_SunGlint = 0
+      NoProcess_TOA = 0
+!
+! *** Load temporally synoptic CERES estimated TOA flux values
+!
+      LW_TOA_flux = TSI % fluxestsi % total_lw_mn
+      SW_TOA_flux = TSI % fluxestsi % total_sw_mn
+      WN_TOA_flux = TSI % fluxestsi % total_wn_mn 
+!##      WN_TOA_flux = TSI % fluxestsi % total_wn_mn * WN_Width
+!
+!
+! *** Assign Sunglint percentage value, not included on TSI, for consistency
+!     with SARB utilities used by other SARB subsystems
+!
+      Sunglint_Percent = 0
+!
+!
+! *** Verify that the input data are valid and calculate the TOA albedo
+!
+      CALL TOAInput_Process (NoProcess_SunGlint, NoProcess_TOA)        ! O     
+!
+!      IF (DayNite == DayTime .AND. SW_TOA_Flux <= .01) NoProcess_TOA = 1
+!  
+!
+!
+! *** Load default value into radiance-related parameters for the QC report.
+!     Radiance-related parameters are calculated on an instantaneous 
+!     basis only, not on averaged data
+!
+      LW_TOA_UnfiltRad = Default_REAL4_FL
+      WN_TOA_FiltRad = Default_REAL4_FL
+      TotLWrad ( 1:NumPass, 1:NumSkyCond) = Default_REAL4_FL
+      WNrad_SatEm ( 1:NumPass, 1:NumSkyCond) = Default_REAL4_FL
+!
+!
+      END SUBROUTINE TOA_Init
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+!
+!
+      SUBROUTINE CloudProp_Init (TSI,                               & ! I
+                                      NoProcess )                     ! O
+!
+!***************************************************************************
+! 
+! !F90
+!
+! !Name:
+!   Ingest_Input
+!
+! !Description:
+!   Routine ID - 7.2.2.1.4
+!
+!   Purpose - Assigns TSI cloud property values to SARB parameters 
+!             
+!
+! !Input Parameters:
+!    TSI - TSI regional data
+!
+! !Output Parameters:
+!    NoProcess   - Flag indicating whether or not to continue processing
+!                  the current FOV
+!                   = 0; Continue processing
+!                   = 1; Set output values to default and go to next FOV
+!
+! !Team-Unique Header:
+!
+!  Modules Used: (Parameters followed by "*" are defined by this routine)
+!    FL_IO_Params    - (SARBlib)  Params: CF*, Default_REAL4_FL,
+!                                         IcePart_size*, LiquidPart_size*
+!    Profile_Params  - (SARBlib)  Params: InitPass, MaxLev_Cld
+!    SARBInput_Utils - (SARBlib)  Sbr: CldPropCheck, PhaseCheck
+!    SARB_Var        - (SARBlib)  Params: CldTop*, DayNite, EffTemp*, 
+!                                         Ice_path*, Liquid_path*,  
+!                                         NonClr_Frac*, OptDepth_mn*, Phase_mn*
+!    tsi_typ_mod     - (CERESlib) Structures: tsi_type
+!
+!  Algorithm Description:
+!    SARB reverses the order the cloud property arrays obtained from
+!    the input product for ease in tracking them in the "SARB order."
+!
+! !Revision History:
+!  Version 3.4   June 20, 2003 - SCCR #445  
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                 Initial version of Release 3 code 
+!  Version 2.3   June 16, 1998 - SCCR #89
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                Shalini Gupta, SAIC, s.gupta@larc.nasa.gov
+!                 1. Breakdown of Sbr. Ingest_Input into multiple routines 
+!                    and own module
+!
+! !END
+!
+!***************************************************************************
+!
+!
+      INTEGER,         INTENT (INOUT) :: NoProcess
+      TYPE (tsi_type), INTENT (IN)    :: TSI
+!
+ !     REAL    :: CldFrac_Input ( 0:MaxLev_Cld)
+      REAL    :: CldFrac_Input ( 0:nclouds)  !HG-2025.0722
+      INTEGER :: I
+!      REAL    :: OptDepth_Input ( MaxLev_Cld)
+      REAL    :: OptDepth_Input ( nclouds)   !HG-2025.0722
+      REAL    :: Temp_Float
+!
+!
+! *** Initialize
+!
+      NoProcess = 0
+!!
+!      CF ( InitPass, 0:MaxLev_Cld) = 0.0
+!!
+!      CldTop ( InitPass, 1:MaxLev_Cld)          = Default_REAL4_FL
+!      CldBot ( InitPass, 1:MaxLev_Cld)          = Default_REAL4_FL
+!      EffTemp ( InitPass, 1:MaxLev_Cld)         = Default_REAL4_FL
+!      OptDepth_mn ( InitPass, 1:MaxLev_Cld)     = Default_REAL4_FL
+!      LiquidPart_size ( InitPass, 1:MaxLev_Cld) = Default_REAL4_FL
+!      IcePart_size ( InitPass, 1:MaxLev_Cld)    = Default_REAL4_FL
+!!
+!      Liquid_path ( 1:MaxLev_Cld) = Default_REAL4_FL
+!      Ice_path ( 1:MaxLev_Cld)    = Default_REAL4_FL
+!      Phase_mn ( 1:MaxLev_Cld)    = Default_REAL4_FL
+!
+
+      ! HG-2025.0722
+      CldTop ( InitPass, 1:nclouds)          = Default_REAL4_FL
+      CldBot ( InitPass, 1:nclouds)          = Default_REAL4_FL
+      EffTemp ( InitPass, 1:nclouds)         = Default_REAL4_FL
+      OptDepth_mn ( InitPass, 1:nclouds)     = Default_REAL4_FL
+      LiquidPart_size ( InitPass, 1:nclouds) = Default_REAL4_FL
+      IcePart_size ( InitPass, 1:nclouds)    = Default_REAL4_FL
+!
+      Liquid_path ( 1:nclouds) = Default_REAL4_FL
+      Ice_path ( 1:nclouds)    = Default_REAL4_FL
+      Phase_mn ( 1:nclouds)    = Default_REAL4_FL
+      Temp_Float = Default_REAL4_FL 
+!
+!
+! *** Cloud and clear-sky coverage fractions
+!
+      CldFrac_Input (0) = 0.0
+      CldFrac_Input (1:nclouds) = TSI % cld_layer (nclouds:1:-1) % areafrac_total
+!
+      WHERE (CldFrac_Input (0:nclouds) > 3.0E+30) &
+      CldFrac_Input (0:nclouds) = 0.0
+!
+!  
+      NonClr_Frac = SUM (CldFrac_Input ( 1:nclouds))
+
+            !HG-20250821
+if (NonClr_Frac > 100.0) then
+    NonClr_Frac = 100.0
+end if
+if (NonClr_Frac < 0.0) then
+    NonClr_Frac = 0.0
+ end if
+ !HG
+ 
+      CldFrac_Input ( 0) = 100. - NonClr_Frac
+
+!
+! Assign cloudy sky fraction used in control rules
+!
+      Cloud_Frac = (100. - CldFrac_Input ( 0))/100.
+!
+      IF (NoProcess == 0) THEN
+!     *** Retrieve remaining cloud properties
+!
+          NonClr_Frac = 100. - CldFrac_Input ( 0)
+          CF ( InitPass, 0:nclouds) = CldFrac_Input ( 0:nclouds) / 100.
+
+!------------------------------------------------------------------------
+!  *** Cloud heights
+!          
+!          CldTop(InitPass,1:MaxLev_Cld) = TSI%cld_layer(MaxLev_Cld:1:-1)%toppres_mn
+!
+!------------------------------------------------------------------------
+!          IF ( src%cldprop .NE. 3 ) THEN  ! If not a 3chan geo 20140507  Fred's Dp=f(lntau) parameterization of Ptop-Peff
+
+!------------------------------------------------------------------------
+!  *** Cloud heights (20140618)
+
+          CldTop(InitPass,1:nclouds) = TSI%cld_layer(nclouds:1:-1)%effpres_mn      ! EFFECTIVE Pressure
+          !print *, 'here-400 CldTop(InitPass,1:nclouds) ', CldTop(1,:)
+          !print *, 'CldTop(InitPass,1:nclouds) ', CldTop(2,:)
+          
+!          stop
+          IF ( src%cldprop .EQ. 3 ) CldTop(InitPass,1:nclouds) = TSI%cld_layer(nclouds:1:-1)%toppres_mn  ! TOP Pressure
+!
+!!------------------------------------------------------------------------
+          IF ( src%cldprop .EQ. 4  .OR.   src%cldprop .EQ. 5 .OR. src%cldprop .EQ. 6 ) THEN ! Geo 12um, GEO 13.2um GEO 12+13.2 ( GOES11,MTSAT1, GOES12,MET9) Ptop=f(Peff,tau)
+!
+!!# Using Minnis reccomendation to use Effective Pressure instead of CloudTop for HIGH and MidHigh clouds #20140402
+!! HG-2025 this part probably needs to modify if using 4/9 single clouds
+!!            IF (TSI%cld_layer(1)%phase_mn > 1.5 .AND. TSI%cld_layer(1)%phase_mn <= 2.0 )&
+!!                CldTop(InitPass,4) = TSI%cld_layer(1)%effpres_mn + &
+!!                (-35.2* Exp( -0.4278*( TSI%cld_layer(1)%optdepth_mn_log-0.65)**2.0 ))
+!!       
+!!            IF (TSI%cld_layer(2)%phase_mn > 1.5 .AND. TSI%cld_layer(2)%phase_mn <= 2.0 )&
+!!                CldTop(InitPass,3) = TSI%cld_layer(2)%effpres_mn + &
+!!               (-35.2* Exp( -0.4278*( TSI%cld_layer(2)%optdepth_mn_log-0.65)**2.0 ))
+!!              
+!!          ENDIF    !  src%cldprop == 4, 5, or 6      
+!
+!!HG-20250812, need to verify, may need to change for real 9 clouds         
+          IF (TSI%cld_layer(1)%phase_mn > 1.5 .AND. TSI%cld_layer(1)%phase_mn <= 2.0 )&
+                CldTop(InitPass,nclouds) = TSI%cld_layer(1)%effpres_mn + &
+                (-35.2* Exp( -0.4278*( TSI%cld_layer(1)%optdepth_mn_log-0.65)**2.0 ))
+       
+          IF (TSI%cld_layer(2)%phase_mn > 1.5 .AND. TSI%cld_layer(2)%phase_mn <= 2.0 )&
+                CldTop(InitPass,nclouds-1) = TSI%cld_layer(2)%effpres_mn + &
+               (-35.2* Exp( -0.4278*( TSI%cld_layer(2)%optdepth_mn_log-0.65)**2.0 ))
+
+          IF (TSI%cld_layer(3)%phase_mn > 1.5 .AND. TSI%cld_layer(3)%phase_mn <= 2.0 )&
+                CldTop(InitPass,nclouds-2) = TSI%cld_layer(3)%effpres_mn + &
+                (-35.2* Exp( -0.4278*( TSI%cld_layer(3)%optdepth_mn_log-0.65)**2.0 ))
+!       
+!          IF (TSI%cld_layer(4)%phase_mn > 1.5 .AND. TSI%cld_layer(4)%phase_mn <= 2.0 )&
+!                CldTop(InitPass,nclouds-3) = TSI%cld_layer(4)%effpres_mn + &
+!               (-35.2* Exp( -0.4278*( TSI%cld_layer(4)%optdepth_mn_log-0.65)**2.0 ))
+!
+!          
+          ENDIF    !  src%cldprop == 4, 5, or 6      
+          !HG-20250817 comment out for testing
+          !HG-20261005, for ice cloud above 440 mb, 9-cloud setup
+          
+!---------------------------------------------------------------------------------------------------------
+! *** Cloud temperatures
+
+          EffTemp(InitPass,1:nclouds) = TSI%cld_layer(nclouds:1:-1)%efftemp_mn 
+
+
+!----------------------------------------------------------------------------------------------------------
+          ! *** Optical depth  AND !Optical Depth Polar Daytime 1.4um correction ln(tau)-1
+          !! HG-20250823 comment out for testing
+
+          OptDepth_Input(1:nclouds) = TSI%cld_layer(1:nclouds)%optdepth_mn_log 
+
+          !print *, 'check506'
+          !print *, 'SnowIce_Flag ', SnowIce_Flag
+!          Optical Depth Polar Daytime 1.4um correction ln(tau)-1
+          
+	  IF ( SnowIce_Flag > 99 .AND. DayNite == DayTime ) &
+          OptDepth_Input(1:nclouds) = TSI%cld_layer(1:nclouds)%optdepth_mn_log -1.0
+ 
+          WHERE(TSI%cld_layer(1:nclouds)%optdepth_mn_log /= Default_REAL4_FL)&
+               OptDepth_Input= EXP(OptDepth_Input)
+
+          OptDepth_mn(InitPass,1:nclouds) = OptDepth_Input(nclouds:1:-1) !!FLIP
+
+!-----------------------------------------------------------------------------------------------------------
+!Linear mean CLoud optial depth 
+
+         OptDepthLin_mn(InitPass,1:nclouds)= TSI%cld_layer(1:nclouds)%optdepth_mn_lnr  
+ 
+!        Optical Depth Polar Daytime 1.4um correction ln(tau)-1
+ 
+         IF ( SnowIce_Flag > 99 .AND. DayNite == DayTime ) THEN
+           WHERE(TSI%cld_layer(1:nclouds)%optdepth_mn_lnr /= Default_REAL4_FL)& 
+              OptDepthLin_mn(InitPass,1:nclouds) =  &
+           EXP(LOG(TSI%cld_layer(1:nclouds)%optdepth_mn_lnr) -1.0)
+         ENDIF                       
+			    			    
+         OptDepthLin_mn(InitPass,1:nclouds) = OptDepthLin_mn(InitPass,nclouds:1:-1) !!FLIP		    
+			    			    
+!--------------------------------------------------------------------------------------------------------------
+!--------------------------------------------------------------------------------------------------------------
+!--------------------------------------------------------------------------------------------------------------
+!     *** Water path, phase, particle size
+!
+          LiquidPart_size ( InitPass, 1:nclouds) =                       &
+                           TSI % cld_layer ( nclouds:1:-1) % radius_h2o_mn
+!
+          IcePart_size ( InitPass, 1:nclouds) =                          &
+                           TSI % cld_layer ( nclouds:1:-1) % radius_ice_mn
+!
+          Liquid_path ( 1:nclouds) =                                    &
+                              TSI % cld_layer ( nclouds:1:-1) % h2opath_mn
+!
+          Ice_path ( 1:nclouds) =                                       &
+                              TSI % cld_layer ( nclouds:1:-1) % icepath_mn
+!
+          Phase_mn ( 1:nclouds) =                                       &
+                              TSI % cld_layer ( nclouds:1:-1) % phase_mn 
+
+
+!     *** Ensure all required input cloud properties are defined properly
+!
+          CALL CldPropCheck (NoProcess)                                   ! O
+!
+          IF (NoProcess == 0) THEN
+!         *** Ensure minimum particle sizes
+!
+              CALL PhaseCheck
+! 
+          END IF
+!
+       END IF   ! NoProcess == 0
+
+
+          !print *, 'Here 300-CldTop(InitPass,1:nclouds) ', CldTop(1,:)
+          !print *, 'CldTop(InitPass,1:nclouds) ', CldTop(2,:)
+          !print *, 'CldBot(InitPass,1:nclouds) ', CldBot(1,:)
+          !print *, 'CldBot(InitPass,1:nclouds) ', CldBot(2,:)
+          !print *, 'EffTemp(InitPass,1:nclouds) ', EffTemp(1,:)
+          !print *, 'EffTemp(InitPass,1:nclouds) ', EffTemp(2,:)
+          
+!          stop       
+! 
+!
+      END SUBROUTINE CloudProp_Init
+!
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+!
+      SUBROUTINE Cld_Area (CldArea_Input,                         & ! I
+                                          CldFrac,                & ! O
+                                                   NoProcess)       ! I/O
+!
+!****************************************************************************
+!
+! !F90
+!
+! !Name:
+!   Cld_Area
+!
+! !Description:
+!   Routine ID - 7.2.2.1.6.1
+!
+!   Purpose - Defines cloud coverage percentages, based on values
+!             provided on the primary input product, for use in
+!             Synoptic SARB processing.
+!
+!
+! !Input Parameters:
+!   CldArea_Input - Cloud area coverage from primary input product
+!
+!  Input/Output Parameters:
+!    NoProcess   - Flag indicating whether or not to continue processing
+!                  the current FOV
+!                  = 0; Continue processing
+!                  = 1; Set output values to default and go to next FOV
+!  
+! !Output Parameters:
+!    CldFrac   - Cloud area percent coverage for use in the Fu-Liou model
+!                  CldFrac ( 0) = Clear sky percent coverage
+!                          ( 1) = Higher cloud percent coverage
+!                          ( 2) = Upper Middle cloud percent coverage
+!                          ( 3) = Lower Middle cloud percent coverage
+!                          ( 4) = Lower cloud percent coverage
+!
+! !Team-Unique Header:
+!
+!  Modules Used: (Parameters followed by "*" are defined by this routine)
+!    FL_IO_Params   - (SARBlib) Params: Default_REAL4_FL
+!    Profile_Params - (SARBlib) Params: MaxLev_Cld
+!
+! !Revision History:
+!  Version 3.4   June 20, 2003 - SCCR #445  
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                 Initial version of code
+!
+! !END
+!
+!****************************************************************************
+!
+!
+      REAL,           INTENT (IN)    :: CldArea_Input ( 11) 
+      REAL,           INTENT (OUT)   :: CldFrac ( 0:nclouds)
+      INTEGER,        INTENT (INOUT) :: NoProcess
+!
+      REAL :: Observed_Sum
+!
+!
+      Observed_Sum = 0.0
+!
+      IF (CldArea_Input ( Clr_TSI) /= Default_REAL4_FL) THEN
+!     *** Clear-sky area coverage is valid.
+!
+          CldFrac ( Clr_SARB) = CldArea_Input ( Clr_TSI) 
+          Observed_Sum = CldFrac ( Clr_SARB)
+!   
+          IF (CldArea_Input ( CldHi_TSI) /= Default_REAL4_FL) THEN
+!         *** High cloud area from input product is valid.
+!
+              CldFrac ( CldHi_SARB) = CldArea_Input ( CldHi_TSI) 
+              Observed_Sum = Observed_Sum + CldFrac ( CldHi_SARB)
+!
+          ELSE
+              CldFrac ( CldHi_SARB) = 0.0
+          END IF
+!   
+          IF (CldArea_Input ( CldUpMid_TSI) /= Default_REAL4_FL) THEN
+!         *** High cloud area from input product is valid.
+!
+              CldFrac ( CldUM_SARB) = CldArea_Input ( CldUpMid_TSI) 
+              Observed_Sum = Observed_Sum + CldFrac ( CldUM_SARB)
+!
+          ELSE
+              CldFrac ( CldUM_SARB) = 0.0
+          END IF
+!
+          IF (CldArea_Input ( CldMidLow_TSI) /= Default_REAL4_FL) THEN
+!         *** High cloud area from input product is valid.
+!
+              CldFrac ( CldLM_SARB) = CldArea_Input ( CldMidLow_TSI) 
+              Observed_Sum = Observed_Sum + CldFrac ( CldLM_SARB)
+!
+          ELSE
+              CldFrac ( CldLM_SARB) = 0.0
+          END IF
+!
+          IF (CldArea_Input ( CldLow_TSI) /= Default_REAL4_FL) THEN
+!         *** High cloud area from input product is valid.
+!
+              CldFrac ( CldLow_SARB) = CldArea_Input ( CldLow_TSI) 
+              Observed_Sum = Observed_Sum + CldFrac ( CldLow_SARB)
+!
+          ELSE
+              CldFrac ( CldLow_SARB) = 0.0
+          END IF
+!
+!
+      ELSE
+!     *** Clear-sky area is default. Do not process FOV. 
+!
+          NoProcess = 1
+!
+      END IF
+!
+!
+      IF ( NoProcess == 0  .AND.  Observed_Sum < 100.0) THEN
+!     *** Factor in special conditions.
+!
+          IF (CldArea_Input ( CldHi_UpMid_TSI) /= Default_REAL4_FL) THEN
+!         *** Add overlap area to highest cloud layer area.
+!
+              CldFrac (CldHi_SARB) =   CldFrac ( CldHi_SARB)              &
+                                     + CldArea_Input ( CldHi_UpMid_TSI)  
+! 
+              Observed_Sum = SUM (CldFrac ( 0:nclouds))
+!
+          END IF
+!
+          IF (CldArea_Input ( CldHi_MidLow_TSI) /= Default_REAL4_FL) THEN
+!         *** Add overlap area to highest cloud layer area.
+!
+              CldFrac (CldUM_SARB) =   CldFrac ( CldUM_SARB)              &
+                                      + CldArea_Input ( CldHi_MidLow_TSI)  
+! 
+              Observed_Sum = SUM (CldFrac ( 0:nclouds))
+!
+          END IF
+!
+          IF (CldArea_Input ( CldMidLow_Low_TSI) /= Default_REAL4_FL) THEN
+!         *** Add overlap area to highest cloud layer area.
+!
+              CldFrac (CldLM_SARB) =   CldFrac ( CldLM_SARB)              &
+                                      + CldArea_Input ( CldMidLow_Low_TSI)  
+! 
+              Observed_Sum = SUM (CldFrac ( 0:nclouds))
+!
+          END IF
+!
+          IF ( Observed_Sum < 99.999) THEN
+!         *** Information is not sufficient to process FOV
+!
+               NoProcess = 1
+!
+           END IF
+!
+      END IF
+!
+!
+      END SUBROUTINE Cld_Area
+!
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+!
+      SUBROUTINE MOA_Ingest (SARBregion,                           & ! I
+                                          MOA)                       ! O
+!
+!***************************************************************************
+!
+! !F90
+!
+! !Name:
+!   MOA_Ingest
+!
+! !Description:
+!   Routine ID - 7.2.2.1.5
+!
+!   Purpose - To ingest the MOA regional data corresponding to the 
+!             current SSF footprint
+!
+!
+! !Input Parameters:
+!   SARBregion - SARB region number
+!
+! !Output Parameters:
+!   MOA - MOA regional data
+!
+! !Team-Unique Header:
+!
+!  Modules Used:
+!    MOA_IO          - (CERESlib) Structures: MOA_TYPE
+!                                 Sbr. CERES_to_MOA, MOA_Read_Wrapper
+!    Profile_Params  - (SARBlib)  Params: Pres_Out
+!    SARBInput_Utils - (SARBlib)  Sbr. MOAInput_Process
+!    SARB_Var        - (SARBlib)  Params: MOA_GrdIdx, MOA_Unit
+!
+! !Revision History:
+!  Version 3.4   June 20, 2003 - SCCR #445  
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                Initial Version of code
+!
+! !END
+!
+!***************************************************************************
+!
+!
+      TYPE (MOA_TYPE), INTENT (OUT) :: MOA
+      INTEGER,         INTENT (IN)  :: SARBregion
+!
+      TYPE (MOA_HEADER_TYPE) :: MOA1_Header, MOA2_Header
+      INTEGER :: MOA_Region, Unit1, Unit2
+      INTEGER :: Int_Hour, Hour1, Hour2, Ios 
+      REAL :: Lat, Long
+!
+!
+! *** Determine MOA region number and retrieve corresponding data.
+!
+      CALL CERES_to_MOA (SARBregion, MOA_GrdIdx,                       & ! I
+                                                 MOA_Region)             ! O
+!
+!      CALL MOA_Read_Wrapper (MOA_Unit, DataHour, MOA_Region,           & ! I
+!                                                             MOA)        ! O
+      
+      CALL MOA_NCDFRead_Region_Wrap ( MOA_Unit, DataHour, MOA_Region, &  ! I
+                                                              MOA)       ! O
+
+!
+      Unit1 = MOA_Unit(1)
+      Unit2 = MOA_Unit(2)
+     
+      CALL MOA_Header_Get ( Unit1, MOA1_Header) 
+
+!      READ ( Unit1, rec=1, Iostat=Ios) MOA1_Header
+      READ ( MOA1_Header%DataDate ( 12:13), '(i2)') Hour1
+
+! *** Determine if second MOA file is defined
+ 
+      IF (Unit2 > 0) THEN
+      CALL MOA_Header_Get ( Unit2, MOA2_Header) 
+!       READ ( Unit2, rec=1, Iostat=Ios) MOA2_Header       
+       READ ( MOA2_Header%DataDate ( 12:13), '(i2)') Hour2
+ 
+! *** Determine interpolation hour ( 1-3)
+!
+       IF ( DataHour == Hour1) THEN
+          Int_Hour = 0
+       ELSE IF ( DataHour == Hour2 .OR. DataHour == 23) THEN
+          Int_Hour = 3
+       ELSE
+          Int_Hour = DataHour
+          DO WHILE ( Int_Hour >= 3)
+              Int_Hour = Int_Hour - 3
+          END DO
+       END IF
+ 
+      ELSE ! no interpolation
+ 
+       Unit2 = Unit1
+       Int_Hour = 0
+
+      ENDIF
+       
+! *** Read in hourly skin temperature data
+
+      CALL Region_LatLon ( MOA_Region, MOA_GrdIdx,              & ! I
+                                                    Lat, Long)    ! O
+
+      CALL Get_NCDFHourly_Data ( Lat, Long, Int_Hour, Unit1, Unit2,  & ! I
+                                             MOA_GrdIdx, 'TSKN',     & ! I
+                                             Ios, MOASkinTemp_Hourly)  ! O
+
+
+!      CALL Get_SKT_Data ( Lat, Long, Int_Hour, Unit1,           & ! I
+!                                     Unit2,  MOA_GrdIdx,        & ! I
+!                                          Ios, MOASkinTemp_Hourly)   ! 0
+!      
+! *** Capture MOA data needed for SARB algorithms
+!
+      CALL MOAInput_Process (MOA)                                        ! I
+!
+!
+! *** Assign heights (hPa) for archiving the output vertical flux profiles 
+!
+!     NOTE:  The FOV Surface Pressure, Pres_Out ( NumLev_Arc), is defined 
+!            in Module No_Cloud, Sbr. FixFloat_Sort
+!
+      Pres_Out ( TOALev_Idx) =   0.1
+      Pres_Out ( hPa70_Idx)  =  70.0
+      Pres_Out ( hPa200_Idx) = 200.0
+      Pres_Out ( hPa500_Idx) = 500.0
+!
+!
+      END SUBROUTINE MOA_Ingest
+!
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+!
+      SUBROUTINE SkinTemp_Calc (MOA,                                   & ! I 
+                                     SkinTemp)                           ! O
+!
+!***************************************************************************
+! 
+! !F90
+!
+! !Name:
+!   SkinTemp_Calc
+!
+! !Description:
+!   Routine ID - 7.2.2.1.7
+!
+!   Purpose - Corrects MOA-provided skin temperature according to TSI 
+!             surface elevation.
+!             
+!
+! !Input Parameters:
+!    MOA - MOA regional data
+!
+! !Output Parameters:
+!   SkinTemp - Surface skin temperature
+!
+! !Team-Unique Header:
+!
+!  Modules Used:
+!    ceres_meteor   - (CERESlib) Func. t0_t1
+!    MOA_IO         - (CERESlib) Structures: MOA_TYPE
+!    SARB_Var       - (SARBlib)  Params: SfcAlt_mn
+!
+! !Revision History:
+!  Version 3.4   June 20, 2003 - SCCR #445  
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                 Initial version of Release 3 code 
+!
+! !END
+!
+!***************************************************************************
+!
+!
+      TYPE (MOA_TYPE), INTENT (IN)  :: MOA
+      REAL,            INTENT (OUT) :: SkinTemp
+!
+!
+! *** Correct MOA-provided skin temperature according to TSI surface elevation.
+!
+       SkinTemp = t0_t1 (MOASkinTemp_Hourly, MOA % SfcGeoPt, SfcAlt_mn)   ! I
+!
+      END SUBROUTINE SkinTemp_Calc
+!
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+!
+      SUBROUTINE SfcFlux_Init 
+! 
+!****************************************************************************
+!
+! !F90
+!
+! !Name:
+!    SfcFlux_Init
+!
+! !Description:
+!   Routine ID - 7.2.2.1.8
+!
+!   Purpose - Loads surface flux values from input for later use in QC 
+!             report logic
+!
+!
+! !Input Parameters:
+!   NONE
+!
+! !Output Parameters:
+!   NONE
+!
+! !Team-Unique Header:
+!
+!  Modules Used: (Parameters followed by "*" are defined by this routine)
+!    FL_IO_Params   - (SARBlib)  Default_REAL4_FL
+!    SARB_QC_Params - (SARBlib)  Parameters: LW_sfc_dna*, LW_sfc_dnb*, 
+!                                            SW_sfc_dna*, SW_sfc_neta*,
+!                                            SW_sfc_netb*
+!
+! !Revision History:
+!  Version 3.4   June 20, 2003 - SCCR #445  
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                 Initial version of Release 3 code 
+!
+! !END
+! 
+!****************************************************************************
+!
+!
+      SW_sfc_dna  = Default_REAL4_FL
+      SW_sfc_neta = Default_REAL4_FL
+      SW_sfc_netb = Default_REAL4_FL
+      LW_sfc_dna  = Default_REAL4_FL
+      LW_sfc_dnb  = Default_REAL4_FL
+!
+!
+      END SUBROUTINE SfcFlux_Init
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!
+      SUBROUTINE SceneSnow (TSI)                                       ! I
+!
+!***************************************************************************
+! 
+! !F90
+!
+! !Name:
+!   SceneSnow
+!
+! !Description:
+!   Routine ID - 7.2.2.1.9
+!
+!   Purpose - Determines the clear-sky snow/ice contribution to the FOV 
+!             scene makeup
+!             
+!
+! !Input Parameters:
+!    TSI - Input TSI FOV data
+!
+! !Output Parameters:
+!    NONE
+!
+! !Team-Unique Header:
+!
+!  Modules Used: (Parameters followed by "*" are defined by this routine)
+!    FL_IO_Params      - (SARBlib)  Params: CF, Default_INT2_FL, 
+!                                           Default_REAL4_FL, IN2
+!    IGBP_AdjSnowIce   - (SARBlib)  Sbr. AdjIGBP_Drv 
+!    Profile_Params    - (SARBlib)  Params: InitPass, Num_SfcTyp
+!    SARB_Var          - (SARBlib)  Params: SfcArea*, SfcType*
+!    tsi_typdef        - (CERESlib) Structures: tsi_type
+!
+! !Revision History:
+!  Version 3.4   June 20, 2003 - SCCR #445  
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                Initial Version of Code
+!
+! !END
+! 
+!****************************************************************************
+!
+!
+      TYPE (tsi_type), INTENT (IN) :: TSI
+!
+      INTEGER (IN2) :: SnowIce_FOV
+      REAL          :: TSI_Snow
+!
+!
+!      TSI_Snow = TSI % clrsky_area_data % snow_ice_cov
+      TSI_Snow = sg%ptv(15)+sg%ptv(19)+sg%ptv(20)+sg%ptv(21)+sg%ptv(22)
+      SnowIce_FOV = Default_INT2_FL
+!
+      IF (TSI_Snow > 0. .AND. TSI_Snow /= Default_Real4_FL &
+          .AND.  CF ( InitPass, 0) > 0.05) THEN
+!     *** Weight value according to clear sky area
+!
+          SnowIce_FOV = INT (REAL (TSI_Snow) / (CF ( InitPass, 0) * 100.))
+! 
+          IF (SnowIce_FOV > 100) THEN
+!         *** Correct round-off
+!
+              SnowIce_FOV = 100
+!
+          END IF
+!
+!     *** Adjust scene type and area information to be consistent with
+!         the Cloud Working Group
+!
+          CALL AdjIGBP_Drv (Num_SfcTyp, SnowIce_FOV,             & ! I
+                                         SfcType, SfcArea)         ! I/O
+!
+      END IF
+!
+!
+      END SUBROUTINE SceneSnow
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!
+      SUBROUTINE TISA_AerIngest (TSI, NumWL,                          & ! I
+                                            otau,                   & ! O
+                               wl_OneWL,                            & ! I (Opt)
+                                            otau_OneWl)               ! O (Opt)
+!
+!*******************************************************************************
+!
+! !F90
+!
+! !Name:
+!   convert_ssfa 
+!
+! !Description:
+!   Routine ID -
+!
+!   Purpose - Retrieves TISA supplimentary MODIS aerosol data for multiple 
+!             wavelengths and (optionally) determines aerosol optical
+!             depth for a central wavelength.
+!
+!
+! !Input Parameters:
+!    NumWL    - Number of wavelengths for which there are aerosol data
+!    SSFA     - Supplimental MODIS aerosol SSF data
+!    wl_OneWL - (Optional) Central wavelength
+!
+! !Output Parameters:
+!    otau       - Array of wavelength-dependent aerosol optical depth values
+!    otau_OneWl - (Optional) Aerosol optical depth value for central wavelength
+!
+! !Team-Unique Header:
+!
+!  Modules Used:
+!    aotfit             - (SARBlib)  Sbr. aotstdwl 
+!    FL_IO_Params       - (SARBlib)  Params: Default_REAL4_FL
+!    MonMODISAer_Params - (SARBlib)  Params: wlin, wlout
+!    ssfa_typdef        - (CERESlib) Structure: ssfa_type
+!
+! !Revsion History:
+!  Version 3.6   January 16, 2004 - SCCR #498 
+!                Thomas Caldwell, SAIC, t.e.caldwell@larc.nasa.gov
+!                 1. Corrected checking of aerosol values to reflect defaults used
+!                    in data structure
+!                 2. Modified code to reject FOV where AOT@440nm is greater than AOT@660nm
+!  Version 3.4   R4 Date - SCCR #408
+!                Fred Rose, AS&M, f.g.rose@larc.nasa.gov
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                  Initial version of code
+!
+! !END
+!
+!*****************************************************************************80
+!
+!
+      INTEGER,          INTENT (IN)            :: NumWL
+      REAL,             INTENT (OUT)           :: otau ( NumWL)
+      REAL,             INTENT (OUT), OPTIONAL :: otau_OneWl
+      TYPE (tsi_type),  INTENT (IN) :: TSI
+      REAL,             INTENT (IN),  OPTIONAL :: wl_OneWL
+!
+      REAL    :: aottmp ( NumWL)
+      REAL    :: baot
+      REAL    :: beta
+      REAL    :: beta_oce
+      REAL    :: beta_lnd
+      REAL    :: beta_OneWL
+      INTEGER :: naerout
+      INTEGER :: nin
+      REAL    :: oaot ( NumWL)
+
+      REAL :: sealnd
+      REAL :: taot ( NumWL)
+!
+!
+      naerout  =  NumWL
+!
+      sealnd   =  Default_REAL4_FL
+      beta     =  Default_REAL4_FL
+      otau     =  Default_REAL4_FL
+      oaot     =  Default_REAL4_FL
+      taot     =  Default_REAL4_FL
+      beta_oce = -Default_REAL4_FL
+      beta_lnd = -Default_REAL4_FL
+!
+      oaot ( 1) = TSI%aerosol%optdepth047_ocean
+      oaot ( 2) = TSI%aerosol%optdepth055_ocean
+      oaot ( 3) = TSI%aerosol%optdepth066_ocean
+      oaot ( 4) = TSI%aerosol%optdepth087_ocean
+      oaot ( 5) = TSI%aerosol%optdepth124_ocean
+      oaot ( 6) = TSI%aerosol%optdepth164_ocean
+      oaot ( 7) = TSI%aerosol%optdepth213_ocean
+!
+      taot ( 1) = TSI%aerosol%optdepth047_land
+      taot ( 2) = TSI%aerosol%optdepth055_land
+      taot ( 3) = TSI%aerosol%optdepth066_land
+!
+      WHERE ( oaot > 1E30 ) oaot = Default_REAL4_FL
+      WHERE ( taot > 1E30 ) taot = Default_REAL4_FL
+!
+!
+      IF ( oaot ( 1) /= Default_REAL4_FL .OR. &
+         ( taot ( 1) /= Default_REAL4_FL .AND. (taot( 1) > taot(3)) ) ) THEN
+!     *** GOOD AOT VALUES
+!
+!##          ngood = ngood + 1
+          baot  = oaot ( 2)
+          IF (baot < 0.0 .AND. taot ( 2) > 0.0) baot = taot ( 2)
+!
+          IF (oaot ( 1) /= Default_REAL4_FL) THEN
+!          *** GOOD AOT OCEAN
+!
+!##              nsea   = nsea + 1
+              sealnd = 1
+              nin     = NumWL
+              naerout = NumWL
+              CALL aotstdwl (oaot, wlin, nin,                          &
+                             aottmp, wlout, naerout, beta_oce) !only beta
+!  
+              otau ( 1:NumWL) = oaot ( 1:NumWL)
+              beta            = beta_oce
+!
+          ELSE IF (taot ( 1) /= Default_REAL4_FL .AND. (taot( 1) > taot(3)) ) THEN
+!         *** GOOD LAND AOT
+!
+              sealnd = 2
+              nin    = 3
+              CALL aotstdwl (taot ( 1:3), wlin ( 1:3), nin,             &
+                                       aottmp, wlout, naerout, beta_lnd)
+              taot ( 4:NumWL) = aottmp ( 4:NumWL)
+              otau ( 1:NumWL) = taot ( 1:NumWL)
+              beta            = beta_lnd
+!
+          END IF
+!
+          IF (PRESENT (wl_OneWL)) THEN
+!         *** Interpolate for 0.63um value
+!
+              CALL aotstdwl (otau, wlin, NumWL, otau_OneWl, wl_OneWL,    & ! I
+                                                           beta_OneWL)     ! O
+!
+          END IF
+!
+      END IF  !GOOD AOT VALUES
+!
+!
+      END SUBROUTINE TISA_AerIngest
+!
+END MODULE SynSARB_Ingest

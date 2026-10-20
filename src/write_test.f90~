@@ -1,0 +1,10 @@
+PROGRAM write_test
+  USE ed4_syni_structure, ONLY: SYNI4
+  INTEGER :: ios
+  OPEN(10, FILE='testbin.dat', ACCESS='DIRECT', FORM='UNFORMATTED', RECL=580)
+  ! Fill SYNI4 with dummy data
+  SYNI4%Hour = 100
+  WRITE(10, REC=100, IOSTAT=ios) SYNI4
+  PRINT *, "Write IOS=", ios
+  CLOSE(10)
+END PROGRAM

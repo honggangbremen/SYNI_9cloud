@@ -1,0 +1,1012 @@
+MODULE MODALBHDF_SYNI
+!
+!*****************************************************************************
+!
+! !F90
+!
+! !Name:
+!   MODALBHDF_SYNI
+!
+! !Description:
+!
+!    Purpose - 
+!
+!
+! !Input Parameters:
+!   NONE
+!
+! !Output Parameters:
+!   NONE
+!
+! !Team-Unique Header:
+!
+!  Internal Routines:
+!    open_msahdf_and_intialize - 
+!    ingest_zone_MCD           - 
+!    get_msa                   -  
+!    isgI                      - 
+!    modis_albedo              -
+!    cal_bsa                   -
+!    cal_wsa                   -
+!    get_skyl                  -
+!    mod_to_fu18               -
+!    nearest_MCD_JD            -
+!
+!  Modules Used:
+!
+!
+! !Revision History:
+!  Version 1.0   October 1, 2013 - SCCR #1017
+!                 Fred Rose, SSAI, Fred.G.Rose@nasa.gov
+!                 Thomas Caldwell, SSAI, Thomas.E.Caldwell@nasa.gov
+!                 Initial Version of Module
+!
+! !END
+!
+!*****************************************************************************
+!
+ IMPLICIT NONE
+ 
+ INCLUDE 'hdf.f90'
+ INCLUDE 'dffunc.f90'
+   
+ INTEGER, PARAMETER :: nmlat=20,nmlon=7200 !0.05 1/20 of adeg
+ REAL,    PARAMETER :: omit = -9999.
+ INTEGER, PARAMETER :: nwvl = 10 ! #of wavelengths
+ INTEGER, PARAMETER :: nfac = 1
+      
+ TYPE ,PUBLIC ::MSA_TYPE
+  SEQUENCE
+
+!!INPUTS
+  INTEGER LID_File 
+  INTEGER IVER  ! Julian Day of MCD43c1 file 
+  INTEGER :: IVER_loaded = -1 
+  REAL rlatC	! Latitude (-90,90)
+  REAL :: rlatC_loaded = -9999.
+  REAL rlonW	! Longitude ( 0,360)
+  REAL rlonE	! Longitude ( 0,360)
+  REAL aot	! Aerosol Optical Depth ( 0 , ~3)
+  INTEGER itype ! 1= Maritime 2=Continental
+  REAL sza	! Solar Zenith Angle (0-90)
+
+!  Subgrid extracted OUTPUT ! at 10 Wavelenths  ( see notes)
+  REAL modalb(nwvl)	!Modis Surface Albedo
+  INTEGER ngood  ! # good retrievals
+  INTEGER istatus  ! 0= 0.05 resolution , 1= 1x1deg resolution
+  REAL fu18(18)  !! Simple conversion to FuLiou 18 bands
+  LOGICAL :: lutinit =.false.
+ END TYPE MSA_TYPE
+  
+ TYPE ( MSA_TYPE ), SAVE :: MSA
+ 
+! Global Saved Variables
+ REAL,SAVE, DIMENSION(nmlat)	        :: lata = omit
+ REAL,SAVE, DIMENSION(nmlon)	        :: lona = omit !!subgrid lat & lons
+ REAL,SAVE, DIMENSION(2,10,90,50)       :: skyl_lut    !! Modis Albedo LUT
+ REAL,SAVE, DIMENSION(nwvl,nmlon,nmlat) :: iso,vol,geo
+ 
+ REAL,SAVE, DIMENSION(nwvl, nfac ,nfac) :: iso1,vol1,geo1
+ 
+ INTEGER,SAVE, DIMENSION(nmlon,nmlat)   :: qavals01,qavals67,snovals
+ 
+ INTEGER id ! HDF FILE ID
+
+ INTEGER MCD_Vers(12,31)
+
+ DATA MCD_Vers(1, 1:31) / 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5/ 
+ DATA MCD_Vers(2, 1:31) / 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 0, 0/ 
+ DATA MCD_Vers(3, 1:31) / 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4/ 
+ DATA MCD_Vers(4, 1:31) / 1, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 0/ 
+ DATA MCD_Vers(5, 1:31) / 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5/ 
+ DATA MCD_Vers(6, 1:31) / 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 0/ 
+ DATA MCD_Vers(7, 1:31) / 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 5/ 
+ DATA MCD_Vers(8, 1:31) / 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4/ 
+ DATA MCD_Vers(9, 1:31) / 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 0/ 
+ DATA MCD_Vers(10, 1:31) / 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5/ 
+ DATA MCD_Vers(11, 1:31) / 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 0/ 
+ DATA MCD_Vers(12, 1:31) / 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5/ 
+
+
+! MODIS Channel Wavelength Surface Albedo Product
+!  iwvl:  Wavelength Range
+!    1 : 620 -  670nm
+!    2 : 841 -  876nm
+!    3 : 459 -  479nm
+!    4 : 545 -  565nm
+!    5 : 1230 - 1250nm
+!    6 : 1628 - 1652nm
+!    7 : 2105 - 2155nm
+!    8 : 0.3-0.7µm  Visible
+!    9 : 0.7-5.0um  NIR
+!   10 : 0.3-5.0µm  Broadband
+       
+!  Band 10(300-5000nm) MODIS broad band albedo
+
+!   qavals (:,:,1) => bit flags 00-01 
+!   qavals (:,:,2) => bit flags 06-07 
+!   qavals (:,:,3) => bit flags 16-23 
+!   
+!   00-01  Mandatory QA      0 = Majority processed, good quality
+!                            1 = Majority processed, see other QA
+!                            2 = Majority not processed due to cloud effects
+!                            3 = Majority not processed due to other effects
+!   06-07  BRDF Quality      0  = Majority full inversion
+!                            1  = Majority magnitude inversion
+!                            2  = Majority Bus-in DB parameters
+!                                 (not currently used)
+!                            3  = Majority Fill value
+!   16-23  Percent Snow      0-100
+
+
+ CONTAINS
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!  
+ SUBROUTINE open_msahdf_and_intialize  !!! skyl_lut
+!
+!*****************************************************************************
+!
+! !F90
+!
+! !Name:
+!   open_msahdf_and_intialize
+!
+! !Description:
+!    Purpose - 
+!
+! 
+! !Input Parameters:
+!    NONE
+!
+! !Output Parameters:
+!    NONE
+!
+! !Team-Unique Header:
+!
+!  Modules Used: (Parameters followed by "*" are defined by this routine)
+!
+!  Input Files:
+!    NONE
+!
+! !Revision History:
+!  Version 1.0   October 1, 2013 - SCCR #1017
+!                 Fred Rose, SSAI, Fred.G.Rose@nasa.gov
+!                 Thomas Caldwell, SSAI, Thomas.E.Caldwell@nasa.gov
+!                 Initial Version of Module
+!
+! !END
+!
+!*****************************************************************************
+!
+ USE pcf, ONLY: GetFileName
+ USE ceres_status, ONLY: DIRECT_FILE, FMT_FILE, READ_FILE,   &
+ 			  SEQ_FILE, UNFMT_FILE, WRITE_FILE
+ USE io, ONLY: CloseFile, OpenFile
+
+ INTEGER,PARAMETER :: IncPath_Yes = 1
+ INTEGER	   :: IOS
+ INTEGER,PARAMETER :: LID_File_LUT =706
+ INTEGER           :: Unit_Num
+    
+ CHARACTER*512 fname, fname_lut !!! MODIS SPECTRAL ALBEDO HDF FILENAME Ex: MOD43C2.A2001001.004.2003082012001.hdf
+ CHARACTER (LEN=3) :: dm    
+ INTEGER :: iaot,iwvl,iszn,i
+ 
+ 
+ CALL GetFileName (msa%LID_File,FName, IOS, Version = msa%IVer, incPath = IncPath_Yes)    ! I		
+    
+ IF ( ios .NE. 0 ) STOP ' GET FILE NAME  error MODIS Spectral Albedo .hdf file '
+
+ id = sfstart(fname, DFACC_RDONLY) !!! START THE HDFFILE ! ONLY OPEN THIS ONCE
+
+ CALL OpenFile (LogicID = LID_File_LUT, &
+ 		    status = IOS,       & 
+ 		    handle = Unit_Num,  & 	 
+ 	   	    mode = READ_FILE,   &
+!    		    access = SEQ_FILE,  & 	 
+ 		    format = FMT_FILE,  &
+!    		    reclen = RLen,      & 	 
+                    version = 1 )    
+
+ IF ( ios .NE. 0 ) STOP ' OPEN error skyl_lut.dat '
+
+! Read and CLOSE  LUT for Albedo creation
+    
+ DO iaot=1,2	         ! (aerosol=0;aerosol<2;aerosol++) {
+   READ(Unit_num,*)dm	 ! fscanf(in,"%s %s\n",str,str);
+   DO iwvl=1,nwvl        ! (band=0;band<NBANDS;band++) {
+     READ(Unit_num,*)dm  ! fscanf(in,"%s %s\n",str,str);
+     READ(Unit_num,*)dm  ! fscanf(in,"%s ",str);
+     DO iszn=1,90        ! (szn=0;szn<90;szn++){ 
+       READ(Unit_num,*,iostat=ios)i,skyl_lut(iaot,iwvl,iszn,:)
+       IF ( ios .NE. 0 ) STOP ' READ error skyl_lut.dat '
+     ENDDO
+   ENDDO
+ ENDDO 
+
+ CALL CloseFile (Unit_Num,IOS)    
+ if ( ios .NE. 0 ) STOP ' CLOSE error skyl_lut.dat '
+ 
+ msa%lutinit  = .TRUE. 
+
+ END SUBROUTINE open_msahdf_and_intialize
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!  
+ SUBROUTINE ingest_zone_MCD 
+!
+!*****************************************************************************
+!
+! !F90
+!
+! !Name:
+!   ingest_zone_MCD
+!
+! !Description:
+!    Purpose - 
+!
+! 
+! !Input Parameters:
+!    NONE
+!
+! !Output Parameters:
+!    NONE
+!
+! !Team-Unique Header:
+!
+!  Modules Used: (Parameters followed by "*" are defined by this routine)
+!
+!  Input Files:
+!    NONE
+!
+! !Revision History:
+!  Version 1.0   October 1, 2013 - SCCR #1017
+!                 Fred Rose, SSAI, Fred.G.Rose@nasa.gov
+!                 Thomas Caldwell, SSAI, Thomas.E.Caldwell@nasa.gov
+!                 Initial Version of Module
+!
+! !END
+!
+!*****************************************************************************
+!
+
+ INTEGER :: i,j,accessmode,k
+ INTEGER :: status,nsds,nglobal_attr,data_type,count
+ INTEGER :: sds_id(40),dimsizes(6),nsds_attr,rank
+
+ INTEGER, DIMENSION(10) :: edges,stride,start
+ INTEGER, DIMENSION(2)  :: stride_qa, edges_qa, start_qa
+ 
+ CHARACTER*40 :: attr_name,sds_name(40) 
+ INTEGER (KIND=2), DIMENSION(nmlon,nmlat) :: ImageIn
+ INTEGER (KIND=4), DIMENSION(nmlon,nmlat) :: QAIn
+ INTEGER :: bitpos(9),bitlen(9)
+ 
+ REAL lat,lon,alon
+ INTEGER ilats,ilons
+ REAL onetwentieth,dll,rlat1,rlon1,colat
+ INTEGER iwvl
+! LOGICAL,PARAMETER :: check_qa=.false. 
+ LOGICAL,PARAMETER :: check_qa=.true.
+
+!HG-20260319
+integer :: iccc, jjj, iii
+real :: lon_val
+integer :: n_good_qa, n_good_brf, i2, j2, iwvl2
+logical :: all_brf_good
+integer :: n_fail_physical
+logical :: physical_good
+real :: alb1(nwvl)
+integer :: print_count
+
+
+print_count = 0
+
+ 
+ bitpos = (/0,2,3,6,8,16,24,28,31/)
+ bitlen = (/2,1,3,2,8, 8, 4, 3, 1/)
+    
+! ASSUME THE HDF FILE HAS BEEN OPENED AND HAS BEEN ASSIGNED the FILEID "ID"
+
+ status = sffinfo(id, nsds, nglobal_attr)
+  
+ DO i = 0,nsds-1
+   sds_name(i+1) = ' '
+   sds_id(i+1)  = sfselect(id, i)
+   status = sfginfo(sds_id(i+1), sds_name(i+1), rank, dimsizes, data_type,nsds_attr)   
+ ENDDO
+          
+ colat = 90.- msa%rlatC
+  
+ ilats = Int(colat*20.0)- 10	! starting latitude index
+ ilons = 0 
+
+ !print *, 'HG-test0320-1, colat, ilats, ', colat, ilats
+ !stop
+ 
+! read in the modis brdf coefficients
+
+ k=0
+ DO i=1,3  ! iso - 1, vol - 2, geo - 3
+   DO j = 1,10 !! 10 bands or wavelens
+     k=k+1
+     stride(1:2) = (/	      1,     1/)
+     edges( 1:2) = (/	 nmlon, nmlat/)
+     start( 1:2) = (/	 ilons, ilats/)
+     status  = sfrdata(sds_id(k), start(:), stride(:), edges(:), ImageIn(1,1))
+     IF ( status .NE. 0 ) THEN
+      print*,'statusdata= ',status,k,sds_id(k),sds_name(k),ImageIn(1,1)
+      STOP
+     ENDIF
+     status  = sfendacc(sds_id(k) ) ! Free up memory
+     IF(i==1)THEN
+      iso(j,1:nmlon,1:nmlat) = ImageIn(1:nmlon,1:nmlat)*1.
+     ELSEIF(i==2)THEN
+      vol(j,1:nmlon,1:nmlat) = ImageIn(1:nmlon,1:nmlat)*1.
+     ELSEIF(i==3)THEN
+      geo(j,1:nmlon,1:nmlat) = ImageIn(1:nmlon,1:nmlat)*1.
+     ENDIF
+   ENDDO
+ ENDDO 
+  
+  
+ WHERE(iso /= 32767.)iso = iso*0.001
+ WHERE(vol /= 32767.)vol = vol*0.001
+ WHERE(geo /= 32767.)geo = geo*0.001
+      
+      
+ IF ( check_qa) THEN 
+
+! read in the qa parameter
+
+   stride_qa(1:2) = (/        1,     1/)
+   edges_qa (1:2) = (/    nmlon, nmlat/)
+   start_qa (1:2) = (/    ilons, ilats/)
+   status  = sfrdata(sds_id(31), start_qa, stride_qa, edges_qa, QAIn)
+   IF ( status .NE. 0 ) STOP
+   status  = sfendacc(sds_id(31) ) ! Free up memory
+   
+   DO i=1,nmlon
+     DO j=1,nmlat
+       qavals01(i,j) = IBITS(QAIn(i,j),bitpos(1),bitlen(1))
+       qavals67(i,j) = IBITS(QAIn(i,j),bitpos(4),bitlen(4))
+       snovals(i,j)  = IBITS(QAIn(i,j),bitpos(6),bitlen(6))
+     ENDDO
+   ENDDO
+
+
+
+! Omit suspect data      
+
+
+   
+!   !   !HG-20260319
+!
+!! ---- BEGIN QA PRINT BLOCK FOR 14.5E ----
+!iccc = int((14.5 + 180.0)/0.05) + 1    ! i-index for 19.5E
+!
+!print *, 'Lat_idx   Lon(deg)      QA'
+!do jjj = 1, nmlat    ! for all latitude indices in zone (likely 1..20)
+!!  do iii = iccc-10, iccc+10   ! 5-point window around 14.5E
+!    lon_val = -180.0 + (iii-1)*0.05
+!    print '(i6, f10.3, i5, i5, i8)', jjj, lon_val, qavals01(iii,jjj), snovals(iii,jjj), msa%ngood
+!
+!    if (qavals01(iii,jjj) <= 2) then
+!      n_good_qa = n_good_qa + 1
+!      all_brf_good = .true.
+!      do iwvl = 1, nwvl
+!        if (iso(iwvl,iii,jjj)==32767. .or. vol(iwvl,iii,jjj)==32767. .or. geo(iwvl,iii,jjj)==32767.) all_brf_good = .false.
+!      end do
+!      if (all_brf_good) n_good_brf = n_good_brf + 1
+!
+!            if (all_brf_good .and. print_count < 5) then
+!         print *, 'BRDF for pixel [',iii,',',jjj,']:'
+!         print *, 'ISO:', iso(:,iii,jjj)
+!         print *, 'VOL:', vol(:,iii,jjj)
+!         print *, 'GEO:', geo(:,iii,jjj)
+!         print_count = print_count + 1
+!      end if
+!      
+!    end if    
+!    
+!  end do
+!end do
+!print *, "Lons 19.0-20.0: Pixels with good QA (qavals01 <=2): ", n_good_qa
+!print *, "Lons 19.0-20.0: Pixels with all BRDF params valid: ", n_good_brf
+!print *, "Final msa%ngood after physical checks: ", msa%ngood
+!!! ---- END QA PRINT BLOCK ----
+
+
+   DO iwvl=1,nwvl
+      !!!HG-20260318, HG-20260928 change back to original one > 2
+     WHERE ( qavals01 > 2) 
+     !WHERE ( qavals01 > 3) 
+       iso(iwvl,:,:) = 32767
+       vol(iwvl,:,:) = 32767   
+       geo(iwvl,:,:) = 32767
+     ENDWHERE      
+   ENDDO	
+
+ ENDIF ! check_qa   
+
+
+ msa%rlatC_loaded = msa%rlatC
+ msa%iver_loaded = msa%iver
+ 
+ END SUBROUTINE ingest_zone_MCD
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!  
+ SUBROUTINE get_msa
+!
+!*****************************************************************************
+!
+! !F90
+!
+! !Name:
+!   get_msa
+!
+! !Description:
+!    Purpose - 
+!
+! 
+! !Input Parameters:
+!    NONE
+!
+! !Output Parameters:
+!    NONE
+!
+! !Team-Unique Header:
+!
+!  Modules Used: (Parameters followed by "*" are defined by this routine)
+!
+!  Input Files:
+!    NONE
+!
+! !Revision History:
+!  Version 1.0   October 1, 2013 - SCCR #1017
+!                 Fred Rose, SSAI, Fred.G.Rose@nasa.gov
+!                 Thomas Caldwell, SSAI, Thomas.E.Caldwell@nasa.gov
+!                 Initial Version of Module
+!
+! !END
+!
+!*****************************************************************************
+   !
+
+   
+ INTEGER :: iix,ii,ii0,ii1,jj,jj0,jj1,iwvl
+ REAL skyl
+ REAL bsadum,wsadum
+ REAL alb1 (nwvl)
+ REAL*8 sum1(nwvl)
+
+ !HG-20260320
+     integer :: ii_start, ii_end
+
+ 
+! msa%bsa	 = omit
+! msa%wsa	 = omit
+ msa%modalb	 = omit
+
+
+! !HG-20260324-------------------
+! print *, 'HG-20260324-test7'
+! print *, 'msa%rlonW, msa%rlonE', msa%rlonW, msa%rlonE
+! print *, ' '
+! !----------------------------HG
+ 
+ 
+ ii0 = isgI(msa%rlonW)
+ ii1 = isgI(msa%rlonE)
+
+
+ !!HG need to check 20260329 lon
+!!  if (msa%rlonW > -161.0 .AND. msa%rlonE < -160.0) then
+!  if (msa%rlonW > 15.0 .AND. msa%rlonE < 16.0) then
+
+ 
+ 
+ jj0 = 1
+ jj1 =20
+
+ msa%modalb(1:nwvl)=0.000
+ msa%ngood = 0
+
+! IF (qavals01(ii,jj) < 2) THEN
+ msa%istatus = 0
+
+ sum1(1:nwvl) =0.00
+ 
+ LON_LOOP: DO iix =ii0,ii1
+  ii = iix
+  if ( iix > 7200 ) ii = iix-7200    
+    
+    LAT_LOOP : DO jj =jj0,jj1  
+
+     alb1(1:nwvl) = -9999.			
+
+     BAND_LOOP : DO iwvl = 1,nwvl
+
+       skyl = get_skyl(msa%itype, iwvl, msa%sza, msa%aot )		
+
+!       !HG-20260327
+!       print *, 'test0327 '
+!       print *, 'ii, jj, iwvl, iso(iwvl,ii,jj), vol(iwvl,ii,jj), geo(iwvl,ii,jj)'
+!       print *, ii, jj, iwvl, iso(iwvl,ii,jj), vol(iwvl,ii,jj), geo(iwvl,ii,jj)
+       
+       IF( iso(iwvl,ii,jj) /= 32767. .AND. &
+           vol(iwvl,ii,jj) /= 32767. .AND. &
+           geo(iwvl,ii,jj) /= 32767.) THEN
+  
+
+	   CALL modis_albedo( iso(iwvl,ii,jj), &
+                              vol(iwvl,ii,jj), &
+                              geo(iwvl,ii,jj), &
+			      msa%sza, skyl,   &
+        		      bsadum,wsadum, alb1(iwvl))
+
+!    !HG-20260320
+!!ii_start = nint((14.0 + 180.0) * 20)
+!!ii_end   = nint((15.0 + 180.0) * 20)
+!!if (ii >= ii_start .and. ii <= ii_end) then
+!!   print *, 'test0320, ii=', ii, 'jj=', jj, 'alb1=', alb1
+!!   print *, 'lat, lon: ', 90.0 - ((ilats + jj - 0.5) / 20.0), (real(ii) - 0.5)/20.0 - 180.0
+!
+!    !HG-20260319 --- Diagnostic out-of-bounds check START ---
+!    !HG-20260327
+!!  if (msa%rlonW > -161.0 .AND. msa%rlonE < -160.0) then
+!  if (msa%rlonW > 15.0 .AND. msa%rlonE < 16.0) then
+!     IF (alb1(iwvl) < 0.0 .OR. alb1(iwvl) > 1.01) THEN
+!     print *, 'msa%rlonW, msa%rlonE: ', msa%rlonW, msa%rlonE
+!     print *, 'Out-of-range alb1:', alb1(iwvl), 'for band', iwvl, 'at ii,jj=', ii, jj
+!  ENDIF
+!  endif
+!!   endif
+
+  ! --- Diagnostic check END ---
+    
+       ENDIF	       		 
+     ENDDO BAND_LOOP
+    
+     IF ( count(alb1 < 0 .OR. alb1 > 1.01 ) == 0 ) THEN			 
+       sum1(1:nwvl) = sum1(1:nwvl) + alb1(1:nwvl)
+       msa%ngood  = msa%ngood +1
+     ENDIF			 
+ 	
+   ENDDO LAT_LOOP
+ ENDDO LON_LOOP
+
+    
+ IF ( msa%ngood > 0 ) THEN
+  msa%modalb(1:nwvl) = sum1(1:nwvl) / float(msa%ngood ) 	
+ ELSE
+  msa%modalb(1:nwvl) = -9999.
+  msa%istatus = -1
+ ENDIF 
+
+ !HG-20260327
+!endif
+
+
+ 
+ CALL mod_to_fu18
+
+ END SUBROUTINE get_msa
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!  
+ INTEGER FUNCTION isgI(rlonin)
+!
+!*****************************************************************************
+!
+! !F90
+!
+! !Name:
+!   isgI
+!
+! !Description:
+!    Purpose - 
+!
+! 
+! !Input Parameters:
+!    NONE
+!
+! !Output Parameters:
+!    NONE
+!
+! !Team-Unique Header:
+!
+!  Modules Used: (Parameters followed by "*" are defined by this routine)
+!
+!  Input Files:
+!    NONE
+!
+! !Revision History:
+!  Version 1.0   October 1, 2013 - SCCR #1017
+!                 Fred Rose, SSAI, Fred.G.Rose@nasa.gov
+!                 Thomas Caldwell, SSAI, Thomas.E.Caldwell@nasa.gov
+!                 Initial Version of Module
+!
+! !END
+!
+!*****************************************************************************
+!
+ REAL rlonin,rlon
+ 
+ rlon=rlonin
+
+ IF ( rlon < -179.95 ) rlon = -179.95
+! IF ( rlon > 180 ) rlon = rlon-360.
+
+ isgI =  nint((rlon + 180.0 )*20) 
+
+! IF ( isgI > nmlon) isgI=isgI-nmlon
+ IF ( isgI < 1) isgI=isgI+nmlon
+ 
+ END FUNCTION isgI
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!  
+ SUBROUTINE modis_albedo(iso,vol,geo,sza,skyl, & ! In
+                                  bsa,wsa,alb)   ! Out
+!
+!*****************************************************************************
+!
+! !F90
+!
+! !Name:
+!   modis_albedo
+!
+! !Description:
+!    Purpose - 
+!
+! 
+! !Input Parameters:
+!    iso,vol,geo,sza,skyl
+!
+! !Output Parameters:
+!    bsa,wsa,alb
+!
+! !Team-Unique Header:
+!
+!  Modules Used: (Parameters followed by "*" are defined by this routine)
+!
+!  Input Files:
+!    NONE
+!
+! !Revision History:
+!  Version 1.0   October 1, 2013 - SCCR #1017
+!                 Fred Rose, SSAI, Fred.G.Rose@nasa.gov
+!                 Thomas Caldwell, SSAI, Thomas.E.Caldwell@nasa.gov
+!                 Initial Version of Module
+!
+! !END
+!
+!*****************************************************************************
+!
+ REAL :: iso,vol,geo,sza,skyl
+ REAL :: bsa,wsa,alb
+
+ bsa=cal_bsa(iso,vol,geo,sza)
+ wsa=cal_wsa(iso,vol,geo)
+
+ IF(bsa < 0 .AND. bsa /= 32767) bsa= omit
+ IF(bsa >= 1.1 .AND. bsa /= 32767) bsa= omit
+
+ IF(bsa == 32767.) bsa= omit
+ IF(wsa < 0)	   wsa= omit
+ IF(wsa == 32767.) wsa= omit
+ 
+ alb=wsa*skyl + bsa*(1.0-skyl)
+
+ IF(alb<0) alb= omit
+ IF(alb>1.1) alb= omit
+
+ END SUBROUTINE modis_albedo
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!  
+ REAL FUNCTION cal_bsa(iso,vol,geo,sza)
+!
+!*****************************************************************************
+!
+! !F90
+!
+! !Name:
+!   cal_bsa
+!
+! !Description:
+!    Purpose - calculate black-sky albedo according to 
+!              Wolfgang's polynomial albedo representation 
+!
+! 
+! !Input Parameters:
+!    
+!
+! !Output Parameters:
+!    
+!
+! !Team-Unique Header:
+!
+!  Modules Used: (Parameters followed by "*" are defined by this routine)
+!
+!  Input Files:
+!    NONE
+!
+! !Revision History:
+!  Version 1.0   October 1, 2013 - SCCR #1017
+!                 Fred Rose, SSAI, Fred.G.Rose@nasa.gov
+!                 Thomas Caldwell, SSAI, Thomas.E.Caldwell@nasa.gov
+!                 Initial Version of Module
+!
+! !END
+!
+!*****************************************************************************
+!
+
+ IMPLICIT NONE
+
+ INTEGER :: i  
+ REAL :: iso,vol,geo,sza,pi,d2r
+ REAL :: bsa,szn
+ REAL (kind=8) :: poly_coef(3,3),bsa_weight(3),sq_szn,cub_szn
+
+ poly_coef(1,:) = (/ 1.0,-0.007574,-1.284909 /)
+ poly_coef(2,:) = (/ 0.0,-0.070987,-0.166314 /)
+ poly_coef(3,:) = (/ 0.0, 0.307588, 0.041840 /)
+
+ pi      = 4.*atan(1.)
+ d2r     = pi/180.
+ szn     = sza*d2r
+ sq_szn  = szn*szn
+ cub_szn = sq_szn*szn
+
+ bsa_weight(1:3) = poly_coef(1,1:3)+poly_coef(2,1:3)*sq_szn+poly_coef(3,1:3)*cub_szn
+
+ bsa=bsa_weight(1)*iso+bsa_weight(2)*vol+bsa_weight(3)*geo
+
+ 
+ cal_bsa = bsa
+
+ END FUNCTION cal_bsa
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!  
+ REAL FUNCTION cal_wsa(iso,vol,geo)
+!
+!*****************************************************************************
+!
+! !F90
+!
+! !Name:
+!   cal_wsa
+!
+! !Description:
+!    Purpose - calculate white-sky albedo with fixed weight
+!
+! 
+! !Input Parameters:
+!    
+!
+! !Output Parameters:
+!    
+!
+! !Team-Unique Header:
+!
+!  Modules Used: (Parameters followed by "*" are defined by this routine)
+!
+!  Input Files:
+!    NONE
+!
+! !Revision History:
+!  Version 1.0   October 1, 2013 - SCCR #1017
+!                 Fred Rose, SSAI, Fred.G.Rose@nasa.gov
+!                 Thomas Caldwell, SSAI, Thomas.E.Caldwell@nasa.gov
+!                 Initial Version of Module
+!
+! !END
+!
+!*****************************************************************************
+!
+
+ REAL :: iso,vol,geo,wsa,wsa_weight(3)
+ 
+ wsa_weight=(/ 1.0,0.189184,-1.377622 /)
+ 
+ wsa=wsa_weight(1)*iso+wsa_weight(2)*vol+wsa_weight(3)*geo
+ 
+ cal_wsa = wsa
+
+ END FUNCTION cal_wsa
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!  
+ REAL FUNCTION get_skyl (itype,iwvl,sza,aod)
+!
+!*****************************************************************************
+!
+! !F90
+!
+! !Name:
+!   get_skyl
+!
+! !Description:
+!    Purpose - Do the table look up
+!
+! 
+! !Input Parameters:
+!    
+!
+! !Output Parameters:
+!    
+!
+! !Team-Unique Header:
+!
+!  Modules Used: (Parameters followed by "*" are defined by this routine)
+!
+!  Input Files:
+!    NONE
+!
+! !Revision History:
+!  Version 1.0   October 1, 2013 - SCCR #1017
+!                 Fred Rose, SSAI, Fred.G.Rose@nasa.gov
+!                 Thomas Caldwell, SSAI, Thomas.E.Caldwell@nasa.gov
+!                 Initial Version of Module
+!
+! !END
+!
+!*****************************************************************************
+!
+
+ REAL :: sza,aod
+ INTEGER :: itype,iszn,iaod,isza,iwvl
+
+ isza = INT(sza+0.5)     ! /* solar zenith index */
+ IF(isza==90)isza=89
+ isza = isza+1
+ 
+ iaod = INT(aod/0.02+0.5)! /* optical depth index */
+ IF(iaod>=50) iaod=49
+ iaod = iaod+1
+
+!---
+! itype
+!  1 - continental
+!  2 - maritime
+!---
+
+! print*,'before skylut ',itype,iwvl,isza,iaod
+ get_skyl = skyl_lut(itype,iwvl,isza,iaod)
+! print*,'after skylut ',itype,iwvl,isza,iaod
+ 
+ END FUNCTION get_skyl
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!  
+ SUBROUTINE mod_to_fu18
+!
+!*****************************************************************************
+!
+! !F90
+!
+! !Name:
+!   mod_to_fu18
+!
+! !Description:
+!    Purpose - 
+!
+! 
+! !Input Parameters:
+!    
+!
+! !Output Parameters:
+!    
+!
+! !Team-Unique Header:
+!
+!  Modules Used: (Parameters followed by "*" are defined by this routine)
+!
+!  Input Files:
+!    NONE
+!
+! !Revision History:
+!  Version 1.0   October 1, 2013 - SCCR #1017
+!                 Fred Rose, SSAI, Fred.G.Rose@nasa.gov
+!                 Thomas Caldwell, SSAI, Thomas.E.Caldwell@nasa.gov
+!                 Initial Version of Module
+!
+! !END
+!
+!*****************************************************************************
+!
+! 1:7 = M3
+! 8  = M3
+! 9  = M4
+! 10 = M1
+! 11 = (M1+M2)/2
+! 12 = M2
+! 13 = (M2+M5)/2
+! 14 = M5
+! 15 = M6
+! 16 = M7
+! 17:18= M7
+
+ msa%fu18(1:8)= msa%modalb(3)
+
+ msa%fu18(9)= msa%modalb(4)
+
+ msa%fu18(10)= msa%modalb(1)
+
+ msa%fu18(11)= ( msa%modalb(1)+ msa%modalb(2) )*0.5
+
+ msa%fu18(12)= msa%modalb(2)
+
+ msa%fu18(13)= ( msa%modalb(2)+ msa%modalb(5) )*0.5
+
+ msa%fu18(14)= msa%modalb(5)
+
+ msa%fu18(15)= msa%modalb(6)
+
+ msa%fu18(16:18)= msa%modalb(7)
+
+
+ END SUBROUTINE mod_to_fu18
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!  
+ INTEGER FUNCTION nearest_MCD_JD(Jday)
+!
+!*****************************************************************************
+!
+! !F90
+!
+! !Name:
+!   nearest_MCD_JD
+!
+! !Description:
+!    Purpose - 
+!
+! 
+! !Input Parameters:
+!    
+!
+! !Output Parameters:
+!    
+!
+! !Team-Unique Header:
+!
+!  Modules Used: (Parameters followed by "*" are defined by this routine)
+!
+!  Input Files:
+!    NONE
+!
+! !Revision History:
+!  Version 1.0   October 1, 2013 - SCCR #1017
+!                 Fred Rose, SSAI, Fred.G.Rose@nasa.gov
+!                 Thomas Caldwell, SSAI, Thomas.E.Caldwell@nasa.gov
+!                 Initial Version of Module
+!
+! !END
+!
+!*****************************************************************************
+!
+ INTEGER k,L8 ,Jday
+
+! Finds Julian day corresponding to eight day MCD43C1 files ( start date)  that contains Jday time
+ DO k =1,46
+   L8=1+ (k-1)*8
+
+   IF( Jday >= L8 .AND. Jday < L8+8 ) THEN
+     nearest_MCD_JD = k !L8
+     RETURN
+   ENDIF
+
+ ENDDO
+
+ END FUNCTION nearest_MCD_JD
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!  
+END MODULE MODALBHDF_SYNI

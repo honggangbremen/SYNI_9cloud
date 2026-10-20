@@ -1,0 +1,363 @@
+MODULE SARB_QC_Params
+!
+!
+!******************************************************************************
+!
+! !F90
+!
+! !Name:
+!   SARB_QC_Params
+!
+! !Description:
+!    Routine ID -
+!
+!    Purpose - To provide a module of type declarations for Quality Control
+!              variables relevant to the SARB Subsystems
+!
+!
+! !Input Parameters:
+!   NONE
+!
+! !Output Parameters:
+!   NONE
+!
+! !Team-Unique Description:
+!
+!  Modules Used:
+!   ceres_valregions - (CERESlib) Parameters: NumValReg_AWG
+!   f90_kind         - (CERESlib) Parameters: INT4, REAL8
+!   Profile_Params   - (SARBlib)  Parameters: NumPass, NumDir, NumSkyCond
+!
+!  Key Local Parameters:
+!    avgfqc % ig ( I)      - Array containing the averages for each of the
+!                            QC report product-level items
+!                              I = 1, np
+!    curt ( I)             - Array containing the kurtosis for each of the
+!                            QC report product-level items
+!                              I = 1, np
+!    fqc_type structure    - Structure for current FOV data for the 
+!                            product-level QC report items
+!       gm ( I, J)         - Array of validated sample values for each 
+!                            product-level QC report item for the current FOV
+!                              I = 1, ngt
+!                              J = 1, ncase
+!       g1 ( I, J)         - Array of validated sample values for the TOA flux 
+!                            and radiance group product-level QC report 
+!                            items for the current FOV
+!                              I = 1, ng1x
+!                              J = 1, ng1y
+!       g2 ( I, J)         - Array of validated sample values for the surface  
+!                            flux group product-level QC report items for
+!                            the current FOV
+!                              I = 1, ng2x
+!                              J = 1, ng2y
+!       g3 ( I, J)         - Array of validated sample values for the vertical  
+!                            flux profile group product-level QC report items
+!                            for the current FOV
+!                              I = 1, ng3x
+!                              J = 1, ng3y
+!       g4 ( I, J)         - Array of validated sample values for the radiation 
+!                            transfer model input parameter group product-level 
+!                            QC report items for the current FOV
+!                              I = 1, ng4x
+!                              J = 1, ng4y
+!       icv ( I)           - Array of logical flags indicating which of the
+!                            ncase scenes are true for the current FOV
+!                              I = 1, ncase
+!       ig ( I)            - Array of integer flags indicating the group
+!                            for each QC report product-level item
+!                              I = 1, ngt
+!                              ig ( I) = 1 ; TOA flux and radiance items group
+!                              ig ( I) = 2 ; Surface flux items group
+!                              ig ( I) = 3 ; Vertical flux profile items group
+!                              ig ( I) = 4 ; Radiation transfer model input
+!                                            parameter items group
+!       ix ( I)            - Array of pointers for each QC report
+!                            product-level item indicating the broad category
+!                            within the item's associated group
+!       iy ( I)            - Array of pointers for each QC report
+!                            product-level item indicating the narrow category
+!                            within the item's associated group
+!       la ( I)            - Array of labels for product-level QC report 
+!                            items
+!                              I = 1, np
+!       lprt               - Logical flag indicating whether or not
+!                            free-form print statements are executed
+!                            (for production version software, such
+!                            statements are not to be executed)
+!       omit               - Default value for initializing FOV values for
+!                            QC report items
+!       toains             - Incoming solar radiation at the TOA
+!    icnt ( I)             - Array containing the number of samples for 
+!                            each of the QC report product-level items
+!                              I = 1, np
+!    ICnt_Day              - Number of FOVs for which the solar zenith angle
+!                            is less than 90 degrees
+!    ICnt_FOV              - Number of FOVs for which data are written to
+!                            the output product
+!    ICnt_FOVVal           - 
+!    ICnt_Night            - Number of FOVs for which the solar zenith angle 
+!                            is greater than 90 degrees
+!    ICnt_NoFlux ( I)      - Number of FOVs for which the  
+!                            SARB algorithms were not processed due to invalid
+!                            TOA flux values estimated by the CERES Inversion
+!                            process
+!                              I = 1; Daytime
+!                                  2; Nighttime
+!    ICnt_NoPres ( I)      - Number of FOVs for which there are
+!                            valid cloud fractions, but invalid corresponding
+!                            cloud heights, on the input product
+!                              I = 1; Daytime
+!                                  2; Nighttime
+!    ICnt_NumPass ( I,J,K) - Statistical array counting number of passes 
+!                            through Fu-Liou Model for each possible cloud 
+!                            layer scenario
+!                              I = 1; Daytime
+!                                  2; Nighttime
+!                              J = 1; One pass through model (initial only)
+!                                  2; Two passes through model (initial + tuned)
+!                              K = 0; 100% Clear skies
+!                                  1; One cloud layer
+!                                  2; Two cloud layers
+!                                  3; Three cloud layers (Synoptic SARB only)
+!                                  4; Four cloud layers (Synoptic SARB only)
+!    ICnt_SunGlint ( I)   - Number FOVs with sunglint
+!                             I = 1; Daytime
+!                                 2; Nighttime
+!    ICnt_Tridag ( I)     - Array of the number of errors encountered in the
+!                           radiation transfer model Sbr. TriDag for each pass
+!                           through the model
+!                             I = 1 ; Number of errors encountered in the 
+!                                     initial pass 
+!                               = 2 ; Number of errors encountered in the 
+!                                     constrained pass 
+!    ICnt_TuneErr ( I)    - Array of counters for errors encountered during the
+!                           constrainment process
+!                             I = 1 ; Number of Sigma Table values exceeding 
+!                                     the value of maxtune
+!                                 2 ; Number of Sigma Table values exceeding 
+!                                     the value of mcldc
+!                                 3 ; Number of Sigma Table values exceeding 
+!                                     the value of nsid
+!                                 4 ; Number of "tune_xxx error ipass"
+!                                 5 ; Number of "Cloud fraction adjustment
+!                                     errors
+!                                 6 ; Number of "Singular matrix" errors
+!                                 7 ; Number of invalid constrained cloud 
+!                                     fractions
+!    is                   - Pointer used in the initialization of arrays
+!                           within the fqc structure
+!    it                   - Product-level statistic index written
+!                           to the formatted QC report output file
+!    LabDir ( I)          - Character array containing labels used in the QC
+!                           report indicating flux direction 
+!                             I = 1 ; Label indicating downward fluxes
+!                               = 2 ; Label indicating upward fluxes
+!    LabPass ( I)         - Character array containing labels used in the QC
+!                           report indicating specific passes through the
+!                           radiation transfer model
+!                             I = 1 ; Label indicating the initial pass
+!                               = 2 ; Label indicating the constrained pass
+!    LabSky ( I)          - Character array containing labels used in the QC
+!                           report indicating cloud condition 
+!                             I = 1 ; Label indicating pristine skies
+!                               = 2 ; Label indicating clear skies
+!                               = 3 ; Label indicating total skies
+!    LW_sfc_dna           - LW surface downward flux, computed by Model A
+!                           in SS4.6, provided on the primary input product
+!    LW_sfc_dnb           - LW surface downward flux, computed by Model B
+!                           in SS4.6, provided on the primary input product
+!    ncase                - Number of scene types over which the QC report 
+!                           product-level statistics are broken down
+!    ngt                  - Number of product-level statistics displayed  
+!                           in the QC report per scene type
+!    ng1                  - Number of TOA flux and radiance group  
+!                           product-level QC report items
+!    ng2                  - Number of surface flux group QC report items
+!    ng3                  - Number of vertical flux profile group QC 
+!                           report items
+!    ng4                  - Number of radiation transfer model input 
+!                           variable group QC report items
+!    ng1x                 - Number of broad categories over which the QC 
+!                           report TOA flux and radiance group statistics
+!                           are broken down
+!    ng1y                 - Number of narrow categories over which the QC 
+!                           report TOA flux and radiance group statistics 
+!                           are broken down
+!    ng2x                 - Number of broad categories over which the QC 
+!                           report surface flux group statistics are 
+!                           broken down
+!    ng2y                 - Number of narrow categories over which the QC 
+!                           report surface flux group statistics are 
+!                           broken down
+!    ng3x                 - Number of broad categories over which the QC 
+!                           report vertical flux profile group statistics 
+!                           are broken down
+!    ng3y                 - Number of narrow categories over which the QC 
+!                           report vertical flux profile group statistics 
+!                           are broken down
+!    ng4x                 - Number of broad categories over which the QC 
+!                           report radiation transfer model input variable  
+!                           group statistics are broken down 
+!    ng4y                 - Number of narrow categories over which the QC 
+!                           report radiation transfer model input variable  
+!                           group statistics are broken down
+!    np                   - Total number of product-level items for which 
+!                           statistics are displayed in the QC report
+!    rmax ( I)            - Array containing the maximum value sampled for 
+!                           each of the QC report product-level items
+!                             I = 1, np
+!    rmin ( I)            - Array containing the minimum value sampled for 
+!                           each of the QC report product-level items
+!                             I = 1, np
+!    sa ( I, J)           - Storage array for accumulating statistical data  
+!                           for each of the product-level items from each FOV  
+!                           during subsystem processing
+!                             I = 1, np
+!                             J = 1 ; Summation of applicable sample values
+!                                 2 ; Summation of applicable sample values
+!                                     raised to the second power
+!                                 3 ; Summation of applicable sample values
+!                                     raised to the third power
+!                                 4 ; Summation of applicable sample values
+!                                     raised to the fourth power
+!    skew ( I)            - Array containing the skewness for each of
+!                           the QC report product-level items
+!                             I = 1, np
+!    std ( I)             - Array containing the standard deviation for
+!                           each of the QC report product-level items
+!                             I = 1, np
+!    SW_sfc_dna           - SW surface downward flux, computed by Model A
+!                           in SS4.6, provided on the primary input product
+!    SW_sfc_neta          - SW surface net flux, computed by Model A
+!                           in SS4.6, provided on the primary input product
+!    SW_sfc_netb          - SW surface net flux, computed by Model B
+!                           in SS4.6, provided on the primary input product
+!    ValSite_Pass ( I)    - Array of CERES Validation Regions passed over by 
+!                           the satellite for the current run
+!    ValSite_PassCnt ( I) - Array of counters for the number of FOVs for the
+!                           current hour that were included in each of
+!                           the corresponding regions in the ValSite_Pass 
+!                           array
+!
+! !Revision History:
+!  Version 4.0   August 16, 2004 - SCCR #550
+!                Thomas Caldwell, SAIC, t.e.caldwell@larc.nasa.gov
+!                  Changed declaration of ICnt_TuneErr to dimension of 8 to 
+!                  allow for value of 8 returned from tuning code 
+!  Version 3.4   December 20, 2002 - SCCR #408
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                  Addition of variable ICnt_FOVVal
+!  Version 3.2   R3 Date - SCCR #408  
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                  1. Transfered from Module SARB_OutVar:
+!                      LW_sfc_dna    SW_sfc_dna
+!                      LW_sfc_dnb    SW_sfc_neta
+!                                    SW_sfc_netb
+!  Version 3.0   March 9, 2001 - SCCR #246  
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                 1. Modifications to include window channel statistics
+!                    removed: ng2ax, ng2ay, ng3ax, ng3ay, ng2a, ng3a, g2a, g3a,
+!                             lmin, lmax
+!                    modified: ng1y (1=>6), ng3y (4=>7), ng4y (7=>8),
+!                             sa (4-byte real => 8-byte real)
+!                 2. Added ICnt_FOV
+!  Version 2.4   March 15, 1999 - SCCR #132
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                 1. Addition of counters for window channel flux errors
+!  Version 2.2   April 3, 1998 - SCCR #68
+!                Fred Rose, AS&M, f.g.rose@larc.nasa.gov
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                Shalini Gupta, SAIC, s.gupta@larc.nasa.gov
+!                 1.  Initial Version of Code
+!                 2.  Includes declarations from Version 2.0 SARB_QC module,
+!                     which has now been eliminated
+!
+! !END
+!
+!******************************************************************************
+!
+    USE ceres_valregions, ONLY: NumValReg_AWG
+    USE f90_kind, ONLY: INT4, REAL8
+    USE Profile_Params, ONLY: NumPass, NumDir, NumSkyCond
+    
+    IMPLICIT NONE
+!
+    integer (INT4),parameter :: ncase=40
+    integer (INT4),parameter :: ng1x=5,ng1y=6 
+    integer (INT4),parameter :: ng2x=3,ng2y=3
+    integer (INT4),parameter :: ng3x=4,ng3y=7
+    integer (INT4),parameter :: ng4x=2,ng4y=8
+
+    integer (INT4),parameter :: ng1=ng1x*ng1y, ng2=ng2x*ng2y
+    integer (INT4),parameter :: ng3=ng3x*ng3y, ng4=ng4x*ng4y
+
+    integer (INT4),parameter :: ngt=ng1+ng2+ng3+ng4
+    INTEGER (INT4),PARAMETER :: np = ngt * ncase
+
+!
+    CHARACTER (LEN=3),  PARAMETER :: Input_Source = 'TSI'
+    CHARACTER (LEN=9),  PARAMETER :: LabDir ( NumDir) =                     &
+                                        (/ 'DOWNWARD ', 'UPWARD   ' /)
+    CHARACTER (LEN=9),  PARAMETER :: LabSky ( NumSkyCond) =                 &
+          (/ 'PRISTINE ',  'CLEAR    ',  'TOTAL    ',                       &
+             'CLOUD 1  ',  'CLOUD 2  ',  'CLOUD 3  ',  'CLOUD 4  ',         &
+             'CldNoAer ', 'CLOUD 1NA', 'CLOUD 2NA', 'CLOUD 3NA', 'CLOUD 4NA'/)
+    CHARACTER (LEN=12), PARAMETER :: LabPass ( NumPass) =                   &
+                                        (/ 'INITIAL     ', 'CONSTRAINED ' /)
+
+    INTEGER, SAVE :: CloudInconsist_TotQC
+    INTEGER, SAVE :: ICnt_Day
+    INTEGER, SAVE :: ICnt_DirDiff ( NumPass)
+    INTEGER, SAVE :: ICnt_FluxRange ( NumPass)
+    INTEGER, SAVE :: ICnt_FOV
+    INTEGER, SAVE :: ICnt_FOVVal
+    INTEGER, SAVE :: ICnt_LW_Inv ( NumPass, NumSkyCond, NumDir)
+    INTEGER, SAVE :: ICnt_Night
+    INTEGER, SAVE :: ICnt_NoFlux ( 2)
+    INTEGER, SAVE :: ICnt_NoPres ( 2)
+    INTEGER, SAVE :: ICnt_NumPass ( 2, NumPass, 0:4)
+    INTEGER, SAVE :: ICnt_PAR ( NumPass)
+    INTEGER, SAVE :: ICnt_SfcRad_Init
+    INTEGER, SAVE :: ICnt_SunGlint ( 2)
+    INTEGER, SAVE :: ICnt_SW_Inv ( NumPass, NumSkyCond, NumDir)
+    INTEGER, SAVE :: ICnt_TotLWrad_Inv ( NumPass, NumSkyCond)
+    INTEGER, SAVE :: ICnt_Tridag ( 2, NumPass)
+    INTEGER, SAVE :: ICnt_TuneErr ( 8)
+    INTEGER, SAVE :: ICnt_WN_Inv ( NumPass, NumSkyCond, NumDir)
+    INTEGER, SAVE :: ICnt_WNflx_Inv ( NumPass, NumSkyCond)
+    INTEGER, SAVE :: ICnt_WNrad_Inv ( NumPass, NumSkyCond)
+    INTEGER, SAVE :: InvalidInput_TotQC
+    INTEGER, SAVE :: InvalidModel_TotQC
+    INTEGER, SAVE :: InvalidTSI_SSF_TotQC
+    REAL,    SAVE :: LW_sfc_dna
+    REAL,    SAVE :: LW_sfc_dnb
+    REAL,    SAVE :: SW_sfc_dna
+    REAL,    SAVE :: SW_sfc_neta
+    REAL,    SAVE :: SW_sfc_netb
+    INTEGER, SAVE :: ValidFOV_TotQC
+    INTEGER, SAVE :: ValSite_Pass ( NumValReg_AWG)
+    INTEGER, SAVE :: ValSite_PassCnt ( NumValReg_AWG)
+! 
+   TYPE fqc_type
+    SEQUENCE
+     real toains, omit
+     logical icv(ncase)
+     real g1 (ng1x,ng1y)
+     real g2 (ng2x,ng2y)
+     real g3 (ng3x,ng3y)
+     real g4 (ng4x,ng4y)
+     real gm (ngt,ncase)
+     character (LEN=35) :: la ( ngt, ncase)
+     integer, dimension ( ngt) :: ig,ix,iy
+     logical  :: lprt 
+   END TYPE fqc_type
+!
+   REAL,		 SAVE :: curt ( np), rmin ( np), rmax ( np)
+   REAL,		 SAVE :: skew ( np), std ( np)
+   INTEGER, 	 SAVE :: icnt ( np)
+   INTEGER, 	 SAVE :: it, is
+   REAL (REAL8), SAVE :: sa ( np, 4), avg( np)
+!
+!
+END MODULE SARB_QC_Params

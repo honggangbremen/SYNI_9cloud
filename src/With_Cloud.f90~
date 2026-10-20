@@ -1,0 +1,743 @@
+MODULE With_Cloud
+!
+!***************************************************************************
+!
+! !F90
+!
+! !Name:
+!    With_Cloud
+!
+! !Description:
+!    Routine ID - M5.2.2.2
+!
+!    Purpose - This is a modules of routines that add levels corresponding 
+!              to the cloud heights indicated by the current input record 
+!              to the vertical profiles that are input into the radiative
+!              transfer model
+!
+!
+! !Input Parameters:
+!    NONE
+!
+! !Output Parameters:
+!    NONE
+!
+! !Team-Unique Header:
+!
+!  Modules Used:
+!    FL_IO_Params   - Used by Sbr. CldLyr_ID, CloudPressure
+!    Profile_Params - Used by Sbr. CldLyr_ID, CloudHt_Sort, CloudPressure, 
+!                                  WithCloud_Profile_Build
+!    SARB_General   - Used by Sbr. WithCloud_Profile_Build
+!
+!  Internal Routines:
+!    CldLyr_ID               - Identifies which layers in the vertical profile 
+!                              contain which cloud layers
+!    CloudHt_Sort            - Sorts the cloud levels in height order
+!    CloudPressure           - Builds array of input or tuned cloud pressures 
+!                              to insert into vertical profiles
+!    WithCloud_Profile_Build - Adds cloud pressures from Sbr. CloudPressure to 
+!                              vertical profiles built in Sbr. 
+!                              NoClouds_Profile_Build
+!
+! !Revision History:
+!  Version 3.3   December 20, 2002 - SCCR #408
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                 1. Modified Sbr. CldLyr_ID
+!                 1. Modified Sbr. CloudHt_Sort
+!                 1. Modified Sbr. CloudPressure
+!                 1. Modified Sbr. WithCloud_Profile_Build
+!  Version 2.4   March 15, 1999 - SCCR #132
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                 1. Modified Sbr. CloudPressure
+!  Version 2.3   June 16, 1998 - SCCR #89
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                 1. Breakout of Sbr. WithCloud_Profile_Build and  
+!                    CloudPressure from Module FL_SetUp into own module 
+!                    and multiple routines.
+!
+! !END
+!
+!***************************************************************************
+!
+!
+      USE FL_IO_Params
+      USE Profile_Params
+      USE nclouds_params
+      USE SARB_General
+!
+!
+      IMPLICIT NONE
+!
+!  
+      CONTAINS
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!
+    SUBROUTINE CloudPressure (TropHt, IP,                               & ! I
+                                          CTop, CBot,                   & ! I/O
+                                                      NumCld)             ! O
+!  
+!*****************************************************************************
+! 
+! !F90
+! 
+! !Name:
+!   CloudPressure
+!
+! !Description:
+!   Routine ID - 5.2.2.2
+!
+!   Purpose - To build a single array of pressure-ordered cloud top and 
+!             bottom pressures by merging two separate arrays--an array
+!             of cloud top pressures and an array of cloud bottom pressures.
+!
+!
+! !Input Parameters:
+!    IP     - Model pass array index
+!    TropHt - Height (hPa) of the tropopause
+!
+!  Input/Output parameters:
+!    CBot - Array of cloud bottom pressures
+!    CTop - Array of cloud top pressures
+!
+! !Output Parameters:
+!    NumCld - Number of cloud layers counted in the sample
+!
+! !Team-Unique Header:
+!
+!  Modules Used: (Parameters followed by "*" are defined by this routine)
+!    FL_IO_Params   - (SARBlib)  Parameters: CCLyr_Idx*, Default_INT4_FL, 
+!                                            Default_REAL4_FL, ModLev*,
+!                                            ModLev_Cnt* 
+!    Profile_Params - (SARBlib)  Parameters: CldHt_SfcLimit, MetIn, MaxLev_Cld, 
+!                                            MaxLev_Cld_2x
+!
+!  Internal Routines Used:
+!    CloudHt_Sort
+!    WithCloud_Profile_Build
+!
+!  Algorithm Description:
+!    1. No cloud top or bottom pressure may be closer to the surface 
+!       than the delta indicated by variable CldHt_SfcLimit.  For cloud 
+!       layer pressures outside that limit, the cloud bottom pressure is
+!       redefined as that limit, and the cloud top pressure is redefined 
+!       as the fixed level immediately above it.
+!    2. A cloud top and/or bottom pressure for one cloud layer may be 
+!       in between the cloud top and bottom pressures of another layer.
+!
+! !Revision History:
+!  Version 3.3   R3 Date - SCCR #408
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                 1. Replacement of variables MOAxxxx with variables
+!                    ModLevxxx ( MetIn) of Mod. FL_IO_Params.
+!                 2. Change of variable NumLev_Cld from Mod. SARB_Var
+!                    to local variable
+!                 3. Replaced Mod. SARB_Var variable NumCld_FOV
+!                    with output argument NumCld
+!  Version 2.4   March 15, 1999 - SCCR #132
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                 1. Use of NumCld_FOV parameter, Mod. SARB_Var
+!  Version 2.3   June 16, 1998 - SCCR #89
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                 1. Breakout from Module FL_SetUp into own module 
+!                 2. Breakout of Sbr. CloudHt_Sort
+!                 3. Added call to Sbr. WithCloud_Profile_Build
+!  Version 2.0   November 21, 1997 - SCCR #30
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                Shalini Gupta, SAIC, s.gupta@larc.nasa.gov
+!                Initial Version of Release 2 Code
+!
+! !END
+!
+!*****************************************************************************
+!
+!
+      REAL,    INTENT (INOUT) :: CBot ( nclouds)
+      REAL,    INTENT (INOUT) :: CTop ( nclouds)
+      INTEGER, INTENT (IN)    :: IP
+      INTEGER, INTENT (OUT)   :: NumCld
+      REAL,    INTENT (IN)    :: TropHt
+!
+      REAL    :: CBot_Limit
+      REAL    :: CPres ( 2*nclouds)
+      INTEGER :: Flg_Exit
+      INTEGER :: I 
+      INTEGER :: J
+      INTEGER :: JJ
+      INTEGER :: K
+      INTEGER :: NumLev_Cld
+      REAL    :: Temp
+!
+!
+! *** Initialize 
+      CPres ( 1:2*nclouds) = 0.0
+      CCLyr_Idx = 0
+      NumCld = 0
+      NumLev_Cld = 0
+      CBot_Limit = ModLev ( MetIn, ModLev_Cnt ( MetIn)) - CldHt_SfcLimit
+
+PRINT *, "CloudPressure: Starting for IP=", IP
+PRINT *, "Initial CTop=", CTop
+PRINT *, "Initial CBot=", CBot
+
+stop
+!
+!
+! *** Build array of cloud pressures (cloud tops and bottoms) from input file
+!
+      J = 1
+      DO I = 1, nclouds
+!
+          IF ( (CTop ( I) /= Default_REAL4_FL) .AND. (CTop ( I) > 0.0)) THEN
+!         *** Cloud layer exists.  
+!
+!-------------Begin Fred Rose (20140918)
+!            IF (  ABS(CTop (I) - TropHt) <= 2.0 ) THEN
+!             CTop(I) = TropHt
+!             IF (  ( CBot(I) - CTop(I) ) <= 2.1 ) CBot(I) =  CTop(I) + 2.1 !hPa
+!            ENDIF
+!-------------End Fred Rose (20140918)
+
+!-------------Begin Fred Rose (20140923)
+            IF (  ABS(CTop (I) - TropHt) <= 2.0 ) CTop(I) = TropHt
+            IF (  ( CBot(I) - CTop(I) )  <= 2.1 ) CBot(I) =  CTop(I) + 2.1 !hPa          
+!-------------End Fred Rose (20140923)
+
+
+              NumCld = NumCld + 1
+              Flg_Exit = 0
+!
+              IF (CBot ( I) > CBot_Limit ) THEN
+!             *** Input cloud bottom height too close to the surface.  Adjust 
+!                 cloud bottom pressure to minimum allowable height, and adjust 
+!                 cloud top pressure.
+!
+                  CBot ( I) = CBot_Limit
+!
+                  DO JJ = ModLev_Cnt ( MetIn), 1, -1
+!
+                      IF (ModLev ( MetIn, JJ) == CBot_Limit) THEN
+!                     *** Array element corresponding to minimum height located.
+!
+                          IF (CTop ( I) < CBot_Limit) THEN 
+!                         *** Adjust cloud top to first fixed MOA level above
+!                             input cloud top value.
+!
+                              DO K = JJ, 1, -1
+!
+                                 IF (ModLev ( MetIn, K) < CTop ( I)) THEN
+!                                *** Input cloud top is lower than MOA Level. 
+!                                    Redefine.
+!
+                                     CTop ( I) = ModLev ( MetIn, K)
+                                     Flg_Exit = 1
+                                     EXIT
+!
+                                 END IF
+!
+                              END DO
+!
+                              IF (Flg_Exit == 1) EXIT
+!
+                          ELSE 
+!                         *** Input cloud top height also too close to the 
+!                             surface. Adjust cloud top to first MOA level  
+!                             above the minimum allowable height.
+!
+                              CTop ( I) = ModLev ( MetIn, JJ-1)
+                              EXIT                                                
+!
+                          END IF
+!            
+                      END IF
+!
+                  END DO
+!
+              END IF
+!
+              CPres ( J) = CTop ( I)
+              CPres ( J+1) = CBot ( I)
+              J = J + 2
+              NumLev_Cld = NumLev_Cld + 2
+!
+          ELSE
+!         *** No cloud in this layer
+!
+              CCLyr_Idx ( IP, I, 1:2) = Default_INT4_FL
+!
+          END IF
+      END DO
+!
+!
+! *** Sort levels according to height.
+!
+      CALL CloudHt_Sort (TropHt, CPres, NumLev_Cld)                      ! I
+!
+!
+! *** Merge cloud levels with base profiles
+!
+      CALL WithCloud_Profile_Build (CTop, CBot, IP, NumLev_Cld, CPres)   ! I
+!
+!
+      END SUBROUTINE CloudPressure
+!
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!
+      SUBROUTINE CloudHt_Sort (TropHt, CPres, NumLev_Cld)                ! I
+!
+!*****************************************************************************
+! 
+! !F90
+! 
+! !Name:
+!   CloudHt_Sort
+!
+! !Description:
+!   Routine ID - 5.2.2.2.1
+!
+!   Purpose - To build a single array of pressure-ordered cloud top and 
+!             bottom pressures by merging two separate arrays--an array
+!             of cloud top pressures and an array of cloud bottom pressures.
+!
+!
+! !Input Parameters:
+!    CPres      - Array of merged cloud top and bottom heights (hPa)
+!    NumLev_Cld - Number of cloud heights levels 
+!    TropHt     - Height (hPa) of the tropopause
+!
+! !Output Parameters:
+!    NONE
+!
+! !Team-Unique Header:
+!
+!  Modules Used: (Parameters followed by "*" are defined by this routine)
+!    Profile_Params - Parameters: Delta_CldPro, MaxLev_Cld_2x
+!
+! !Revision History:
+!  Version 3.3   December 20, 2002 - SCCR #408
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                 1. Passing CPres and NumLev_Cld as input arguments and 
+!                    removing CldPres array and NumLev_Cld from Mod. SARB_Var.
+!                 2. Addition of variables TropMinusDelta and TropPlusDelta
+!  Version 2.3   June 16, 1998 - SCCR #89
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                 1. Breakout from Sbr. CloudPressure 
+!
+! !END
+!
+!*****************************************************************************
+!
+!
+      REAL,    INTENT (INOUT) :: CPres (2*nclouds)
+      INTEGER, INTENT (IN)    :: NumLev_Cld
+      REAL,    INTENT (IN)    :: TropHt
+!
+      INTEGER :: I
+      INTEGER :: Ip1
+      INTEGER :: J
+      REAL    :: Temp    
+      REAL    :: TropMinusDelta
+      REAL    :: TropPlusDelta
+!
+!
+      TropMinusDelta = TropHt - Delta_CldPro
+      TropPlusDelta  = TropHt + Delta_CldPro
+!
+!
+      IF (NumLev_Cld /= 0) THEN
+!     *** Account for times when the clouds overlap, e.g., the top of a
+!         low cloud is higher than the bottom of a high cloud
+!
+          DO I = 1, NumLev_Cld
+!
+              Temp = MINVAL (CPres ( I:NumLev_Cld) )
+!
+              IF (Temp /= CPres ( I)) THEN
+!             *** Overlap exists
+!
+                  Ip1 = I + 1
+
+                  DO J = Ip1, NumLev_Cld
+!
+                     IF (Temp == CPres ( J)) THEN
+!                    *** Insert minimum pressure
+!
+                         CPres ( Ip1:J) = CPres ( I:J-1)
+                         CPres ( I) = Temp
+!
+                     END IF
+!
+                 END DO
+!
+              END IF
+!
+          END DO
+!
+!
+!     *** Check for coinciding tropopause and cloud heights
+!
+          DO I = 1, 2*nclouds
+              IF ((CPres ( I) <= TropPlusDelta)                          &
+                    .AND. (CPres ( I) >= TropMinusDelta) ) THEN
+!             *** Redefine cloud height to be the height of the tropopause
+! 
+                  CPres ( I) = TropHt
+!
+              END IF
+          END DO
+      END IF
+!
+!
+      END SUBROUTINE CloudHt_Sort
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!
+      SUBROUTINE WithCloud_Profile_Build (CTop, CBot, IP,             & ! I
+                                          NumLev_Cld, CPres)            ! I
+!
+!**************************************************************************
+! 
+! !F90
+!
+! !Name:
+!   WithCloud_Profile_Build
+!
+! !Description:
+!   Routine ID - 5.2.2.2.2
+!
+!   Purpose - To merge the floating cloud pressure levels with the fixed  
+!             levels in the vertical profiles of pressure, temperature,  
+!             specific humidity, and ozone from input MOA data for use 
+!             by the radiative transfer model
+!             
+!             
+! !Input Parameters:
+!    CBot       - Array of cloud bottom pressures
+!    CPres      - Array of merged cloud top and bottom pressures
+!    CTop       - Array of cloud top pressures
+!    IP         - Model pass array index
+!    NumLev_Cld - Number of cloud heights levels 
+!
+! !Output Parameters:
+!    NONE
+!
+! !Team-Unique Header:
+!
+!  Key Local Parameters:
+!    TempPro1_Minus - Upper bound of pressure level range to indicate
+!                     whether to replace with or add the cloud level
+!    TempPro1_Plus  - Lower bound of pressure level range to indicate
+!                     whether to replace with or add the cloud level
+!    TempPro2_Minus - Upper bound of pressure level range to indicate
+!                     whether to replace with or add the cloud level
+!
+!  Algorithm Description:
+!    1. Physically, any of the floating cloud levels can coincide (within
+!       a predetermined delta--parameter Delta_CldPro) with a fixed 
+!       level.  The vertical profiles passed to the Fu-Liou model do
+!       not contain values for two levels within that delta.  If the 
+!       delta between a floating cloud level and a fixed level is less 
+!       than the allowable delta (Delta_CldPro), the floating cloud 
+!       level takes precedence.
+!    2. The meteorological and ozone vertical profiles must also contain
+!       data at the floating cloud levels.  Data for these levels are
+!       calculated using the same vertical interpolation techniques as
+!       are used in the Regrid MOA Subsystem when calculating values for
+!       the MOA fixed levels that are not contained in the input data
+!       to that subsystem.
+!                 
+!
+!  Modules Used: (Parameters followed by "*" are defined by this routine)
+!    FL_IO_Params   - Parameters: ModLev*, ModLev_Cnt*, ModLev_ProO3*,
+!                                 ModLev_SpHum*, ModLev_Temp*
+!    Profile_Params - Parameters: Delta_CldPro, InitHt, MaxLev_Cld, 
+!                                 MaxLev_Cld_2x, MetIn
+!    SARB_General   - Subroutines: MOA_Inter
+!                           
+!  Internal Routines Used:
+!    CldLyr_ID
+!      
+! !Revision History:
+!  Version 3.3   R3 Date - SCCR #408
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                 1. Replacement of variables MOAxxxx with variables
+!                    ModLevxxx ( MetIn) of Mod. FL_IO_Params.
+!                 2. 
+!  Version 2.3   June 16, 1998 - SCCR #89
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                 1. Added variables CurrCld_high, CurrCld_low, and PrevCld,
+!                    to make 5-line unreadable IFs into a 1-line readable IFs
+!                 2. Breakout of Sbr. CldLyr_ID
+!  Version 2.0   November 21, 1997 - SCCR #30
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                Shalini Gupta, SAIC, s.gupta@larc.nasa.gov
+!                Initial Version of Release 2 Code
+!
+! !END
+!
+!*****************************************************************************
+!
+!
+      REAL,    INTENT (IN) :: CBot ( nclouds)
+      REAL,    INTENT (IN) :: CPres ( 2*nclouds)
+      REAL,    INTENT (IN) :: CTop ( nclouds)   
+      INTEGER, INTENT (IN) :: IP
+      INTEGER, INTENT (IN) :: NumLev_Cld
+!
+      REAL    :: CurrCld_high
+      REAL    :: CurrCld_low
+      INTEGER :: I
+      INTEGER :: I1
+      INTEGER :: I2
+      INTEGER :: J
+      INTEGER :: K
+      INTEGER :: NewLev_Cnt
+      INTEGER :: NewLev_Idx ( 2*nclouds)
+      INTEGER :: NLev
+      INTEGER :: NMin1
+      INTEGER :: NPlus1
+      REAL    :: PrevCld
+      REAL    :: TempPro1_Minus, TempPro1_Plus, TempPro2_Minus
+!
+!
+! *** Initialize
+!
+      NewLev_Idx(1:2*nclouds) = MaxLev_SARB
+      ModLev_Cnt ( IP)  = ModLev_Cnt ( MetIn)
+      ModLev ( IP:IP, 1:ModLev_Cnt ( IP)) = InitHt
+!
+      DO I = 1, ModLev_Cnt ( IP)
+          ModLev       ( IP, I) = ModLev ( MetIn, I)
+          ModLev_ProO3 ( IP, I) = ModLev_ProO3 ( MetIn, I)
+          ModLev_Temp  ( IP, I) = ModLev_Temp  ( MetIn, I)
+          ModLev_SpHum ( IP, I) = ModLev_SpHum ( MetIn, I)
+      END DO
+!
+!   
+! *** Merge data at cloud heights with data in base profiles.
+!
+!
+      I = 1
+      J = 1
+      NewLev_Cnt = 0 
+!
+      DO WHILE ( J <= NumLev_Cld) 
+!
+          TempPro1_Minus = ModLev ( IP, I)   - Delta_CldPro
+          TempPro1_Plus  = ModLev ( IP, I)   + Delta_CldPro
+          TempPro2_Minus = ModLev ( IP, I+1) - Delta_CldPro
+! 
+          IF ( TempPro1_Plus >= CPres ( J)    .and.                     &
+               TempPro1_Minus <= CPres ( J)) THEN 
+!         *** Cloud height coincides with a fixed level.  Replace 
+!             fixed level with cloud height.
+!
+              NewLev_Cnt = NewLev_Cnt + 1
+!
+              IF ( NewLev_Cnt > 1) THEN
+!             *** Check for two cloud heights too close together
+!
+                  PrevCld      = ModLev ( IP, NewLev_Idx ( NewLev_Cnt-1))
+                  CurrCld_low  = CPres ( J) + Delta_CldPro
+                  CurrCld_high = CPres ( J) - Delta_CldPro
+!
+                  IF (PrevCld <= CurrCld_low .AND. PrevCld >= CurrCld_high) THEN
+!                 *** Current and previous cloud heights coincide.  Do not
+!                     add current cloud height to vertical profile.
+!
+                      NewLev_Cnt = NewLev_Cnt - 1
+!
+                  ELSE 
+!                 *** Map vertical profile level index into cloud level 
+!                     index and replace fixed level with cloud height
+!
+                      NewLev_Idx ( NewLev_Cnt) = I 
+                      ModLev ( IP, I) = CPres ( J)
+!
+                  END IF
+              ELSE
+!
+                  NewLev_Idx ( NewLev_Cnt) = I 
+                  ModLev ( IP, I) = CPres ( J)
+!
+              END IF
+!
+              J = J + 1
+!
+!
+          ELSE IF ( TempPro1_Plus <= CPres ( J)   .AND.                       &
+                    TempPro2_Minus >= CPres ( J) ) THEN
+!         *** Add cloud level data to base profiles
+!
+              I1 = I + 1
+              I2 = I + 2
+!
+              ModLev_Cnt ( IP) = ModLev_Cnt ( IP) + 1
+!
+              NLev = ModLev_Cnt ( IP)
+              NMin1 =  ModLev_Cnt ( IP) - 1
+              NPlus1 =  ModLev_Cnt ( IP) + 1
+!
+              ModLev ( IP, I2:NLev)       = ModLev ( IP, I1:NMin1)
+              ModLev_ProO3 ( IP, I2:NLev) = ModLev_ProO3 ( IP, I1:NMin1)
+              ModLev_SpHum ( IP, I2:NLev) = ModLev_SpHum ( IP, I1:NMin1)
+              ModLev_Temp ( IP, I2:NLev)  = ModLev_Temp ( IP, I1:NMin1)
+              ModLev ( IP, I1) = CPres ( J)
+!
+              CALL MOA_Inter (ModLev ( IP, I), ModLev ( IP, I2),           & ! I
+                            ModLev ( IP, I1),                              & ! I
+                            ModLev_Temp ( IP, I), ModLev_Temp ( IP, I2),   & ! I
+                            ModLev_SpHum ( IP, I), ModLev_SpHum ( IP, I2), & ! I
+                            ModLev_ProO3 ( IP, I), ModLev_ProO3 ( IP, I2), & ! O
+                            ModLev_Temp ( IP, I1), ModLev_SpHum ( IP, I1), & ! O
+                            ModLev_ProO3 ( IP, I1))                          ! O
+!
+              NewLev_Cnt = NewLev_Cnt + 1
+
+              NewLev_Idx ( NewLev_Cnt) = I1 
+!
+              J = J + 1
+!
+          ELSE
+!         *** Current cloud pressure is not to be inserted into profile yet
+!
+              I = I + 1
+!
+          END IF
+!
+      END DO
+!
+!
+! *** Identify which profile layers contain which cloud layers
+!
+      CALL CldLyr_ID (CBot, CTop, IP, NumLev_Cld, NewLev_Cnt,          & ! I
+                                                    NewLev_Idx)          ! I
+!
+!
+      END SUBROUTINE WithCloud_Profile_Build
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!
+      SUBROUTINE CldLyr_ID (CBot, CTop, IP, NumLev_Cld, NewLev_Cnt,    & ! I
+                                                         NewLev_Idx)     ! I
+!
+!*****************************************************************************
+!
+! !F90
+!
+! !Name:
+!   CldLyr_ID
+!
+! !Description:
+!   Routine ID - 5.2.2.2.2.1
+!
+!   Purpose - To define the values for the CCLyr_Idx array, which indicates
+!             which vertical profile layers contain which cloud layers 
+!
+!
+! !Input Parameters:
+!    CBot       - Array of cloud bottom pressures
+!    CTop       - Array of cloud top pressures
+!    IP         - Model pass array index
+!    NewLev_Cnt - Number of new levels added to the vertical profile to 
+!                 accomodate clouds
+!    NewLev_Idx - Pointers to which values in the ModLev array correspond to 
+!                 cloud heights (top and bottom)
+!    NumLev_Cld - Number of new levels added to the base profiles by
+!                 Sbr. WithCloud_Profile_Build
+!
+! !Output Parameters:
+!    NONE
+!
+! !Team-Unique Header:
+!
+!  Modules Used:
+!    FL_IO_Params   - (SARBlib)  Parameters: CCLyr_Idx, Default_INT4_FL, ModLev
+!    Profile_Params - (SARBlib)  Parameters: Delta_CldPro, MaxLev_Cld, 
+!                                            MaxLev_Cld_2x
+!                                 
+! !Revision History:
+!  Version 3.3   December 20, 2002 - SCCR #408
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                 1. Using default values from SARBlib Mod. FL_IO_Params
+!                    instead of from CERESlib Mod. ceres_defaults
+!                 2. Passing NewLev_Idx array and NewLev_Cnt as input  
+!                    arguments and removing them from Mod. SARB_Var.
+!  Version 2.3   June 16, 1998 - SCCR #89
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                 1. Added variables CldHigh_J, CldHigh_K, CldLow_J,  
+!                    CldLow_K, MLev_J, MLev_K to make 5-line unreadable  
+!                    IFs into 1-line readable IFs
+!                 2. Breakout from Sbr. WithCloud_Profile_Build into 
+!                    own subroutine.
+!
+! !END
+!
+!*****************************************************************************
+!
+!
+      REAL,    INTENT (IN) :: CBot ( nclouds)
+      REAL,    INTENT (IN) :: CTop ( nclouds)   
+      INTEGER, INTENT (IN) :: IP
+      INTEGER, INTENT (IN) :: NewLev_Cnt
+      INTEGER, INTENT (IN) :: NewLev_Idx ( 2*nclouds)
+      INTEGER, INTENT (IN) :: NumLev_Cld
+!
+      REAL    :: CldHigh_J
+      REAL    :: CldHigh_K
+      REAL    :: CldLow_J
+      REAL    :: CldLow_K
+      INTEGER :: I, J, K
+      REAL    :: MLev_J
+      REAL    :: MLev_K
+!
+!
+! *** Define array indicating which profile layers contain which cloud layers
+!
+      DO I = 1, nclouds
+          IF ( CCLyr_Idx ( IP, I, 1) /= Default_INT4_FL) THEN
+!         *** Find matching cloud top and bottom levels
+!
+              DO J = 1, NewLev_Cnt
+!
+                  MLev_J    = ModLev ( IP, NewLev_Idx ( J))
+                  CldLow_J  = CTop ( I) + Delta_CldPro
+                  CldHigh_J = CTop ( I) - Delta_CldPro
+!
+                  IF (MLev_J <= CldLow_J .AND. MLev_J >= CldHigh_J) THEN
+!                 *** Cloud top match found
+!
+                      CCLyr_Idx ( IP, I, 1) = NewLev_Idx ( J)
+!
+                      DO K = J+1, NumLev_Cld
+!
+                          MLev_K    = ModLev ( IP, NewLev_Idx ( K))
+                          CldLow_K  = CBot ( I) + Delta_CldPro
+                          CldHigh_K = CBot ( I) - Delta_CldPro
+!
+                          IF (MLev_K <= CldLow_K .AND. MLev_K >= CldHigh_K) THEN
+!                         *** Cloud bottom match found
+!
+                              CCLyr_Idx ( IP, I, 2) = NewLev_Idx ( K) - 1
+                              EXIT
+!
+                          END IF
+                      END DO
+                      EXIT
+!
+                  END IF
+              END DO
+!
+          END IF
+      END DO
+!
+!
+      END SUBROUTINE CldLyr_ID
+!
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!
+!
+END MODULE With_Cloud

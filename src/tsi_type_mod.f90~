@@ -1,0 +1,635 @@
+MODULE TSI_TYPE_MOD
+  !***************************************************************
+  !!F90
+  !  Name: TSI_TYPE_MOD
+  !
+  !!Description:
+  ! Routine ID:
+  ! Purpose:   This module contains TSI record structure and related read,
+  !            write, open, close, with ToolKit routines. And also contains
+  !            declarations to write tsi secondary index file, and routines
+  !            to open, close, read, write secondary index file, routine to
+  !            write whole month worth of records of a nested grid region.
+  !            The record of TSI holds  Time and location
+  !            data,Fluxes, Cloud category property data, Column
+  !            averaged cloud properties, overlap data for cloud
+  !            overlap conditions and Angular model scene class data,
+  !            surface data.
+  !
+  !!Input parameter
+  !!Output parameter
+  !
+  !
+  !!Team-Unique Header
+  !  Public routines
+  !         TSI_init, TSI_open, TSI_close,TSI_read,TSI_print
+  !
+  ! Comments:
+  !!Revision History:
+  ! Version 2.2 May 2004
+  !           A 4-digit integer flag represents the data type for the TOA SW and 
+  !           LW fluxes is added in the Fluxes_tsi type structure.
+  !           There are 4 parts in the flag, from left to right: 
+  !             - clear-sky LW flux 
+  !             - clear-sky SW flux
+  !             - total-sky LW flux
+  !             - total-sky SW flux
+  !
+  !           The meaning of the flag:                            
+  !           =  1  : CERES data         
+  !           =  2  : GGEO data (can be default if there is no CERES observation
+  !                                     in the day)
+  !           =  3  : interpolated data
+  !           =  0  : default
+  !
+  ! Version 2.1 November 1997
+  !           The  Aerosol visible optical depth, Aerosol Effective radius
+  !           have been changed to Aerosol visible optical depth063 and
+  !           Aerosol visible optical depth160 in clear sky area data.
+  !
+  ! Version 2.0  March 1997
+  !           Updated Type definitions,TSI_init, and TSI_print &
+  !           routines according to R2 specifications.
+  !           Surface Land area types(10) and sea area types(3)
+  !           has been replaced by Surface Type(20)
+  !           Precipitable water has been deleted from location category.
+  !           Cosine Solar Zenith Angle has been added to location category.
+  !           Aerosol visible optical depth, Aerosol Effective radius,
+  !           Aerosol percent cover, Snow/Ice cover, Smoke cover, Fire cover,
+  !           Sun glint percent parameters have been added to clear sky area data.
+  !           Broken cloud area fraction, Overcast cloud area percentage
+  !           parameters have been deleted from cloud layers and cloud weighted
+  !           properties category.
+  !           Incident Solar Flux is a single element instead of an array in
+  !           Angular model scene category.
+  !           Deleted Photosynthetically active radiation and Direct/Diffuse
+  !           ratio from surface only data.
+  !           Added Spectral Albedo(6), Broadband surface albedo,
+  !           LW surface emissivity, WN emissivity, Imager-based skin
+  !           temperature, Corrected initial broadband surface albedo to
+  !           surface data.
+  !
+  !  Revision 2.1  2004/05/14
+  !  Le Trang C. Nguyen, le.t.nguyen@larc.nasa.gov
+  ! 
+  !  SCCR  # N/A (Initial Version)
+  !  Version 1.0  JULY 17, 1995
+  !  Rajalakshmy Raju, r.raju@larc.nasa.gov
+  !  Initial Implementation
+  !!end
+  !*******************************************************************
+  USE ceres_defaults, ONLY : int4_dflt,int2_dflt,REAL4_DFLT
+  USE ceres_indices,  ONLY : num_landtyp,num_seatyp,opt_bins
+  USE ceres_status,   ONLY : OK, BAD,DIRECT_FILE,DA_EOF,EOF
+  USE ceres_time,      ONLY : HOURS_IN_DAY,MAX_DAYS_IN_MONTH
+  USE f90_kind,       ONLY : int2,int4,real4,real8
+  USE MSG,            ONLY : WriteReport,WriteStatus
+  USE IO,             ONLY : OpenFile, CloseFile
+
+  IMPLICIT NONE
+  INCLUDE "PGS_TSI_25910.f"
+  INCLUDE "PGS_SMF.f"
+  INCLUDE "PGS_CERES_25000.f"
+  PRIVATE
+  PUBLIC  ::    Time_and_location_data,    Fluxes_tsi,    &
+            &   clr_sky_area_data,         Cld_cat,       &
+            &   Overlap_data,              Surface_data,  &
+            &   TSI_TYPE,                  aerosol_data,  &
+            &   TSI_init,  TSI_open,      &
+            &   TSI_close,                 TSI_read,      &
+            &   TSI_print,                                &
+            &   num_surftyp, num_overlap,cld_layrs
+
+  INTEGER, PARAMETER           :: num_surftyp      = 20
+  INTEGER,PARAMETER            :: cld_layrs        = 9  !4, HG-20250731
+  INTEGER,PARAMETER            :: num_overlap      = 11
+  !* declarations for tsi secodary index
+  INTEGER, PARAMETER           :: TSI_ZONE_LOGIC_ID = 401
+  INTEGER, PARAMETER           :: REGIONS_PER_FILE =360
+  LOGICAL, SAVE                :: closed_flag = .TRUE.,init_flag = .TRUE.
+
+
+  !* TSI ARRAY RECORD STRUCTURE
+
+  !* REGION AREA, TIME, LOCATION DATA
+  TYPE Time_and_location_data
+     SEQUENCE
+     INTEGER (int4)             ::      region_num                   !4,TSI
+     INTEGER (int4)             ::      hour_box_num                 !5,TSI
+     INTEGER (int4)             ::      geo_sat_id
+     REAL (real4)               ::      julhr                        !3,TSI
+     REAL (real4)               ::      sfc_alt                      !6 TSI
+     REAL(real4)                ::      cos_sol_zenith               !7 TSI
+     REAL(real4)                ::      surf_perc_cov(num_surftyp)  !8-27 TSI
+     REAL(real4)                ::      view_angle            ! from GGEO
+     REAL(real4)                ::      imager_view_angle      !from FSW
+  END TYPE Time_and_location_data
+
+  !* CLEAR SKY AREA DATA
+  TYPE clr_sky_area_data
+     SEQUENCE
+     REAL(real4)                ::      aero_vis_opdep063           !31 TSI
+     REAL(real4)                ::      aero_vis_opdep160           !31a
+  !--- add new params
+     REAL(real4)                ::      ir_radiance
+     REAL(real4)                ::      imager_rad4
+  END TYPE clr_sky_area_data
+
+  !* TOA FLUXES
+  TYPE Fluxes_tsi
+     SEQUENCE
+     INTEGER(int4)              ::      data_flg
+     REAL (real4)               ::      total_sw_mn                  !34 TSI
+     REAL (real4)               ::      total_lw_mn                  !36 TSI
+     REAL (real4)               ::      total_alb_mn                 !38 TSI
+     REAL (real4)               ::      total_wn_mn                  !40 TSI
+     REAL (real4)               ::      clear_sw_mn                  !42 TSI
+     REAL (real4)               ::      clear_lw_mn                  !44 TSI
+     REAL (real4)               ::      clear_alb_mn                 !46 TSI
+     REAL (real4)               ::      clear_wn_mn                  !48 TSI
+
+  END TYPE Fluxes_tsi
+
+  !* CLOUD INFORMATION
+  TYPE Cld_cat
+     SEQUENCE
+     REAL (real4)               ::      areafrac_total          !54  167 TSI
+     REAL (real4)               ::      optdepth_mn_lnr         !58  172 TSI
+     REAL (real4)               ::      optdepth_mn_log
+     REAL (real4)               ::      emiss_ir_mn             !66  182 TSI
+     REAL (real4)               ::      h2opath_mn              !74  192 TSI
+     REAL (real4)               ::      icepath_mn              !82  202 TSI
+     REAL (real4)               ::      toppres_mn              !90  212 TSI
+     REAL (real4)               ::      effpres_mn              !98  222 TSI
+     REAL (real4)               ::      efftemp_mn              !106 232 TSI
+     REAL (real4)               ::      effht_mn                !114 242 TSI
+     REAL (real4)               ::      botpres_mn              !122 252 TSI
+     REAL (real4)               ::      radius_h2o_mn           !130 262 TSI
+     REAL (real4)               ::      radius_ice_mn           !138 272 TSI
+     REAL (real4)               ::      phase_mn                !146 282 TSI
+!    REAL (real4)               ::      asp_ratio_mn            !154 292 TSI
+     REAL (real4)               ::      toptemp_mn
+     REAL (real4)               ::      bottemp_mn
+     REAL (real4)               ::      top_height
+     REAL (real4)               ::      bot_height
+  END TYPE Cld_cat
+
+
+  !* OVERLAP DATA FOR 11 CLOUD CONDITIONS
+  TYPE Overlap_data
+     SEQUENCE
+     REAL (real4)           :: areafrac_ov(num_overlap)             !302 TSI
+  END TYPE Overlap_data
+
+  !* SURFACE DATA
+  TYPE Surface_data
+     SEQUENCE
+     INTEGER(int4)          ::      skintemp_flg                !381 TSI
+     REAL(real4)            ::      lw_surf_emiss               !381 TSI
+     REAL(real4)            ::      wn_surf_emiss               !382 TSI
+     REAL(real4)            ::      sfc_skin_temp               !383 TSI
+     REAL(real4)            ::      moa_skin_temp               !383 TSI
+  END TYPE Surface_data
+
+
+  !** AEROSOL TYPE
+  TYPE aerosol_data
+     SEQUENCE
+     REAL(real4)    ::  init_aero_optdep
+     REAL(real4)    ::  aero_const_ratio(7)
+     REAL(real4)    ::  optdepth047_land
+     REAL(real4)    ::  optdepth055_land
+     REAL(real4)    ::  optdepth066_land
+     REAL(real4)    ::  optdepth047_ocean
+     REAL(real4)    ::  optdepth055_ocean
+     REAL(real4)    ::  optdepth066_ocean
+     REAL(real4)    ::  optdepth087_ocean
+     REAL(real4)    ::  optdepth124_ocean
+     REAL(real4)    ::  optdepth164_ocean
+     REAL(real4)    ::  optdepth213_ocean
+  END TYPE aerosol_data
+
+  !***                          TSI RECORD                         ***
+  TYPE TSI_TYPE
+     SEQUENCE
+     TYPE (Time_and_location_data)       timeandloc
+     TYPE (clr_sky_area_data)            clrsky_area_data
+     TYPE (Cld_cat)                      cld_layer(cld_layrs)
+     TYPE (Fluxes_tsi)                   fluxestsi
+     TYPE (Overlap_data)                 overlap
+     TYPE (Surface_data)                 surface
+     TYPE (aerosol_data)                 aerosol
+  END TYPE TSI_TYPE
+
+CONTAINS
+
+  SUBROUTINE TSI_init(TSI,begnum,endnum)
+    !*******************************************************************
+    !!F90
+    ! Name:         TSI_init
+    !
+    !!Description:
+    ! Routine ID :
+    !
+    ! Purpose: This subroutine initialize the TSI array elements.
+    !
+    !!Input Parameters :
+    ! INTEGER             :: begnum, endnum
+    !
+    !!Output Parameters :
+    !   TYPE(TSI_TYPE)     :: TSI
+    !
+    !!Team-Unique Header:
+    !  Local Parameters
+    !   INTEGER            : i - loop variable
+    !
+    !!Revision History:
+    !     Revision 2.0 March 1997
+    !     Modified routine according to type definition changes.
+    !     Rajalakshmy Raju, r.raju@larc.nasa.gov
+    !     Modified : October 1996
+    ! SCCR  # N/A (Initial Version)
+    ! Version 1.0  July 17, 1995
+    ! Rajalakshmy Raju, r.raju@larc.nasa.gov
+    ! Initial Implementation
+    !
+    !!end
+    !*******************************************************************
+    IMPLICIT NONE
+    TYPE(TSI_TYPE), INTENT(out) :: TSI(:)
+    INTEGER, INTENT(in)         :: begnum, endnum
+    !local variables
+    INTEGER                     :: i, tsi_reclen
+    INTEGER(int4)               :: intg = INT4_DFLT
+    REAL(real4)                 :: rrl  = REAL4_DFLT
+
+    INQUIRE(iolength=tsi_reclen) tsi(1)
+
+    DO i = begnum,endnum
+       TSI(i) % timeandloc = Time_and_location_data(intg,intg,intg, &
+                            & rrl,rrl,rrl,rrl,rrl,rrl)
+       TSI(i) % clrsky_area_data = clr_sky_area_data(rrl,rrl,rrl,rrl) 
+       TSI(i) % fluxestsi  =  Fluxes_tsi(intg,rrl,rrl,rrl,rrl,rrl,rrl,rrl, &
+                                       rrl)
+       TSI(i) % cld_layer  =  Cld_cat(rrl,rrl,rrl,rrl,rrl,rrl,rrl, &
+                                      rrl,rrl,rrl,rrl, rrl,rrl,rrl,rrl,rrl,rrl,rrl)
+       TSI(i) % overlap   =  Overlap_data(rrl)
+       TSI(i) % surface   =  Surface_data(intg,rrl,rrl,rrl,rrl)
+       TSI(i) % aerosol   =  aerosol_data(rrl,rrl,rrl,rrl,rrl,rrl,rrl,rrl,rrl,rrl,rrl,rrl)
+    END DO
+  RETURN
+  END SUBROUTINE TSI_init
+
+  SUBROUTINE get_tsi_reclen(tsi_reclen)
+    IMPLICIT NONE
+    INTEGER,intent(out)   ::  tsi_reclen
+    TYPE(TSI_TYPE)        :: TSI
+
+    INQUIRE(iolength=tsi_reclen) tsi
+
+    print *, 'tsi_reclen = ', tsi_reclen
+!    CALL FLUSH(6)
+!
+!    stop
+    
+  END SUBROUTINE get_tsi_reclen
+
+  SUBROUTINE TSI_open(LogicID,actmode,reclen,tsi_unit_no, open_success,version)
+! SUBROUTINE TSI_open(LogicID,actmode,tsi_unit_no, open_success,version)
+    !*******************************************************************
+    !!F90
+    !
+    ! Name: TSI_open
+    !
+    !!Description:
+    ! Routine ID :
+    !
+    ! Purpose: This routine opens only a Direct, Unformated tsi file to
+    !          read or write. It returns unit number, and a status flag
+    !          indicating success, or fail. Version number is optional.
+    !          If version number is not present then it uses default value 1.
+    !
+    !!Input Parameters :
+    !   INTEGER                  : LogicID - User supplied Logical ID.
+    !   CHARACTER                : actmode    - Action Read/Write
+    !   INTEGER                  : rec_len - TSI record length
+    !   INTEGER(optional)        : vers - Version No.
+    !
+    ! Input/Output Parameters:
+    !       none
+    !
+    !!Output Parameters :
+    !   INTEGER                  : unitnum    - data file unit number
+    !   INTEGER                  : open_success - Flag indicating  success
+    !                                            or fail operation
+    !!Team-Unique Header:
+    ! Local variable:
+    !   INTEGER                        : status - success or fail flag
+    !
+    ! External Files:
+    ! Implementation/Unique Features:
+    ! Optional Headings:
+    !!Revision History:
+    ! SCCR  # N/A (Initial Version)
+    ! Version 1.0  July 17, 1995
+    ! Rajalakshmy Raju, r.raju@larc.nasa.gov
+    ! Initial Implementation
+    !
+    !!end
+    !*******************************************************************
+    IMPLICIT NONE
+    INTEGER,         INTENT(in)     :: LogicID           !PCF file number
+    CHARACTER(LEN=*),INTENT(in)     :: actmode
+    INTEGER,         INTENT(in)     :: reclen            !PCF file number
+    INTEGER,         INTENT(out)    :: open_success, tsi_unit_no
+    INTEGER, INTENT(in), OPTIONAL :: version
+    !Local variable
+    INTEGER      :: status, ios, length, tsi_version_no, reclen_test
+
+TYPE(TSI_TYPE) :: TSI_rec
+
+    !*** initialize values ***
+    ios = 0
+    status = OK
+
+ !--- Cathy's test
+    INQUIRE(iolength=reclen_test) TSI_rec
+ ! end Cathy's test
+    !*** determine record length for open statement
+!   length = reclen
+    length = reclen_test
+
+    !*** Set the version number for the TSI file to open ***
+    IF (PRESENT(version)) THEN
+       tsi_version_no = version
+    ELSE
+       tsi_version_no = 1
+    END IF
+
+      CALL OpenFile(LogicID, status, tsi_unit_no,&
+                &  mode = actmode,&
+                & access = DIRECT_FILE, reclen=length, version=tsi_version_no)
+
+      IF (status ==  OK) THEN
+             open_success = OK
+      ELSE
+             CALL WriteReport(CERES_F_OPEN_ACCESS_ERROR,FuncName = "TSI_open ",  &
+                 & StrVAr = "FATAL : Error occured while opening the file.")
+             open_success = BAD
+      END IF
+
+  RETURN
+  END SUBROUTINE TSI_open
+
+  SUBROUTINE TSI_close(tsi_unit_no,close_success)
+    !*******************************************************************
+    !!F90
+    ! Name:         TSI_close
+    !
+    !!Description:
+    ! Routine ID :
+    !
+    ! Purpose: This routine closes a specified number of tsi files
+    !          and sends back success(OK) or fail (BAD) flag to the
+    !          calling routine.
+    !
+    !!Input Parameters :
+    !   INTEGER    : unitnum  - data file unit number to close
+    !   INTEGER    : num_of_files - number files to be closed.
+    !
+    ! Input/Output Parameters:
+    !   none
+    !
+    !!Output Parameters :
+    !   INTEGER   : close_success - success or failure flag.
+    !
+    !!Team-Unique Header:
+    !  Local Variables :
+    !   INTEGER   :   iostatus -  Flag indicating success or fail.
+    ! Optional Headings:
+    !
+    !!Revision History:
+    ! SCCR  # N/A (Initial Version)
+    ! Version 1.0  July 17, 1995
+    ! Rajalakshmy Raju, r.raju@larc.nasa.gov
+    ! Initial Implementation
+    !
+    !!end
+    !********************************************************************
+    IMPLICIT NONE
+    INTEGER,         INTENT(in)             :: tsi_unit_no
+    INTEGER,         INTENT(out)            :: close_success
+    !LOCAL VARIABLES
+    INTEGER                    :: iostatus,i
+
+      CALL CloseFile(tsi_unit_no,iostatus)
+      IF (iostatus == OK) THEN
+           close_success = OK
+      ELSE
+         CALL WriteReport(TSI_E_CLOSE_ERROR,FuncName = "TSI_close ",  &
+         & StrVar = "ERROR : Error while closing the file on unit ",&
+         & IVar1 = tsi_unit_no )
+         close_success = BAD
+      END IF
+
+  RETURN
+  END SUBROUTINE TSI_close
+
+  SUBROUTINE TSI_read(unitnum,tsi_rec_num,tsi_rec,read_success)
+    !*********************************************************************
+    !!F90
+    ! Name:     TSI_read
+    !
+    !Description:
+    ! Routine ID :
+    !
+    !Purpose:   The purpose of this routine is to read one TSI record
+    !           from the tsi file.
+    !
+    !!Input Parameters :
+    !   INTEGER    : unitnum  - data file unit number
+    !   INTEGER    : tsi_rec_num  - starting number of records to read
+    !
+    !Input/Output Parameters:
+    !
+    !!Output Parameters :
+    !   TYPE       :  tsi_rec  -  holds one tsi record data.
+    !   INTEGER    :  read_success  - success or fail flag.
+    !!Team-Unique Header:
+    !
+    !  Local Variables :
+    !    INTEGER   :  ios - success or fail flag
+    !    INTEGER   :  tsi_rec_num - loop variable.
+    !
+    !!Revision History:
+    ! SCCR  # N/A (Initial Version)
+    ! Version 1.0  July 17, 1995
+    ! Rajalakshmy Raju, r.raju@larc.nasa.gov
+    ! Initial Implementation
+    !
+    ! External Files:
+    !
+    !!end
+    !***********************************************************************
+    IMPLICIT NONE
+    INTEGER (int4),           INTENT(in)    :: unitnum
+    INTEGER(int4),            INTENT(in)    :: tsi_rec_num
+    TYPE(TSI_TYPE),           INTENT(out)   :: tsi_rec
+    INTEGER,                  INTENT(out)   :: read_success
+    ! LOCAL VARIABLES
+    INTEGER                               :: ios
+
+    READ(unitnum, REC = tsi_rec_num, iostat = ios) tsi_rec
+    IF (ios == OK) THEN
+       read_success = OK
+    ELSE
+       IF (ios == DA_EOF) THEN
+           CALL WriteReport(TSI_E_EOF_ERROR,FuncName = "TSI_read ",  &
+           & StrVAr = "RECORD NUMBER = ",IVar1 = tsi_rec_num)
+          read_success = EOF
+       ELSE
+          CALL WriteReport(TSI_E_RDWRT_ACC_ERROR, funcName =&
+          & "TSI_read ", StrVAr = "error occured while &
+	  &  reading tsi file record number:  ",IVar1 = tsi_rec_num )
+          read_success = BAD
+       END IF
+    END IF
+
+  RETURN
+  END SUBROUTINE TSI_read
+
+  SUBROUTINE TSI_print(unitnum,TSI,beg_rec,end_rec)
+    !*******************************************************************
+    !!F90
+    ! Name:         TSI_print
+    !
+    !!Description:
+    !ROUTINE ID :
+    !
+    !!Purpose: This routine writes TSI records to the sequential
+    !          formatted file.
+    !
+    !!Input Parameters :
+    ! Integer   : unitnum - unit number
+    ! TYPE(TSI_TYPE)    : TSI     -  Array with TSI records.
+    ! INTEGER           : beg_rec - starting record number.
+    ! INTEGER           : end_rec - Ending record number.
+    !
+    !!Output parameters :
+    !
+    !!Team-Unique Header:
+    !  Local Variables:
+    !    INTEGER       : k,i - loop variables
+    !
+    !!Revision History:
+    !     Revision 2.0 March 1997
+    !     Modified routine according to  the release 2
+    !     type definition changes.
+    !     Rajalakshmy Raju, r.raju@larc.nasa.gov
+    ! SCCR  # N/A (Initial Version)
+    ! Version 1.0  July 17, 1995
+    ! Rajalakshmy Raju, r.raju@larc.nasa.gov
+    ! Initial Implementation
+    !
+    !!end
+    !*****************************************************************
+    IMPLICIT NONE
+    INTEGER,             INTENT(in)    :: unitnum
+    TYPE(TSI_TYPE),      INTENT(in)    :: TSI(:)
+    INTEGER,             INTENT(in)    :: beg_rec,end_rec
+    ! LOCAL VARIABLES
+    INTEGER 		:: k,i
+
+!   TIME AND LOCATION DATA
+    DO i = beg_rec,end_rec
+       WRITE(unitnum,10) i
+       10  FORMAT("RECORD NUMBER : ",I7)
+       WRITE(unitnum, 100)  &                       !TSI(i) %timeandloc %julday, &	
+	 & TSI(i) %timeandloc %julhr,	            &		
+	 & TSI(i) %timeandloc %region_num,          &		
+	 & TSI(i) %timeandloc %hour_box_num,        &		
+	 & TSI(i) %timeandloc %sfc_alt,             &
+         & TSI(i) %timeandloc %cos_sol_zenith,      &
+	 & (TSI(i) %timeandloc %surf_perc_cov(k), k = 1,num_surftyp)
+       100 FORMAT("TIME AND LOCATION DATA : ", &
+                 " julian day, julhr,hourbox,sfc_alt,cos_sol_zenith,&
+                 & surf_perc_cover ",/20x,2F10.5,2I5,2F10.5,4(/20x,5F10.4))
+        !clr_sky_area_data
+        WRITE(unitnum,150) TSI(i)%clrsky_area_data%aero_vis_opdep063,&
+                         & TSI(i)%clrsky_area_data%aero_vis_opdep160
+!      150 FORMAT("Clear sky area data ","snow_ice_cov,&
+!               &,aero_vis_opdep063,aero_vis_opdep160 &
+!               &,aero_perc_cov, suglint_perc " ,/20x,5(F10.4))
+       150 FORMAT("Clear sky area data ","&
+                &,aero_vis_opdep063,aero_vis_opdep160 &
+                &,suglint_perc " ,/20x,2(F10.4))
+
+       !FLUXES
+       WRITE(unitnum, 200) TSI(i) %fluxestsi %total_sw_mn ,&
+            & TSI(i) %fluxestsi %total_lw_mn , &
+            & TSI(i) %fluxestsi %total_alb_mn ,&
+            & TSI(i) %fluxestsi %total_wn_mn, &
+            & TSI(i) %fluxestsi %clear_sw_mn,&
+            & TSI(i) %fluxestsi %clear_lw_mn,&
+            & TSI(i) %fluxestsi %clear_wn_mn,&
+            & TSI(i) %fluxestsi %clear_alb_mn
+       200 FORMAT("FLUXES ","sw total(mean),lw total(mean),&
+               & total alb(mean),total wn(mean),sw clear(mean&
+                 &),lw clear(mean),clear alb(mean),clear wn(mean) ", (/20x,8F10.4))
+
+       !CLOUD LAYER
+       DO k = 1,cld_layrs
+          WRITE(unitnum, 300) TSI(i) %cld_layer(k) %areafrac_total, &
+                      & TSI(i) %cld_layer(k) %optdepth_mn_lnr, &
+                      & TSI(i) %cld_layer(k) %optdepth_mn_log, &
+                      & TSI(i) %cld_layer(k) %emiss_ir_mn, &	
+                      & TSI(i) %cld_layer(k) %h2opath_mn, &	
+                      & TSI(i) %cld_layer(k) %icepath_mn, &	
+                      & TSI(i) %cld_layer(k) %toppres_mn, &
+                      & TSI(i) %cld_layer(k) %effpres_mn, &	
+                      & TSI(i) %cld_layer(k) %efftemp_mn, &	
+                      & TSI(i) %cld_layer(k) %effht_mn, & 	
+                      & TSI(i) %cld_layer(k) %botpres_mn, &	
+                      & TSI(i) %cld_layer(k) %radius_h2o_mn, &
+                      & TSI(i) %cld_layer(k) %radius_ice_mn, &
+                      & TSI(i) %cld_layer(k) %phase_mn     , &	
+                      & TSI(i) %cld_layer(k) %toptemp_mn, &
+                      & TSI(i) %cld_layer(k) %bottemp_mn, &
+                      & TSI(i) %cld_layer(k) %top_height, &
+                      & TSI(i) %cld_layer(k) %bot_height
+       END DO
+       300 FORMAT("CLOUD LAYER  ",/"area_frac total &
+             &    optdepth_lnr(mean),optdepth_log(mean),  &
+             &    emiss_ir(mean),h2opath(mean),icepath(mean), &
+             &    top_press(mean),eff_press(mean), &
+             &    eff_temp(mean),eff_height(mean), &
+             &    bot_press(mean),radius_h2o(mean),&
+             &   diameter_ice(mean),par_phase(mean), &
+             &   toptemp(mean),bottemp(mean),        &
+             &   topheight(mean),botheight(mean)",   &
+             &   /2x,F6.2,2(/20x,6F10.5), /20x,5F10.5)
+
+
+       !* CLOUD OVERLAP_DATA
+       WRITE(unitnum,700)(TSI(i) %overlap %areafrac_ov(k),k=1&
+            & ,num_overlap)
+       700 FORMAT("CLOUD OVERLAP DATA  ",/10x,11F10.4)
+
+       !SURFACE DATA
+       WRITE(unitnum,910)                                   &
+            &              TSI(i) %surface %skintemp_flg, &
+            &              TSI(i) %surface %lw_surf_emiss, &
+            &              TSI(i) %surface %wn_surf_emiss, &
+            &              TSI(i) %surface %sfc_skin_temp , &
+            &              TSI(i) %surface %moa_skin_temp 
+       910 FORMAT(//10x,"skintemp_flg, lw_surf_emiss,wn_surf_emiss,sfc_skin_temp, moa_skin_temp ", &
+                & //20x,i3, 4F10.4)
+
+  END DO
+
+  RETURN
+  END SUBROUTINE TSI_print
+
+END MODULE TSI_TYPE_MOD
+
+

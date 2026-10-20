@@ -1,0 +1,13 @@
+#!/bin/csh
+#$ -S /bin/csh
+#$ -l arch=lx-amd64
+#$ -q scf-rhel.q
+#$ -o "/CERES/clouds/workArea/hong/prog/water/NEWSATS/2025/wave001/
+#$ -e "/CERES/clouds/workArea/hong/prog/water/NEWSATS/2025/wave001/
+ 
+ 
+set workdir=/CERES/clouds/workArea/hong/prog/water/NEWSATS/2025/wave001/
+cd ${workdir}
+echo ${workdir}
+${workdir}a_trs.out
+${workdir}a.out

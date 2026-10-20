@@ -1,0 +1,765 @@
+IDL Version 8.3 (linux x86_64 m64). (c) 2013, Exelis Visual Information Solutions, Inc.
+Installation number: 9074-24.
+Licensed for use by: ECS/EDF
+
+% Compiled module: RUN_20130416_SCRIPT.
+ilat,       41
+source-this-one.csh: No such file or directory.
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z041': No such file or directory
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z041.log': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z041': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z041.met': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z041': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z041.met': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogStatus_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z041': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogReport_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z041': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogUser_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z041': No such file or directory
+rm: cannot remove '/CERES/sarb/data/scr/CER_SARBCRH_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z041': No such file or directory
+source-this-one.csh: No such file or directory.
+source-this-one.csh: No such file or directory.
+Your job 1139081 ("day20130416_041.csh") has been submitted
+ilat,       42
+source-this-one.csh: No such file or directory.
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z042': No such file or directory
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z042.log': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z042': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z042.met': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z042': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z042.met': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogStatus_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z042': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogReport_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z042': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogUser_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z042': No such file or directory
+rm: cannot remove '/CERES/sarb/data/scr/CER_SARBCRH_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z042': No such file or directory
+source-this-one.csh: No such file or directory.
+source-this-one.csh: No such file or directory.
+Your job 1139082 ("day20130416_042.csh") has been submitted
+ilat,       43
+source-this-one.csh: No such file or directory.
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z043': No such file or directory
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z043.log': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z043': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z043.met': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z043': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z043.met': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogStatus_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z043': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogReport_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z043': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogUser_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z043': No such file or directory
+rm: cannot remove '/CERES/sarb/data/scr/CER_SARBCRH_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z043': No such file or directory
+source-this-one.csh: No such file or directory.
+source-this-one.csh: No such file or directory.
+Your job 1139083 ("day20130416_043.csh") has been submitted
+ilat,       44
+source-this-one.csh: No such file or directory.
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z044': No such file or directory
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z044.log': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z044': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z044.met': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z044': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z044.met': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogStatus_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z044': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogReport_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z044': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogUser_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z044': No such file or directory
+rm: cannot remove '/CERES/sarb/data/scr/CER_SARBCRH_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z044': No such file or directory
+source-this-one.csh: No such file or directory.
+source-this-one.csh: No such file or directory.
+Your job 1139084 ("day20130416_044.csh") has been submitted
+ilat,       45
+source-this-one.csh: No such file or directory.
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z045': No such file or directory
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z045.log': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z045': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z045.met': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z045': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z045.met': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogStatus_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z045': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogReport_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z045': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogUser_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z045': No such file or directory
+rm: cannot remove '/CERES/sarb/data/scr/CER_SARBCRH_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z045': No such file or directory
+source-this-one.csh: No such file or directory.
+source-this-one.csh: No such file or directory.
+Your job 1139085 ("day20130416_045.csh") has been submitted
+ilat,       46
+source-this-one.csh: No such file or directory.
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z046': No such file or directory
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z046.log': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z046': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z046.met': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z046': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z046.met': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogStatus_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z046': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogReport_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z046': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogUser_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z046': No such file or directory
+rm: cannot remove '/CERES/sarb/data/scr/CER_SARBCRH_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z046': No such file or directory
+source-this-one.csh: No such file or directory.
+source-this-one.csh: No such file or directory.
+Your job 1139086 ("day20130416_046.csh") has been submitted
+ilat,       47
+source-this-one.csh: No such file or directory.
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z047': No such file or directory
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z047.log': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z047': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z047.met': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z047': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z047.met': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogStatus_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z047': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogReport_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z047': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogUser_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z047': No such file or directory
+rm: cannot remove '/CERES/sarb/data/scr/CER_SARBCRH_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z047': No such file or directory
+source-this-one.csh: No such file or directory.
+source-this-one.csh: No such file or directory.
+Your job 1139087 ("day20130416_047.csh") has been submitted
+ilat,       48
+source-this-one.csh: No such file or directory.
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z048': No such file or directory
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z048.log': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z048': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z048.met': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z048': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z048.met': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogStatus_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z048': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogReport_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z048': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogUser_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z048': No such file or directory
+rm: cannot remove '/CERES/sarb/data/scr/CER_SARBCRH_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z048': No such file or directory
+source-this-one.csh: No such file or directory.
+source-this-one.csh: No such file or directory.
+Your job 1139088 ("day20130416_048.csh") has been submitted
+ilat,       49
+source-this-one.csh: No such file or directory.
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z049': No such file or directory
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z049.log': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z049': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z049.met': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z049': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z049.met': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogStatus_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z049': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogReport_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z049': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogUser_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z049': No such file or directory
+rm: cannot remove '/CERES/sarb/data/scr/CER_SARBCRH_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z049': No such file or directory
+source-this-one.csh: No such file or directory.
+source-this-one.csh: No such file or directory.
+Your job 1139089 ("day20130416_049.csh") has been submitted
+ilat,       50
+source-this-one.csh: No such file or directory.
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z050': No such file or directory
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z050.log': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z050': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z050.met': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z050': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z050.met': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogStatus_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z050': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogReport_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z050': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogUser_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z050': No such file or directory
+rm: cannot remove '/CERES/sarb/data/scr/CER_SARBCRH_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z050': No such file or directory
+source-this-one.csh: No such file or directory.
+source-this-one.csh: No such file or directory.
+Your job 1139090 ("day20130416_050.csh") has been submitted
+ilat,       50
+Submitted 10 jobs, sleeping 5 hours...
+ilat,       51
+source-this-one.csh: No such file or directory.
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z051': No such file or directory
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z051.log': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z051': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z051.met': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z051': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z051.met': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogStatus_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z051': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogReport_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z051': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogUser_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z051': No such file or directory
+rm: cannot remove '/CERES/sarb/data/scr/CER_SARBCRH_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z051': No such file or directory
+source-this-one.csh: No such file or directory.
+source-this-one.csh: No such file or directory.
+Your job 1139125 ("day20130416_051.csh") has been submitted
+ilat,       52
+source-this-one.csh: No such file or directory.
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z052': No such file or directory
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z052.log': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z052': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z052.met': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z052': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z052.met': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogStatus_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z052': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogReport_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z052': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogUser_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z052': No such file or directory
+rm: cannot remove '/CERES/sarb/data/scr/CER_SARBCRH_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z052': No such file or directory
+source-this-one.csh: No such file or directory.
+source-this-one.csh: No such file or directory.
+Your job 1139126 ("day20130416_052.csh") has been submitted
+ilat,       53
+source-this-one.csh: No such file or directory.
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z053': No such file or directory
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z053.log': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z053': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z053.met': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z053': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z053.met': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogStatus_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z053': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogReport_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z053': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogUser_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z053': No such file or directory
+rm: cannot remove '/CERES/sarb/data/scr/CER_SARBCRH_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z053': No such file or directory
+source-this-one.csh: No such file or directory.
+source-this-one.csh: No such file or directory.
+Your job 1139127 ("day20130416_053.csh") has been submitted
+ilat,       54
+source-this-one.csh: No such file or directory.
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z054': No such file or directory
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z054.log': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z054': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z054.met': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z054': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z054.met': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogStatus_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z054': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogReport_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z054': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogUser_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z054': No such file or directory
+rm: cannot remove '/CERES/sarb/data/scr/CER_SARBCRH_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z054': No such file or directory
+source-this-one.csh: No such file or directory.
+source-this-one.csh: No such file or directory.
+Your job 1139128 ("day20130416_054.csh") has been submitted
+ilat,       55
+source-this-one.csh: No such file or directory.
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z055': No such file or directory
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z055.log': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z055': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z055.met': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z055': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z055.met': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogStatus_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z055': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogReport_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z055': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogUser_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z055': No such file or directory
+rm: cannot remove '/CERES/sarb/data/scr/CER_SARBCRH_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z055': No such file or directory
+source-this-one.csh: No such file or directory.
+source-this-one.csh: No such file or directory.
+Your job 1139129 ("day20130416_055.csh") has been submitted
+ilat,       56
+source-this-one.csh: No such file or directory.
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z056': No such file or directory
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z056.log': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z056': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z056.met': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z056': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z056.met': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogStatus_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z056': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogReport_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z056': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogUser_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z056': No such file or directory
+rm: cannot remove '/CERES/sarb/data/scr/CER_SARBCRH_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z056': No such file or directory
+source-this-one.csh: No such file or directory.
+source-this-one.csh: No such file or directory.
+Your job 1139130 ("day20130416_056.csh") has been submitted
+ilat,       57
+source-this-one.csh: No such file or directory.
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z057': No such file or directory
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z057.log': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z057': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z057.met': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z057': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z057.met': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogStatus_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z057': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogReport_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z057': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogUser_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z057': No such file or directory
+rm: cannot remove '/CERES/sarb/data/scr/CER_SARBCRH_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z057': No such file or directory
+source-this-one.csh: No such file or directory.
+source-this-one.csh: No such file or directory.
+Your job 1139131 ("day20130416_057.csh") has been submitted
+ilat,       58
+source-this-one.csh: No such file or directory.
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z058': No such file or directory
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z058.log': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z058': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z058.met': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z058': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z058.met': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogStatus_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z058': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogReport_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z058': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogUser_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z058': No such file or directory
+rm: cannot remove '/CERES/sarb/data/scr/CER_SARBCRH_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z058': No such file or directory
+source-this-one.csh: No such file or directory.
+source-this-one.csh: No such file or directory.
+Your job 1139132 ("day20130416_058.csh") has been submitted
+ilat,       59
+source-this-one.csh: No such file or directory.
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z059': No such file or directory
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z059.log': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z059': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z059.met': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z059': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z059.met': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogStatus_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z059': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogReport_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z059': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogUser_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z059': No such file or directory
+rm: cannot remove '/CERES/sarb/data/scr/CER_SARBCRH_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z059': No such file or directory
+source-this-one.csh: No such file or directory.
+source-this-one.csh: No such file or directory.
+Your job 1139133 ("day20130416_059.csh") has been submitted
+ilat,       60
+source-this-one.csh: No such file or directory.
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z060': No such file or directory
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z060.log': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z060': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z060.met': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z060': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z060.met': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogStatus_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z060': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogReport_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z060': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogUser_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z060': No such file or directory
+rm: cannot remove '/CERES/sarb/data/scr/CER_SARBCRH_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z060': No such file or directory
+source-this-one.csh: No such file or directory.
+source-this-one.csh: No such file or directory.
+Your job 1139134 ("day20130416_060.csh") has been submitted
+ilat,       60
+Submitted 10 jobs, sleeping 5 hours...
+ilat,       61
+source-this-one.csh: No such file or directory.
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z061': No such file or directory
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z061.log': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z061': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z061.met': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z061': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z061.met': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogStatus_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z061': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogReport_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z061': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogUser_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z061': No such file or directory
+rm: cannot remove '/CERES/sarb/data/scr/CER_SARBCRH_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z061': No such file or directory
+source-this-one.csh: No such file or directory.
+source-this-one.csh: No such file or directory.
+Your job 1139142 ("day20130416_061.csh") has been submitted
+ilat,       62
+source-this-one.csh: No such file or directory.
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z062': No such file or directory
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z062.log': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z062': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z062.met': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z062': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z062.met': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogStatus_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z062': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogReport_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z062': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogUser_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z062': No such file or directory
+rm: cannot remove '/CERES/sarb/data/scr/CER_SARBCRH_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z062': No such file or directory
+source-this-one.csh: No such file or directory.
+source-this-one.csh: No such file or directory.
+Your job 1139143 ("day20130416_062.csh") has been submitted
+ilat,       63
+source-this-one.csh: No such file or directory.
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z063': No such file or directory
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z063.log': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z063': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z063.met': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z063': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z063.met': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogStatus_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z063': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogReport_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z063': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogUser_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z063': No such file or directory
+rm: cannot remove '/CERES/sarb/data/scr/CER_SARBCRH_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z063': No such file or directory
+source-this-one.csh: No such file or directory.
+source-this-one.csh: No such file or directory.
+Your job 1139144 ("day20130416_063.csh") has been submitted
+ilat,       64
+source-this-one.csh: No such file or directory.
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z064': No such file or directory
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z064.log': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z064': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z064.met': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z064': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z064.met': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogStatus_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z064': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogReport_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z064': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogUser_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z064': No such file or directory
+rm: cannot remove '/CERES/sarb/data/scr/CER_SARBCRH_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z064': No such file or directory
+source-this-one.csh: No such file or directory.
+source-this-one.csh: No such file or directory.
+Your job 1139145 ("day20130416_064.csh") has been submitted
+ilat,       65
+source-this-one.csh: No such file or directory.
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z065': No such file or directory
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z065.log': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z065': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z065.met': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z065': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z065.met': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogStatus_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z065': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogReport_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z065': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogUser_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z065': No such file or directory
+rm: cannot remove '/CERES/sarb/data/scr/CER_SARBCRH_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z065': No such file or directory
+source-this-one.csh: No such file or directory.
+source-this-one.csh: No such file or directory.
+Your job 1139146 ("day20130416_065.csh") has been submitted
+ilat,       66
+source-this-one.csh: No such file or directory.
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z066': No such file or directory
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z066.log': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z066': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z066.met': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z066': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z066.met': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogStatus_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z066': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogReport_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z066': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogUser_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z066': No such file or directory
+rm: cannot remove '/CERES/sarb/data/scr/CER_SARBCRH_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z066': No such file or directory
+source-this-one.csh: No such file or directory.
+source-this-one.csh: No such file or directory.
+Your job 1139147 ("day20130416_066.csh") has been submitted
+ilat,       67
+source-this-one.csh: No such file or directory.
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z067': No such file or directory
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z067.log': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z067': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z067.met': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z067': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z067.met': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogStatus_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z067': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogReport_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z067': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogUser_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z067': No such file or directory
+rm: cannot remove '/CERES/sarb/data/scr/CER_SARBCRH_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z067': No such file or directory
+source-this-one.csh: No such file or directory.
+source-this-one.csh: No such file or directory.
+Your job 1139148 ("day20130416_067.csh") has been submitted
+ilat,       68
+source-this-one.csh: No such file or directory.
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z068': No such file or directory
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z068.log': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z068': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z068.met': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z068': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z068.met': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogStatus_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z068': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogReport_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z068': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogUser_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z068': No such file or directory
+rm: cannot remove '/CERES/sarb/data/scr/CER_SARBCRH_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z068': No such file or directory
+source-this-one.csh: No such file or directory.
+source-this-one.csh: No such file or directory.
+Your job 1139149 ("day20130416_068.csh") has been submitted
+ilat,       69
+source-this-one.csh: No such file or directory.
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z069': No such file or directory
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z069.log': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z069': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z069.met': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z069': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z069.met': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogStatus_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z069': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogReport_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z069': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogUser_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z069': No such file or directory
+rm: cannot remove '/CERES/sarb/data/scr/CER_SARBCRH_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z069': No such file or directory
+source-this-one.csh: No such file or directory.
+source-this-one.csh: No such file or directory.
+Your job 1139150 ("day20130416_069.csh") has been submitted
+ilat,       70
+source-this-one.csh: No such file or directory.
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z070': No such file or directory
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z070.log': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z070': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z070.met': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z070': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z070.met': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogStatus_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z070': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogReport_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z070': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogUser_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z070': No such file or directory
+rm: cannot remove '/CERES/sarb/data/scr/CER_SARBCRH_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z070': No such file or directory
+source-this-one.csh: No such file or directory.
+source-this-one.csh: No such file or directory.
+Your job 1139151 ("day20130416_070.csh") has been submitted
+ilat,       70
+Submitted 10 jobs, sleeping 5 hours...
+ilat,       71
+source-this-one.csh: No such file or directory.
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z071': No such file or directory
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z071.log': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z071': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z071.met': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z071': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z071.met': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogStatus_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z071': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogReport_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z071': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogUser_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z071': No such file or directory
+rm: cannot remove '/CERES/sarb/data/scr/CER_SARBCRH_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z071': No such file or directory
+source-this-one.csh: No such file or directory.
+source-this-one.csh: No such file or directory.
+Your job 1139233 ("day20130416_071.csh") has been submitted
+ilat,       72
+source-this-one.csh: No such file or directory.
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z072': No such file or directory
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z072.log': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z072': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z072.met': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z072': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z072.met': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogStatus_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z072': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogReport_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z072': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogUser_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z072': No such file or directory
+rm: cannot remove '/CERES/sarb/data/scr/CER_SARBCRH_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z072': No such file or directory
+source-this-one.csh: No such file or directory.
+source-this-one.csh: No such file or directory.
+Your job 1139234 ("day20130416_072.csh") has been submitted
+ilat,       73
+source-this-one.csh: No such file or directory.
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z073': No such file or directory
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z073.log': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z073': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z073.met': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z073': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z073.met': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogStatus_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z073': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogReport_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z073': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogUser_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z073': No such file or directory
+rm: cannot remove '/CERES/sarb/data/scr/CER_SARBCRH_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z073': No such file or directory
+source-this-one.csh: No such file or directory.
+source-this-one.csh: No such file or directory.
+Your job 1139235 ("day20130416_073.csh") has been submitted
+ilat,       74
+source-this-one.csh: No such file or directory.
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z074': No such file or directory
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z074.log': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z074': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z074.met': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z074': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z074.met': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogStatus_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z074': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogReport_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z074': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogUser_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z074': No such file or directory
+rm: cannot remove '/CERES/sarb/data/scr/CER_SARBCRH_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z074': No such file or directory
+source-this-one.csh: No such file or directory.
+source-this-one.csh: No such file or directory.
+Your job 1139236 ("day20130416_074.csh") has been submitted
+ilat,       75
+source-this-one.csh: No such file or directory.
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z075': No such file or directory
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z075.log': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z075': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z075.met': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z075': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z075.met': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogStatus_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z075': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogReport_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z075': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogUser_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z075': No such file or directory
+rm: cannot remove '/CERES/sarb/data/scr/CER_SARBCRH_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z075': No such file or directory
+source-this-one.csh: No such file or directory.
+source-this-one.csh: No such file or directory.
+Your job 1139237 ("day20130416_075.csh") has been submitted
+ilat,       76
+source-this-one.csh: No such file or directory.
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z076': No such file or directory
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z076.log': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z076': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z076.met': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z076': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z076.met': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogStatus_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z076': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogReport_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z076': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogUser_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z076': No such file or directory
+rm: cannot remove '/CERES/sarb/data/scr/CER_SARBCRH_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z076': No such file or directory
+source-this-one.csh: No such file or directory.
+source-this-one.csh: No such file or directory.
+Your job 1139238 ("day20130416_076.csh") has been submitted
+ilat,       77
+source-this-one.csh: No such file or directory.
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z077': No such file or directory
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z077.log': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z077': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z077.met': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z077': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z077.met': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogStatus_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z077': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogReport_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z077': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogUser_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z077': No such file or directory
+rm: cannot remove '/CERES/sarb/data/scr/CER_SARBCRH_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z077': No such file or directory
+source-this-one.csh: No such file or directory.
+source-this-one.csh: No such file or directory.
+Your job 1139239 ("day20130416_077.csh") has been submitted
+ilat,       78
+source-this-one.csh: No such file or directory.
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z078': No such file or directory
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z078.log': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z078': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z078.met': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z078': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z078.met': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogStatus_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z078': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogReport_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z078': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogUser_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z078': No such file or directory
+rm: cannot remove '/CERES/sarb/data/scr/CER_SARBCRH_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z078': No such file or directory
+source-this-one.csh: No such file or directory.
+source-this-one.csh: No such file or directory.
+Your job 1139240 ("day20130416_078.csh") has been submitted
+ilat,       79
+source-this-one.csh: No such file or directory.
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z079': No such file or directory
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z079.log': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z079': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z079.met': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z079': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z079.met': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogStatus_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z079': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogReport_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z079': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogUser_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z079': No such file or directory
+rm: cannot remove '/CERES/sarb/data/scr/CER_SARBCRH_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z079': No such file or directory
+source-this-one.csh: No such file or directory.
+source-this-one.csh: No such file or directory.
+Your job 1139241 ("day20130416_079.csh") has been submitted
+ilat,       80
+source-this-one.csh: No such file or directory.
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z080': No such file or directory
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z080.log': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z080': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z080.met': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z080': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z080.met': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogStatus_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z080': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogReport_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z080': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogUser_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z080': No such file or directory
+rm: cannot remove '/CERES/sarb/data/scr/CER_SARBCRH_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z080': No such file or directory
+source-this-one.csh: No such file or directory.
+source-this-one.csh: No such file or directory.
+Your job 1139242 ("day20130416_080.csh") has been submitted
+ilat,       80
+Submitted 10 jobs, sleeping 5 hours...
+ilat,       81
+source-this-one.csh: No such file or directory.
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z081': No such file or directory
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z081.log': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z081': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z081.met': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z081': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z081.met': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogStatus_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z081': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogReport_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z081': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogUser_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z081': No such file or directory
+rm: cannot remove '/CERES/sarb/data/scr/CER_SARBCRH_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z081': No such file or directory
+source-this-one.csh: No such file or directory.
+source-this-one.csh: No such file or directory.
+Your job 1139904 ("day20130416_081.csh") has been submitted
+ilat,       82
+source-this-one.csh: No such file or directory.
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z082': No such file or directory
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z082.log': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z082': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z082.met': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z082': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z082.met': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogStatus_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z082': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogReport_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z082': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogUser_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z082': No such file or directory
+rm: cannot remove '/CERES/sarb/data/scr/CER_SARBCRH_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z082': No such file or directory
+source-this-one.csh: No such file or directory.
+source-this-one.csh: No such file or directory.
+Your job 1139905 ("day20130416_082.csh") has been submitted
+ilat,       83
+source-this-one.csh: No such file or directory.
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z083': No such file or directory
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z083.log': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z083': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z083.met': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z083': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z083.met': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogStatus_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z083': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogReport_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z083': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogUser_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z083': No such file or directory
+rm: cannot remove '/CERES/sarb/data/scr/CER_SARBCRH_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z083': No such file or directory
+source-this-one.csh: No such file or directory.
+source-this-one.csh: No such file or directory.
+Your job 1139906 ("day20130416_083.csh") has been submitted
+ilat,       84
+source-this-one.csh: No such file or directory.
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z084': No such file or directory
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z084.log': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z084': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z084.met': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z084': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z084.met': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogStatus_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z084': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogReport_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z084': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogUser_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z084': No such file or directory
+rm: cannot remove '/CERES/sarb/data/scr/CER_SARBCRH_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z084': No such file or directory
+source-this-one.csh: No such file or directory.
+source-this-one.csh: No such file or directory.
+Your job 1139907 ("day20130416_084.csh") has been submitted
+ilat,       85
+source-this-one.csh: No such file or directory.
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z085': No such file or directory
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z085.log': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z085': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z085.met': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z085': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z085.met': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogStatus_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z085': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogReport_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z085': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogUser_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z085': No such file or directory
+rm: cannot remove '/CERES/sarb/data/scr/CER_SARBCRH_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z085': No such file or directory
+source-this-one.csh: No such file or directory.
+source-this-one.csh: No such file or directory.
+Your job 1139908 ("day20130416_085.csh") has been submitted
+ilat,       86
+source-this-one.csh: No such file or directory.
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z086': No such file or directory
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z086.log': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z086': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z086.met': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z086': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z086.met': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogStatus_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z086': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogReport_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z086': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogUser_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z086': No such file or directory
+rm: cannot remove '/CERES/sarb/data/scr/CER_SARBCRH_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z086': No such file or directory
+source-this-one.csh: No such file or directory.
+source-this-one.csh: No such file or directory.
+Your job 1139909 ("day20130416_086.csh") has been submitted
+ilat,       87
+source-this-one.csh: No such file or directory.
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z087': No such file or directory
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z087.log': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z087': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z087.met': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z087': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z087.met': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogStatus_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z087': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogReport_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z087': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogUser_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z087': No such file or directory
+rm: cannot remove '/CERES/sarb/data/scr/CER_SARBCRH_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z087': No such file or directory
+source-this-one.csh: No such file or directory.
+source-this-one.csh: No such file or directory.
+Your job 1139910 ("day20130416_087.csh") has been submitted
+ilat,       88
+source-this-one.csh: No such file or directory.
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z088': No such file or directory
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z088.log': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z088': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z088.met': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z088': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z088.met': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogStatus_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z088': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogReport_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z088': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogUser_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z088': No such file or directory
+rm: cannot remove '/CERES/sarb/data/scr/CER_SARBCRH_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z088': No such file or directory
+source-this-one.csh: No such file or directory.
+source-this-one.csh: No such file or directory.
+Your job 1139911 ("day20130416_088.csh") has been submitted
+ilat,       89
+source-this-one.csh: No such file or directory.
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z089': No such file or directory
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z089.log': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z089': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z089.met': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z089': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z089.met': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogStatus_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z089': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogReport_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z089': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogUser_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z089': No such file or directory
+rm: cannot remove '/CERES/sarb/data/scr/CER_SARBCRH_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z089': No such file or directory
+source-this-one.csh: No such file or directory.
+source-this-one.csh: No such file or directory.
+Your job 1139912 ("day20130416_089.csh") has been submitted
+ilat,       90
+source-this-one.csh: No such file or directory.
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z090': No such file or directory
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z090.log': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z090': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z090.met': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z090': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z090.met': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogStatus_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z090': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogReport_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z090': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogUser_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z090': No such file or directory
+rm: cannot remove '/CERES/sarb/data/scr/CER_SARBCRH_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z090': No such file or directory
+source-this-one.csh: No such file or directory.
+source-this-one.csh: No such file or directory.
+Your job 1139913 ("day20130416_090.csh") has been submitted
+ilat,       90
+Submitted 10 jobs, sleeping 5 hours...

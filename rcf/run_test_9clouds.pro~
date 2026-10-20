@@ -1,0 +1,68 @@
+pro run_test_9clouds
+
+
+  ;spawn, 'source source-this-one.csh' ;!!!!! do this under IDL
+
+  ;wait, 3600*3
+  
+for ilat=9, 9 do begin
+;for ilat=119 140 do begin
+;for ilat=136, 180 do begin
+;for ilat=46, 90 do begin
+
+  
+   print, 'ilat, ',  ilat
+   
+one_lat=STRING(ilat, FORMAT='(I3.3)')
+
+;spawn, './cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z'+one_lat
+spawn, './CER7.2.1P2_pcfgen.pl -date 201304Z'+one_lat
+
+
+
+pcf_file='/homedir/ghong/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z'+one_lat
+;pcf_file_out='/homedir/ghong/sarb/CER7.2.1P2/rcf/pcf/temp/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z'+one_lat
+
+nnn=numlines(pcf_file)
+
+lines=strarr(nnn)
+
+close, 1
+openr, 1, pcf_file
+readf, 1, lines
+close, 1
+
+;stop
+
+print, lines(30)
+
+; 4_9_4
+;lines(30)='12|CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z'+one_lat+'|/homedir/ghong/tmp/SARB/tsi/04_09_04||||1'
+
+; 4_9_9
+lines(30)='12|CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z'+one_lat+'|/homedir/ghong/tmp/SARB/tsi/04_09_2||||1'
+
+
+
+
+close, 2
+openw, 2, pcf_file
+for iii=0, nnn-1 do begin
+   printf, 2, lines(iii)
+endfor
+close, 2
+
+;if (ilat mod 30) eq 0 then begin
+;   wait, 3600*3
+;endif
+
+
+spawn, 'qsub  day20130416_'+one_lat+'.csh'
+
+;stop
+
+endfor
+
+
+
+  end

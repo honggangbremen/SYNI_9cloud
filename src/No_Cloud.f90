@@ -1,0 +1,690 @@
+MODULE No_Cloud
+!
+!*****************************************************************************
+!
+! !F90
+!
+! !Name:
+!    No_Cloud
+!
+! !Description:
+!   Routine ID - M5.2.1.7
+!
+!   Purpose - To provide routines necessary to define the values for the base
+!             (no clouds) vertical profiles of temperature, humidity,
+!             and ozone as a function of pressure.
+!
+!
+! !Input Parameters:
+!   NONE
+!
+! !Output Parameters:
+!   NONE
+!
+! !Team-Unique Header:
+!
+!  Modules Used:
+!    ceres_meteor   - (CERESlib) Used by Sbr. FixFloat_Sort, FloatSfc_Add
+!    MOA_IO         - (CERESlib) Used by Sbr. FixTrop_Build, FloatSfc_Add, 
+!                                             NoCloud_Profile_Build 
+!    Profile_Params - (SARBlib)  Used by Sbr. FixFloat_Sort, FixTrop_Build, 
+!                                             FloatSfc_Add
+!    SARB_General   - (SARBlib)  Used by Sbr. FixTrop_Build 
+!    SARB_OutVar    - (SARBlib)  Used by Sbr. FixFloat_Sort
+!    SARB_Var       - (SARBlib)  Used by Sbr. FixFloat_Sort, FixTrop_Build, 
+!                                             FloatSfc_Add
+!
+!  Internal Routines:
+!    FixFloat_Sort         - Merges the newly calculated (non-MOA) floating 
+!                            surface levels with the fixed SARB levels
+!    FixTrop_Build         - Begins building profile using the fixed SARB levels
+!                            and the height of the tropopause
+!    FloatSfc_Add          - Adds floating surface levels to the profile
+!    NoCloud_Profile_Build - Drives the building of the base (no cloud levels) 
+!                            vertical profiles of pressure, temperature,  
+!                            specific humidity, and ozone from input MOA data
+!                            to be passed to radiative transfer model
+!
+!  Algorithm Description:
+!    1. SARB uses a subset of the vertical levels of meteorological and
+!       ozone data contained on the MOA product.
+!    2. The vertical profiles on the MOA product are in surface to TOA
+!       order, while SARB needs these data in TOA to surface order.
+!    3. The first three levels on the MOA are floating levels--surface,
+!       surface - 10mb, and surface - 20mb.
+!       a. Physically, the floating levels above the surface may be in 
+!          between the fixed levels.  The vertical profiles passed to the
+!          Fu-Liou model need to have these floating levels inserted
+!          in order.
+!       b. Physically, any of the floating levels can coincide (within
+!          a predetermined delta--parameter Delta_CldPro) with a fixed 
+!          level.  The vertical profiles passed to the Fu-Liou model do
+!          not contain values for two levels within that delta.  If the 
+!          delta between a floating level and a fixed level is less than
+!          the allowable delta (Delta_CldPro), the floating level takes 
+!          precedence.      
+!    4. The surface pressure from the MOA is a regionally averaged value.
+!       This is the value used to begin building the vertical profiles.
+!       The primary input product (SSF/TSI) contains a higher resolution
+!       value which may indicate a higher altitude than that obtained from 
+!       the MOA.  Whenever this is the case, it is probable that levels
+!       built into the profile based on the MOA surface pressure need
+!       to be eliminated.  This elimination occurs in Sbr. FixFloat_Sort.
+!
+! !Revision History:
+!  Version 3.3   December 20, 2002 - SCCR #408
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                 1. Modified Sbr. FixFloat_Sort
+!                 2. Modified Sbr. FixTrop_Build
+!                 3. Modified Sbr. FloatSfc_Add
+!  Version 3.1   June 22, 2001 - SCCR #267
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                    a. Modified Sbr. FloatSfc_Add
+!                    b. FixFloat_Sort
+!  Version 2.4   March 15, 1999 - SCCR #132
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                Shalini Gupta, SAIC, s.gupta@larc.nasa.gov
+!                 1. Correction to defining surface in vertical profiles
+!                    a. Modified Sbr. FixFloat_Sort
+!                    b. Modified Sbr. FloatSfc_Add
+!                    c. Modified Sbr. NoCloud_Profile_Build
+!  Version 2.3   June 16, 1998 - SCCR #89
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                Shalini Gupta, SAIC, s.gupta@larc.nasa.gov
+!                  1. Divided original version of Sbr. NoCloud_Profile_Build 
+!                     into multiple, more easily managed routines
+!                  2. Changed location of Sbr. MOA_Inter from Module FL_SetUp
+!                     to Module SARB_General
+!                  3. Modified Sbr. FixTrop_Build 
+!  Version 2.0   November 21, 1997 - SCCR #30
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                Shalini Gupta, SAIC, s.gupta@larc.nasa.gov
+!                Initial Version of Code
+! 
+! !END
+!
+!*****************************************************************************
+!
+!
+    USE ceres_meteor
+    USE MOA_IO_NESTED
+    USE Profile_Params
+    USE SARB_General
+    USE SARB_OutVar
+    USE SARB_Var
+!
+   IMPLICIT NONE
+!
+   CONTAINS
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!
+      SUBROUTINE NoCloud_Profile_Build (MOA)                          ! I
+!
+!*****************************************************************************
+! 
+! !F90
+!
+! !Name:
+!   NoCloud_Profile_Build
+!
+! !Description:
+!   Routine ID - 5.2.1.7
+!
+!   Purpose - To build the base (no cloud levels) vertical profiles of 
+!             pressure, temperature, specific humidity, and ozone from  
+!             input MOA data to be passed to radiative transfer model
+!             
+!
+! !Input Parameters:
+!    MOA - MOA data corresponding to current footprint/region
+!
+! !Output Parameters:
+!    NONE
+!
+! !Team-Unique Header:
+!
+!  Modules Used:
+!    MOA_IO - (CERESlib) Structures: MOA_TYPE
+!
+!  Internal Routines Used:
+!    FixFloat_Sort
+!    FixTrop_Build
+!    FloatSfc_Add 
+!
+! !Revision History:
+!  Version 2.4   March 15, 1999 - SCCR #132
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                Shalini Gupta, SAIC, s.gupta@larc.nasa.gov
+!                 1. Correction to defining surface in vertical profiles--
+!                    Added surface pressure from input product to calling
+!                    argument list for Sbr. FloatSfc_Add (output) and 
+!                    FixFloat_Sort (input)
+!  Version 2.3   June 16, 1998 - SCCR #89
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                Shalini Gupta, SAIC, s.gupta@larc.nasa.gov
+!                  Divided original version of Sbr. NoCloud_Profile_Build 
+!                  into multiple, more easily managed routines
+!  Version 2.0   November 21, 1997 - SCCR #30
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                Initial Version of Release 2 Code
+!
+! !END
+!
+!*****************************************************************************
+!
+!
+      TYPE (MOA_TYPE), INTENT (IN) :: MOA
+!
+      REAL :: pressure
+!
+!
+! *** Build profile with only the fixed levels plus the height of the 
+!     tropopause.
+!
+      CALL FixTrop_Build (MOA)                                            ! I
+!
+!
+! *** Determine floating surface levels for the base profile.
+!
+      CALL FloatSfc_Add (MOA,                                           & ! I
+                              pressure)                                   ! O
+!
+!
+! *** Merge the fixed levels with the floating levels in height order.
+!
+      CALL FixFloat_Sort (pressure)                                       ! I
+!
+!
+      END SUBROUTINE NoCloud_Profile_Build
+!
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+! 
+      SUBROUTINE FixTrop_Build (MOA)                                      ! I
+!
+!*****************************************************************************
+! 
+! !F90
+!
+! !Name:
+!   FixTrop_Build
+!
+! !Description:
+!   Routine ID - 5.2.1.7.1
+!
+!   Purpose - To construct vertical profiles of pressure, temperature,
+!             specific humidity, and ozone from input MOA data for use 
+!             by the radiative transfer model
+!             
+!
+! !Input Parameters:
+!    MOA - MOA data corresponding to current footprint/region
+!
+! !Output Parameters:
+!    NONE
+!
+! !Team-Unique Header:
+!
+!  Modules Used:    (Parameters followed by "*" are defined by this routine)
+!    FL_IO_Params   - (SARBlib)  Parameters: ModLev*, ModLev_Cnt*, 
+!                                            ModLev_ProO3, ModLev_SpHum*, 
+!                                            ModLev_Temp* 
+!    MOA_IO         - (CERESlib) Structures: MOA_TYPE
+!    Profile_Params - (SARBlib)  Parameters: Delta_CldPro, MetIn, NumLev_Fix, 
+!                                            Pres_Pnt
+!    SARB_General   - (SARBlib)  Sbr. MOA_Inter
+!    SARB_Var       - (SARBlib)  Parameters: MOA_FixLev 
+!
+! !Revision History:
+!  Version 3.3   December 20, 2002 - SCCR #408
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                 1. Replace use of MOAxxxx arrays declared in Mod. SARB_Var
+!                    with use of ModLevxxxx ( MetIn) arrays declared in
+!                    Mod. FL_IO_Params.
+!  Version 2.3   June 16, 1998 - SCCR #89
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                Shalini Gupta, SAIC, s.gupta@larc.nasa.gov
+!                 1. Divided original version of Sbr. NoCloud_Profile_Build 
+!                    into multiple, more easily managed routines
+!                 2. Hardwired the tropopause height to 70 hPa.
+!  Version 2.0   November 21, 1997 - SCCR #30
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                Initial Version of Release 2 Code
+!
+! !END
+!
+!*****************************************************************************
+!
+!
+      TYPE (MOA_TYPE), INTENT (IN) :: MOA
+!
+      INTEGER :: I
+      INTEGER :: Im1
+      INTEGER :: Ip1
+      INTEGER :: NLev
+      INTEGER :: Nm1
+      REAL    :: MOA_Trop_Ht
+!
+!
+! *** Build profile from input data without the floating surface levels
+!
+      NLev = 0
+      ModLev_Cnt ( MetIn) = NLev
+!
+      DO I = 1, NumLev_Fix
+          IF ( MOA_FixLev ( Pres_Pnt ( I)) <= MOA % SfcPres) THEN
+!         *** Add level to profile
+!
+              NLev = NLev + 1
+!
+              ModLev ( MetIn, NLev)        = MOA_FixLev ( Pres_Pnt ( I))
+              ModLev_ProO3 ( MetIn, NLev)  = MOA % PO3 ( Pres_Pnt ( I))
+              ModLev_SpHum (  MetIn, NLev) = MOA % Humid_MP ( Pres_Pnt ( I))
+              ModLev_Temp (  MetIn, NLev)  = MOA % Temp_MP ( Pres_Pnt ( I))
+!
+          END IF
+      END DO
+!
+!
+! *** Add height of tropopause to profiles
+!
+      I = 1
+      MOA_Trop_Ht = 70.0
+      DO WHILE (MOA_Trop_Ht > ModLev ( MetIn, I) + Delta_CldPro)
+!     *** Current MOA level higher than tropopause
+!
+          I = I + 1
+!
+      END DO
+!
+      IF (MOA_Trop_Ht < ModLev ( MetIn, I) - Delta_CldPro) THEN
+!     *** The tropopause is between two fixed MOA levels. Insert into profile
+!         and interpolate temperature, humidity, and ozone for corresponding 
+!         tropopause level values.
+!
+          NLev = NLev + 1
+          Ip1 = I + 1
+          Im1 = I - 1
+          Nm1 = NLev - 1
+!
+          ModLev ( MetIn, I+1:NLev) = ModLev ( MetIn, I:NLev-1)
+          ModLev ( MetIn, I) = MOA_Trop_Ht
+          ModLev_ProO3 ( MetIn, Ip1:NLev) = ModLev_ProO3 ( MetIn, I:Nm1)
+          ModLev_SpHum ( MetIn, Ip1:NLev) = ModLev_SpHum ( MetIn, I:Nm1)
+          ModLev_Temp ( MetIn, Ip1:NLev)  = ModLev_Temp ( MetIn, I:Nm1)
+!
+          CALL MOA_Inter (ModLev ( MetIn, Im1),                      & ! I
+                          ModLev ( MetIn, I+1),                      & ! I
+                          ModLev ( MetIn, I),                        & ! I
+                          ModLev_Temp ( MetIn, Im1),                 & ! I
+                          ModLev_Temp ( MetIn, Ip1),                 & ! I
+                          ModLev_SpHum ( MetIn, Im1),                & ! I 
+                          ModLev_SpHum ( MetIn, Ip1),                & ! I
+                          ModLev_ProO3 ( MetIn, Im1),                & ! I 
+                          ModLev_ProO3 ( MetIn, Ip1),                & ! I
+                                 ModLev_Temp ( MetIn, I),            & ! O
+                                 ModLev_SpHum ( MetIn, I),           & ! O 
+                                 ModLev_ProO3 ( MetIn, I))             ! O
+! 
+      ELSE IF (       MOA_Trop_Ht > ModLev ( MetIn, I) - Delta_CldPro        &
+               .AND.  MOA_Trop_Ht < ModLev ( MetIn, I) + Delta_CldPro) THEN
+!     *** The tropopause height coincides with a fixed MOA level.  Replace the
+!         fixed level with the tropopause level in the profile.
+!
+          ModLev ( MetIn, I) = MOA_Trop_Ht
+!
+      END IF
+!
+!
+      ModLev_Cnt ( MetIn) = NLev
+!
+!
+      END SUBROUTINE FixTrop_Build
+!
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!
+      SUBROUTINE FloatSfc_Add (MOA,                                   & ! I
+                                    sfc_pressure)                       ! O
+!
+!*****************************************************************************
+! 
+! !F90
+!
+! !Name:
+!   FloatSfc_Add
+!
+! !Description:
+!   Routine ID - 5.2.1.7.2
+!
+!   Purpose - To add the floating surface levels to the base vertical profiles 
+!             of pressure, temperature, specific humidity, and ozone from input 
+!             MOA data for use by the radiative transfer model
+!             
+!
+! !Input Parameters:
+!    MOA - MOA data corresponding to current FOV
+!
+! !Output Parameters:
+!    sfc_pressure - Surface pressure based on value from primary input 
+!                   product instead of the MOA product
+!
+! !Team-Unique Header:
+!
+!  Modules Used:    (Parameters followed by "*" are defined by this routine)
+!    ceres_meteor   - (CERESlib) Sbr. new_flt_alt, new_sfc_alt
+!    FL_IO_Params   - (SARBlib)  Parameters: 
+!    MOA_IO         - (CERESlib) Structures: MOA_TYPE
+!    Profile_Params - (SARBlib)  Parameters: MetIn, NumLev_Fix, NumLev_Float, 
+!                                            Pres_Pnt
+!    SARB_Var       - (SARBlib)  Parameters: MOA_SfcPres, SfcAirHumid,  
+!                                            SfcAirTemp, SfcAlt_mn, SfcGeoPt
+!
+! !Revision History:
+!  Version 3.3   December 20, 2002 - SCCR #408
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                 1. Replace use of MOAxxxx arrays declared in Mod. SARB_Var
+!                    with use of ModLevxxxx ( MetIn) arrays declared in
+!                    Mod. FL_IO_Params.
+!  Version 3.1   June 22, 2001 - SCCR #267
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                 1. Replaced variable "altitude" with identically 
+!                    defined  variable "SfcAlt_mn"
+!  Version 2.4   March 15, 1999 - SCCR #132
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                Shalini Gupta, SAIC, s.gupta@larc.nasa.gov
+!                 1. Correction to defining surface in vertical profiles--
+!                    Added surface pressure calculated by this routine to 
+!                    calling argument list  
+!  Version 2.3   June 16, 1998 - SCCR #89
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                Shalini Gupta, SAIC, s.gupta@larc.nasa.gov
+!                  Divided original version of Sbr. NoCloud_Profile_Build 
+!                  into multiple, more easily managed routines
+!
+! !END
+!
+!*****************************************************************************
+!
+!
+      TYPE (MOA_TYPE), INTENT (IN)  :: MOA
+      REAL,            INTENT (OUT) :: sfc_pressure
+!
+      INTEGER :: FltPntr ( NumLev_Float)
+      INTEGER :: I
+      INTEGER :: J
+      INTEGER :: K
+      REAL    :: LevFloat ( NumLev_Float)
+      REAL    :: new_height
+      REAL    :: new_humidity
+      REAL    :: new_pressure
+      REAL    :: new_temperature
+      REAL    :: NewSfcFlt
+!
+!
+! *** Build array of initial floating levels based on MOA surface pressure
+!
+      J = 0
+      K = 0
+      DO I = NumLev_Fix + NumLev_Float, NumLev_Fix + 1, -1
+          J = J + 1
+          LevFloat ( J) = MOA_SfcPres - REAL (K * 10)
+          FltPntr ( J)  = Pres_Pnt ( I)
+          K = K + 1
+      END DO
+!
+!
+! *** Adjust floating surface levels according to surface elevation provided
+!     on primary input product. 
+!   
+      DO I = 1, NumLev_Float
+!
+          IF (I == 1) THEN
+!         *** Redefine surface pressure as that from the higher resolution 
+!             SSF instead of from the MOA product. Also recalculate  
+!             surface air temperature and humidity.
+!
+              CALL new_sfc_alt (SfcGeoPt, MOA_SfcPres,                     & ! I
+                                SfcAirTemp, SfcAirHumid, SfcAlt_mn,        & ! I
+                                new_pressure, new_temperature, new_humidity) ! O
+              sfc_pressure = new_pressure
+!
+          ELSE
+!         *** Redefine floating levels at 10 and 20 hPa above surface according
+!             to redefined surface pressure. Also recalculate temperature 
+!             and humidity for floating surface levels based on redefined
+!             surface values.
+!
+              NewSfcFlt = new_pressure - ((I-1)*10)
+!Fred Rose 20150918
+!          if ( I .eq. 3 .and. NewSfcFlt > 850 .and. NewSfcFlt > MOA % SfcPres ) NewSfcFlt =850.     
+!Fred Rose 20150918  
+              CALL new_flt_alt (SfcGeoPt, MOA_SfcPres,                     & ! I
+                                SfcAirTemp, LevFloat ( I),                 & ! I
+                                MOA % Temp_MP ( FltPntr ( I)),             & ! I
+                                MOA % Humid_MP ( FltPntr ( I)), NewSfcFlt, & ! I
+                                new_height, new_temperature, new_humidity)   ! O
+! 
+          END IF
+!
+!     *** Load newly calculated profile values into appropriate arrays.
+!
+          ModLev_Cnt ( MetIn)                  = ModLev_Cnt ( MetIn) + 1
+
+!Fred Rose 20150918
+       NewSfcFlt = new_pressure - ((I-1)*10)
+!       if ( I .eq. 3 .and. NewSfcFlt > 850 .and. NewSfcFlt > MOA % SfcPres ) NewSfcFlt =850.              
+           ModLev ( MetIn, ModLev_Cnt ( MetIn)) =  NewSfcFlt
+!Fred Rose 20150918
+
+!          ModLev ( MetIn, ModLev_Cnt ( MetIn)) = new_pressure - ((I-1)*10) 
+
+          ModLev_ProO3 (  MetIn, ModLev_Cnt ( MetIn)) =                       &
+                                                   MOA % PO3 ( FltPntr ( I))
+          ModLev_SpHum (  MetIn, ModLev_Cnt ( MetIn)) = new_humidity
+          ModLev_Temp  (  MetIn, ModLev_Cnt ( MetIn)) = new_temperature
+!
+      END DO
+!
+!
+      END SUBROUTINE FloatSfc_Add
+!
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!
+      SUBROUTINE FixFloat_Sort (sfc_pressure)                            ! I 
+!
+!
+!*****************************************************************************
+! 
+! !F90
+!
+! !Name:
+!   FixFloat_Sort
+!
+! !Description:
+!   Routine ID - 5.2.1.7.3
+!
+!   Purpose - To merge the newly calculated (non-MOA) floating surface levels
+!             with the fixed SARB levels
+!             
+!
+! !Input Parameters:
+!    sfc_pressure - Surface pressure based on value from primary input 
+!                   product instead of the MOA product 
+!
+! !Output Parameters:
+!    NONE 
+!
+! !Team-Unique Header:
+!
+!  Modules Used:    (Parameters followed by "*" are defined by this routine)
+!    ceres_meteor   - (CERESlib) Sbr. ql_to_pw
+!    FL_IO_Params   - (SARBlib)  Parameters: ModLev*, ModLev_Cnt*, 
+!                                            ModLev_ProO3*, ModLev_SpHum*, 
+!                                            ModLev_Temp*
+!    Profile_Params - (SARBlib)  Parameters: Delta_CloudPro, MetIn
+!    SARB_OutVar    - (SARBlib)  Parameters: NumLev_Arc, Pres_Out*
+!    SARB_Var       - (SARBlib)  Parameters: wv*
+!
+!  Comments:
+!    With the exception of the fixed levels within 50 hPa of the TOA, the
+!    heights of the SARB fixed levels are multiples of 50, hence the use 
+!    of MOD (xxx,50.0).
+!
+! !Revision History:
+!  Version 3.3   December 20, 2002 - SCCR #408
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                 1. Replaced use of MOAxxxx arrays declared in Mod. SARB_Var
+!                    with use of ModLevxxxx ( MetIn) arrays declared in
+!                    Mod. FL_IO_Params.
+!  Version 3.1   June 22, 2001 - SCCR #267
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                 1. Replaced use of "(MOALev_Cnt / 2)" in looping statements
+!                    with the variable MidLev_Idx
+!  Version 2.4   March 15, 1999 - SCCR #132
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                Shalini Gupta, SAIC, s.gupta@larc.nasa.gov
+!                 1. Correction to defining surface in vertical profiles--
+!                    a. Added surface pressure calculated by Sbr. FloatSfc_Add
+!                       to calling argument list (input)
+!                    b. Added local variable CurrPres 
+!                    c. Modified logic to eliminate levels beneath surface
+!  Version 2.3   June 16, 1998 - SCCR #89
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                Shalini Gupta, SAIC, s.gupta@larc.nasa.gov
+!                  Divided original version of Sbr. NoCloud_Profile_Build 
+!                  into multiple, more easily managed routines
+!  Version 2.0   November 21, 1997 - SCCR #30
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                Initial Version of Release 2 Code
+!
+! !END
+!
+!*****************************************************************************
+!
+!
+      REAL, INTENT (IN) :: sfc_pressure
+!
+      REAL    :: CurrPres 
+      INTEGER :: I
+      INTEGER :: I1
+      INTEGER :: I2
+      INTEGER :: Im1
+      INTEGER :: J
+      INTEGER :: MidLev_Idx
+      INTEGER :: NLev
+      INTEGER :: Nm1
+      REAL    :: temp1
+      REAL    :: temp2 
+      REAL    :: temp3
+      REAL    :: temp4
+!
+!
+      NLev = ModLev_Cnt ( MetIn)
+
+! *** Merge floating surface levels with fixed levels in height order
+!
+      MidLev_Idx = INT (NLev / 2)
+!
+      DO J = 1, MidLev_Idx
+!
+          I = NLev
+!
+          DO WHILE (I > MidLev_Idx)
+!
+              Im1 = I - 1
+!
+              IF (ModLev ( MetIn, I) < ModLev ( MetIn, Im1)) THEN
+                  temp1 = ModLev ( MetIn, I)
+                  temp2 = ModLev_ProO3 ( MetIn, I)
+                  temp3 = ModLev_SpHum ( MetIn, I)
+                  temp4 = ModLev_Temp ( MetIn, I)
+                  ModLev ( MetIn, I) = ModLev ( MetIn, Im1)
+                  ModLev_ProO3 ( MetIn, I) = ModLev_ProO3 ( MetIn, Im1)
+                  ModLev_SpHum ( MetIn, I) = ModLev_SpHum ( MetIn, Im1)
+                  ModLev_Temp ( MetIn, I)  = ModLev_Temp ( MetIn, Im1)
+                  ModLev ( MetIn, Im1)    = temp1
+                  ModLev_ProO3 ( MetIn, Im1) = temp2
+                  ModLev_SpHum ( MetIn, Im1) = temp3
+                  ModLev_Temp ( MetIn, Im1)  = temp4
+              END IF
+              I = I - 1
+          END DO
+      END DO
+!
+!
+      DO I = 1, NLev - 1
+!
+          IF (ModLev ( MetIn, I+1) <= (ModLev ( MetIn, I) + Delta_CldPro)    &
+                                      .AND. I /= NLev) THEN
+!         *** Two levels coincide.
+!
+              IF (MOD (ModLev ( MetIn, I), 50.0) == 0.0) THEN
+!             *** The height of a floating level is the same or just below
+!                 a fixed level. Replace fixed level ( I) with floating 
+!                 level ( I+1).
+!
+                  Nm1 = NLev - 1
+                  I1 = I + 1
+!
+                  ModLev ( MetIn, I:Nm1)       = ModLev ( MetIn, I1:NLev)
+                  ModLev_ProO3 ( MetIn, I:Nm1) = ModLev_ProO3 ( MetIn, I1:NLev)
+                  ModLev_SpHum ( MetIn, I:Nm1) = ModLev_SpHum ( MetIn, I1:NLev)
+                  ModLev_Temp ( MetIn, I:Nm1)  = ModLev_Temp ( MetIn, I1:NLev)
+!
+              ELSE
+!             *** The height of a floating level is the same or just 
+!                 above a fixed level. Replace fixed level ( I+1) with  
+!                 level ( I+2).
+!
+                  Nm1 = NLev - 1
+                  I1 = I + 1
+                  I2 = I + 2
+!
+                  ModLev ( MetIn, I1:Nm1)       = ModLev ( MetIn, I2:NLev)
+                  ModLev_ProO3 ( MetIn, I1:Nm1) = ModLev_ProO3 ( MetIn, I2:NLev)
+                  ModLev_SpHum ( MetIn, I1:Nm1) = ModLev_SpHum ( MetIn, I2:NLev)
+                  ModLev_Temp ( MetIn, I1:Nm1)  = ModLev_Temp ( MetIn, I2:NLev)
+!
+              END IF
+!
+              NLev = NLev - 1
+!
+          END IF
+!
+      END DO
+!
+! *** Eliminate any fixed levels placed in profile by Sbr. FixTrop_Build
+!     that are below the surface pressure defined by Sbr. FloatSfc_Add.
+!
+      CurrPres = ModLev ( MetIn, NLev)
+!
+      DO WHILE (CurrPres > sfc_pressure)
+         CurrPres = ModLev ( MetIn, NLev-1)
+         NLev = NLev - 1
+      END DO
+!
+!
+! *** Define archival surface level value as value of last level in array.
+!
+      Pres_Out ( NumLev_Arc) = ModLev ( MetIn, NLev)
+!
+!
+! *** Adjust total column water vapor value to account for changes in values
+!     for levels near the surface.
+!
+      wv = ql_to_pw (NLev, ModLev_SpHum ( MetIn:MetIn, 1:NLev),            &
+                                   ModLev ( MetIn:MetIn, 1:NLev))
+!
+      ModLev_Cnt ( MetIn) = NLev
+!
+!
+      END SUBROUTINE FixFloat_Sort
+!
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!
+!
+END MODULE No_Cloud 

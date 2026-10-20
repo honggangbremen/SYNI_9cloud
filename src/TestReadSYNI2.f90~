@@ -1,0 +1,54 @@
+! source /homedir/tecaldwe/TERRA-AQUA-env.csh
+! gfortran ED4_SYNI_STRUCTURE.f90 TestReadSYNI2.f90 -o read_syni
+
+
+
+program TestReadSYNI4
+  use ed4_syni_structure, only: SYNI4_TYPE
+  implicit none
+
+  type(SYNI4_TYPE) :: syni4
+  integer :: unit, ios, recl, rec
+
+  character(len=100) :: filename
+  filename = '/homedir/ghong/sarb/data/test.dat'
+
+  recl = 580    ! Because SIZEOF(SYNI4) = 580, and compiler uses 4-byte units
+  unit = 10
+  rec = 200     ! Use the same Rec_Num that was used in WRITE
+
+  open(unit=unit, file=filename, form='unformatted', access='direct', &
+       recl=recl, status='old', iostat=ios, CONVERT='BIG_ENDIAN')
+
+  if (ios /= 0) then
+     print *, "Error opening file, ios=", ios
+     stop
+  end if
+
+  read(unit, rec=rec, iostat=ios) syni4
+
+  if (ios /= 0) then
+     print *, "Error reading record", rec, " ios=", ios
+  else
+     print *, "Successfully read record", rec
+
+print *, "---- SYNI4 Test Data ----"
+
+! From UT_TYPE (e.g., shortwave clear-sky fluxes)
+print *, "SW Clear Sky Flux Down [ut%clr%sw%d]:", syni4%ut%clr%sw%d(1)
+
+! From TU_TYPE (e.g., temperature at surface or TOA)
+print *, "Upwelling LW Flux [tu%clr%lw%u]:", syni4%tu%clr%lw%u(1)
+
+print *, syni4%tu
+
+PRINT *, 'Hour of month:', SYNI4%misc%hr_month
+PRINT *, 'Region number:', SYNI4%misc%regnum
+PRINT *, 'Surface pressure:', SYNI4%misc%sfc_pres
+
+
+  end if
+
+  close(unit)
+end program
+

@@ -1,0 +1,55 @@
+! source /homedir/tecaldwe/TERRA-AQUA-env.csh
+! gfortran ED4_SYNI_STRUCTURE.f90 TestReadSYNI.f90 -o read_syni
+
+
+
+!PRINT *, 'Size of SYNI4 structure (bytes):', SIZEOF(SYNI4)
+!PRINT *, 'RECL (4-byte units):', SIZEOF(SYNI4)/4
+!
+!  
+!  ! Estimated record length (adjust for real SYNI4 size)
+!  reclen = SIZEOF(SYNI4) / 4
+!  unit = 10
+!
+!   OPEN(UNIT=unit, &
+!    FILE='/homedir/ghong/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/' // &
+!       'CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001', &
+!    FORM='UNFORMATTED', STATUS='OLD', IOSTAT=ios)
+  
+program TestReadSYNI
+  use ed4_syni_structure, only: SYNI4_TYPE
+  implicit none
+
+  integer :: unit, ios, reclen
+  type(SYNI4_TYPE) :: syni4
+
+
+PRINT *, 'Size of SYNI4 structure (bytes):', SIZEOF(SYNI4)
+PRINT *, 'RECL (4-byte units):', SIZEOF(SYNI4)/4
+  
+  ! Calculate reclen - you may need to confirm exact size for your compiler
+  reclen = 145 !SIZEOF(SYNI4) / 4   ! 580 bytes from your structure size / 4 bytes per record unit
+
+  unit = 10
+  open(unit=unit, &
+       file='/homedir/ghong/sarb/data/test.dat', &
+       form='unformatted', access='direct', recl=reclen, status='old', iostat=ios)
+  if (ios /= 0) then
+     print *, "Error opening file, ios =", ios
+     stop
+  end if
+
+  print *, 'test here'
+  
+  read(unit, rec=721, iostat=ios) syni4
+  if (ios /= 0) then
+     print *, "Error reading record 1, ios =", ios
+     stop
+  else
+     print *, "Read success!"
+     ! Now access fields, for example:
+     ! print *, syni4%ut%clr%sw%d(1)
+  end if
+
+  close(unit)
+end program

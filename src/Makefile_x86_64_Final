@@ -1,0 +1,136 @@
+PROG = $(CERESHOME)/sarb/CER7.2.1P2/bin/CER7.2.1P2_x86_64.exe
+
+SRCS = alblib_data.f90 Ancill_Init.f90 aotfit.f90 ASSALUT_Sfcalb.f90 \
+	CHLOR_CLIM.f90 common_access.f90 Control_Mod.f90 Convert_OptDepth.f90 \
+	CRH_Drv.f90 CRH_SARB.f90 DrivIngest.f90 DrivTab_Var.f90 \
+	ED4_SYNI_STRUCTURE.f90 EM_MAP.f90 FL_Pass_Interface.f90 FL_SetUp.f90 \
+	flsa0404_lut.f90 FLSA_LUT_Utils.f90 flsasnow_lut.f90 GADS_Aer.f90 \
+	IGBP_AdjSnowIce.f90 IGBP_Utils.f90 Init_SS7_2.f90 Lev_Isolate.f90 \
+	MATCH_ed4_hourly_SYNI.f90 modalbhdf_SYNI.f90 No_Cloud.f90 \
+	overlap_four.f90 QC_Accum.f90 QC_Fin.f90 QC_Init.f90 Reg_Drv.f90 \
+	SAH_PERT.f90 SigmaIngest.f90 SigTab_Var.f90 stream_corr.f90 \
+	SYN_Drv.f90 SYN_ICE_Utils.f90 SYN_IO_Utils.f90 SYN_SAHA.f90 \
+	SYN_SfcAlb_Init.f90 SYN_SG_Utils.f90 SYN_SPECTRAL_18.f90 \
+	Syn_Spectral_Dat_18.f90 SynSARB_Ingest.f90 SynSARB_Meta.f90 \
+	SynSARB_MOA_Utils.f90 tlu.f90 tsi_flag_ed4.f90 tsi_type_mod.f90\
+	Tune_Code.f90 TuneDrive.f90 UpTropHum.f90 With_Cloud.f90 \
+	Wrap_Up_SS7_2.f90 nclouds_params.f90
+
+OBJS = nclouds_params.o \
+        alblib_data.o Ancill_Init.o aotfit.o ASSALUT_Sfcalb.o CHLOR_CLIM.o \
+	common_access.o Control_Mod.o Convert_OptDepth.o CRH_Drv.o CRH_SARB.o \
+	DrivIngest.o DrivTab_Var.o ED4_SYNI_STRUCTURE.o EM_MAP.o \
+	FL_Pass_Interface.o FL_SetUp.o flsa0404_lut.o FLSA_LUT_Utils.o \
+	flsasnow_lut.o GADS_Aer.o IGBP_AdjSnowIce.o IGBP_Utils.o Init_SS7_2.o \
+	Lev_Isolate.o MATCH_ed4_hourly_SYNI.o modalbhdf_SYNI.o No_Cloud.o \
+	overlap_four.o QC_Accum.o QC_Fin.o QC_Init.o Reg_Drv.o SAH_PERT.o \
+	SigmaIngest.o SigTab_Var.o stream_corr.o SYN_Drv.o SYN_ICE_Utils.o \
+	SYN_IO_Utils.o SYN_SAHA.o SYN_SfcAlb_Init.o SYN_SG_Utils.o \
+	SYN_SPECTRAL_18.o Syn_Spectral_Dat_18.o SynSARB_Ingest.o \
+	SynSARB_Meta.o SynSARB_MOA_Utils.o tlu.o tsi_flag_ed4.o tsi_type_mod.o\
+	Tune_Code.o TuneDrive.o UpTropHum.o With_Cloud.o \
+	Wrap_Up_SS7_2.o
+OBJS_F = 
+
+TKLIBS = -L$(PGSLIB) -lPGSTK
+CLIBS = $(CERESLIB)/data_products_Ed4.a $(CERESLIB)/cereslib_Ed4.a 
+MOD_FLAG = -I. -I$(CERESLIB)/mod4 -I ../lib/fulib -I ../lib
+LIBS = ../lib/fulib/CER7.2.1P2_FuLib_x86_64.a ../lib/CER7.2.1P2_x86_64.a
+INC_FLAG = -I$(NETCDFINC) -I$(PGSINC) -I$(HDFINC) -I$(HDF5INC) -I../include -I./include
+VPATH = .:$(NETCDFINC):$(PGSINC):$(HDFINC):$(HDF5INC):../include:./include
+
+HDF_FLAGS = $(NETCDFDIR) $(HDFEOSDIR) $(HDFEOSLIB) $(HDFDIR) $(HDFLIBS) 
+HDF5_FLAGS = $(HDFEOS5DIR) $(HDFEOS5LIB) $(HDF5DIR) $(HDF5LIBS) 
+DAAC_FLAGS = $(ADD_LFLAGS) $(ADD_LIBS) 
+
+#CC = 
+#CFLAGS = 
+#F90 = 
+#F90COMP = 
+F90COMP = -c -O0 -g -finit-local-zero -fno-second-underscore -fconvert=big-endian
+#FCOMP = 
+#F90LOAD = 
+
+all: $(PROG)
+
+$(PROG): $(OBJS) $(OBJS_F) $(LIBS) $(CLIBS) 
+	$(F90) $(F90LOAD) -o $@ $(OBJS) $(OBJS_F) $(NETCDFDIR) $(NETCDFLIBS) $(LIBS) $(CLIBS) \
+	$(TKLIBS) $(HDF_FLAGS) $(HDF5_FLAGS) $(DAAC_FLAGS) 
+
+clean:
+	-\rm -f $(PROG) $(OBJS) $(OBJS_F) 
+	-\rm -f *.mod 
+
+.SUFFIXES: 
+
+.SUFFIXES: .f90 .mod .f .c .o
+
+.f90.o:
+	$(F90) $(F90COMP) $(MOD_FLAG) $(INC_FLAG) $< 
+
+.f90.mod:
+	$(F90) $(F90COMP) $(MOD_FLAG) $(INC_FLAG) $< 
+
+.f.o:
+	$(F90) $(FCOMP) $(MOD_FLAG) $(INC_FLAG) $< 
+
+.c.o:
+	$(CC) $(CFLAGS) $(MOD_FLAG) $(INC_FLAG) $< 
+
+Ancill_Init.o: PGS_ANCINIT_25725.f
+ASSALUT_Sfcalb.o: FLSA_LUT_Utils.o PGS_FLSALUTIO_25724.f
+CHLOR_CLIM.o: SYN_IO_Utils.o
+common_access.o: tsi_type_mod.o 
+Control_Mod.o: tsi_flag_ed4.o
+Convert_OptDepth.o: 
+CRH_Drv.o: CRH_Drv.o SYN_IO_Utils.o
+CRH_SARB.o: CRH_Drv.o SYN_IO_Utils.o
+DrivIngest.o: DrivTab_Var.o
+EM_MAP.o: CRH_SARB.o SYN_IO_Utils.o
+FL_Pass_Interface.o:  ED4_SYNI_STRUCTURE.o MATCH_ed4_hourly_SYNI.o \
+	SYN_SPECTRAL_18.o common_access.o overlap_four.o tlu.o
+FL_SetUp.o: Convert_OptDepth.o FL_Pass_Interface.o TuneDrive.o UpTropHum.o \
+	With_Cloud.o
+flsa0404_lut.o: SYN_IO_Utils.o
+FLSA_LUT_Utils.o: PGS_FLSALUTIO_25724.f
+GADS_Aer.o: PGS_GADSAER_25715.f
+IGBP_AdjSnowIce.o: IGBP_Utils.o
+IGBP_Utils.o: PGS_IGBPUTIL_25721.f
+Init_SS7_2.o: Ancill_Init.o Control_Mod.o DrivIngest.o ED4_SYNI_STRUCTURE.o \
+	QC_Init.o SYN_SfcAlb_Init.o SigmaIngest.o 
+MATCH_ed4_hourly_SYNI.o: MATCH_ed4_hourly_SYNI.o
+modalbhdf_SYNI.o: modalbhdf_SYNI.o dffunc.f90 hdf.f90
+No_Cloud.o: 
+overlap_four.o: overlap_four.o
+QC_Accum.o: 
+QC_Fin.o: 
+QC_Init.o: 
+Reg_Drv.o: Ancill_Init.o ED4_SYNI_STRUCTURE.o FL_SetUp.o Lev_Isolate.o \
+	MATCH_ed4_hourly_SYNI.o QC_Accum.o SYN_SPECTRAL_18.o SynSARB_Ingest.o \
+	common_access.o modalbhdf_SYNI.o
+SAH_PERT.o: SAH_PERT.o
+SigmaIngest.o: SigTab_Var.o
+stream_corr.o: SYN_SPECTRAL_18.o stream_corr.o
+SYN_Drv.o: Init_SS7_2.o Reg_Drv.o Wrap_Up_SS7_2.o
+SYN_ICE_Utils.o: SYN_IO_Utils.o
+SYN_IO_Utils.o: 
+SYN_SAHA.o: Syn_Spectral_Dat_18.o
+SYN_SfcAlb_Init.o: ASSALUT_Sfcalb.o FLSA_LUT_Utils.o
+SYN_SG_Utils.o: CHLOR_CLIM.o SYN_ICE_Utils.o SYN_SPECTRAL_18.o
+SYN_SPECTRAL_18.o: ASSALUT_Sfcalb.o CHLOR_CLIM.o CRH_SARB.o EM_MAP.o \
+	SAH_PERT.o SYN_ICE_Utils.o SYN_SAHA.o Syn_Spectral_Dat_18.o \
+	flsa0404_lut.o modalbhdf_SYNI.o tsi_flag_ed4.o
+Syn_Spectral_Dat_18.o: 
+SynSARB_Ingest.o: Control_Mod.o IGBP_AdjSnowIce.o No_Cloud.o \
+	SYN_SPECTRAL_18.o aotfit.o common_access.o tsi_flag_ed4.o \
+	PGS_TSIRET_26004.f
+SynSARB_Meta.o: PGS_SARBMETA_25726.f
+SynSARB_MOA_Utils.o: Ancill_Init.o
+tlu.o: tlu.o
+tsi_flag_ed4.o: tsi_flag_ed4.o
+tsi_type_mod.o: tsi_type_mod.o
+Tune_Code.o: Control_Mod.o DrivTab_Var.o SigTab_Var.o
+TuneDrive.o: Convert_OptDepth.o Tune_Code.o overlap_four.o
+UpTropHum.o: 
+With_Cloud.o: 
+Wrap_Up_SS7_2.o: QC_Fin.o SynSARB_Meta.o PGS_WRAPSYN_26006.f

@@ -1,0 +1,99 @@
+MODULE Constrain_Params
+!
+!*****************************************************************************
+!
+! !F90
+!
+! !Name:
+!    Constrain_Params
+!
+! !Description:
+!
+!  Routine ID:
+!
+!  Purpose: To provide definitions and type declarations for constants 
+!           and variables used by the SARB constrainment process
+!
+! !Input Parameters:
+!    NONE
+!
+! !Output Parameters:
+!    NONE
+!
+! !Team Unique Header:
+!
+!  Modules Used:
+!    Profile_Params - (SARBlib) Parameters: MaxLev_Cld
+!
+!  Key Local Parameters:
+!    Baserad ( I)    - Array of base partical sizes for cloud phases
+!                         I = 1 ; Liquid Phase
+!                         I = 2 ; Ice Phase
+!    cfs ( I)        - Compressed array of cloud fractions for clear sky and
+!                      only the existing cloud layers in current FOV
+!    clwpi ( I)      - Compressed array of cloud liquid water paths for only
+!                      the existing cloud layers in current FOV
+!    CompTOA_SW ( I) - Compressed array of the SW TOA flux values returned 
+!                      from the previous pass through the Fu-Liou model for 
+!                      only the existing cloud layers in current FOV
+!    CompTOA_LW ( I) - Compressed array of the LW TOA flux values returned from 
+!                      the previous pass through the Fu-Liou model for only   
+!                      the existing cloud layers in current FOV
+!    CompTOA_WN ( I) - Compressed array of the WN TOA flux values returned from 
+!                      the previous pass through the Fu-Liou model for only 
+!                      the existing cloud layers in current FOV
+!    cpz ( I)        - Compressed array of the phases for only the existing 
+!                      cloud layers in current FOV
+!    ct_adj ( I)     - Array of adjustments to the cloud temperature for each
+!                      cloud layer
+!    ctemp ( I)      - Compressed array of cloud temperatures for only the  
+!                      existing cloud layers in current FOV
+!    t_cfs ( I)      - Compressed array of tuned cloud fractions for clear sky  
+!                      and only the existing cloud layers in current FOV
+!    t_clwp ( I)     - Array of tuned cloud liquid water path
+!    t_ctemp ( I)    - Compressed array of tuned cloud temperatures for 
+!                      existing cloud layers in current FOV only
+!    t_cwpath ( I)   - Compressed array of tuned cloud liquid water paths for  
+!    TauNeg          - Flag indicating to convert from water path to optical
+!                      depth
+!    TauPos          - Flag indicating to convert from optical depth to water 
+!                      path existing cloud layers in current FOV only
+!
+! !Revision History:
+!  Version 3.3   December 20, 2002 - SCCR #408
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                Initial Version of Code 
+!
+! !END
+!
+!*****************************************************************************
+!
+!
+   USE Profile_Params
+!
+!
+
+   USE nclouds_params
+   
+      REAL,    PARAMETER :: Baserad ( 2) = (/ 10., 60. /)
+      INTEGER, PARAMETER :: TauNeg = -1
+      INTEGER, PARAMETER :: TauPos = 1
+!
+      REAL,    SAVE :: cfs ( 0:nclouds)
+      REAL,    SAVE :: clwpi ( nclouds)
+      REAL,    SAVE :: cpz ( nclouds)
+      REAL,    SAVE :: ct_adj ( nclouds)
+      REAL,    SAVE :: ctemp ( nclouds)
+      REAL,    SAVE :: CompTOA_LW ( 0:nclouds)
+      REAL,    SAVE :: CompTOA_SW ( 0:nclouds)
+      REAL,    SAVE :: CompTOA_WN ( 0:nclouds)
+      REAL,    SAVE :: CompTotLWrad ( 0:nclouds)
+      REAL,    SAVE :: CompWNrad_SatEm ( 0:nclouds)
+      REAL,    SAVE :: t_cfs ( 0:nclouds)
+      REAL,    SAVE :: t_CldTemp ( nclouds)
+      REAL,    SAVE :: t_clwp ( nclouds)
+      REAL,    SAVE :: t_ctemp ( nclouds)
+      REAL,    SAVE :: t_cwpath ( nclouds)
+!
+!
+END MODULE Constrain_Params

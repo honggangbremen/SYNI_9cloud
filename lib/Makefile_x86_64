@@ -1,0 +1,86 @@
+PROG =  CER7.2.1P2_x86_64.a
+
+OBJS =  Constrain_Params.o FL_IO_Params.o \
+	generic_lut.o \
+	grid_1deg.o grid_values.o moa_io_def_Ed5.o \
+	moa_io_nested.o MonMODISAer_ErrParams.o MonMODISAer_Params.o \
+	Profile_Params_SYN.o Regrid_Mod.o SARB_Error_Process.o SARB_General.o \
+	SARB_Init_Utils.o SARB_IO_Utils.o SARB_MOA_Utils.o SARB_OutVar.o \
+	SARB_QC_Params_SYN.o SARB_Var.o SARBAer_Utils.o SARBAer_Var.o \
+	SARBInput_Params.o SARBInput_Utils.o sgr_lut.o SynSARB_IO_Params.o \
+	VMax_Min.o wssacomp.o  \
+	SWDNWGTS.o
+
+OBJS_F =
+
+TKLIBS = -L$(PGSLIB) -lPGSTK
+CLIBS = $(CERESLIB)/data_products_Ed4.a $(CERESLIB)/cereslib_Ed4.a
+MOD_FLAG = -I. -I$(CERESLIB)/mod4
+LIBS = 
+
+INC_FLAG = -I$(PGSINC) -I$(HDFINC) -I$(HDF5INC) -I../include -I./include
+VPATH = .:$(PGSINC):$(HDFINC):$(HDF5INC):../include:./include
+
+HDF_FLAGS = $(HDFEOSDIR) $(HDFEOSLIB) $(HDFDIR) $(HDFLIBS) 
+HDF5_FLAGS = $(HDFEOS5DIR) $(HDFEOS5LIB) $(HDF5DIR) $(HDF5LIBS) 
+DAAC_FLAGS = $(ADD_LFLAGS) $(ADD_LIBS) 
+
+#CC = 
+#CFLAGS = 
+#F90 = 
+F90COMP = -c -O2 -finit-local-zero -fno-second-underscore -fconvert=big-endian
+#F90COMP = 
+#FCOMP = 
+#F90LOAD = 
+
+all: $(PROG)
+
+$(PROG): $(OBJS) $(OBJS_F)
+	ar rs $@ $?
+
+clean:
+	-\rm -f $(PROG) $(OBJS) $(OBJS_F) 
+	-\rm -f *.mod
+
+.SUFFIXES: 
+
+.SUFFIXES: .f90 .mod .f .c .o
+
+.f90.o:
+	$(F90) $(F90COMP) $(MOD_FLAG) $(INC_FLAG) $< 
+
+.f90.mod:
+	$(F90) $(F90COMP) $(MOD_FLAG) $(INC_FLAG) $< 
+
+.f.o:
+	$(F90) $(FCOMP) $(MOD_FLAG) $(INC_FLAG) $< 
+
+.c.o:
+	$(CC) $(CFLAGS) $(MOD_FLAG) $(INC_FLAG) $< 
+
+#Collins_assimilation.o: SARBAer_Var.o SARB_IO_Utils.o
+Constrain_Params.o: Profile_Params_SYN.o
+FL_IO_Params.o: Profile_Params_SYN.o
+grid_values.o: grid_1deg.o
+moa_io_def_Ed5.o: PGS_MOAIO_26500.f
+moa_io_nested.o: Regrid_Mod.o moa_io_def_Ed5.o
+MonMODISAer_Params.o: 
+SARB_Error_Process.o: MonMODISAer_ErrParams.o SARB_Var.o \
+	PGS_DERIVLOAD_25709.f PGS_FLMODEL_25706.f PGS_FLXRANGE_25705.f \
+	PGS_INGEST_25702.f PGS_SFCALBCALC_25707.f PGS_SIGMALOAD_25703.f \
+	PGS_TUNEDRV_25704.f
+SARB_General.o: FL_IO_Params.o VMax_Min.o
+SARB_Init_Utils.o: SARBInput_Params.o
+SARB_IO_Utils.o: PGS_SARBIOUTIL_25750.f
+SARB_MOA_Utils.o: moa_io_nested.o 
+SARB_OutVar.o: Profile_Params_SYN.o
+SARB_QC_Params_SYN.o: Profile_Params_SYN.o
+SARB_Var.o: Profile_Params_SYN.o
+SARBAer_Utils.o:  FL_IO_Params.o MonMODISAer_Params.o \
+	SARBAer_Var.o SARBInput_Params.o SARB_OutVar.o SARB_Var.o wssacomp.o
+SARBAer_Var.o: 
+SARBInput_Params.o: 
+SARBInput_Utils.o: FL_IO_Params.o Profile_Params_SYN.o SARBInput_Params.o \
+	SARB_OutVar.o SARB_Var.o
+sgr_lut.o: generic_lut.o sgr_lut.o
+SWDNWGTS.o: generic_lut.o

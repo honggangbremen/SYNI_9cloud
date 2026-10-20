@@ -1,0 +1,421 @@
+ED4_SYNI_STRUCTURE.f90:!    SYNI4_null  - Set SYNI Ed4 structure to defaults 
+ED4_SYNI_STRUCTURE.f90:!    SYNI4_print - Diagnostic routine for printing SYNI4 values 
+ED4_SYNI_STRUCTURE.f90:      TYPE SYNI4_MISC_TYPE
+ED4_SYNI_STRUCTURE.f90:      END TYPE SYNI4_MISC_TYPE
+ED4_SYNI_STRUCTURE.f90:      TYPE SYNI4_TYPE 
+ED4_SYNI_STRUCTURE.f90:        TYPE (SYNI4_MISC_TYPE) misc
+ED4_SYNI_STRUCTURE.f90:      END TYPE SYNI4_TYPE 
+ED4_SYNI_STRUCTURE.f90:      TYPE ( SYNI4_TYPE ) SYNI4
+ED4_SYNI_STRUCTURE.f90:      TYPE SYNI4_HEAD_TYPE
+ED4_SYNI_STRUCTURE.f90:      END TYPE SYNI4_HEAD_TYPE
+ED4_SYNI_STRUCTURE.f90:      TYPE (SYNI4_HEAD_TYPE) SYNI4_HEAD
+ED4_SYNI_STRUCTURE.f90:      INTEGER SYNI4_unit
+ED4_SYNI_STRUCTURE.f90:      SUBROUTINE SYNI4_null
+ED4_SYNI_STRUCTURE.f90:!   SYNI4_null
+ED4_SYNI_STRUCTURE.f90:       SYNI4_head%spec_sw_bounds = swb
+ED4_SYNI_STRUCTURE.f90:       SYNI4_head%spec_lw_bounds = lwb
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%clr%sw%d = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%clr%sw%u = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%clr%lw%d = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%clr%lw%u = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%tot%sw%d = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%tot%sw%u = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%tot%lw%d = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%tot%lw%u = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%prs%sw%d = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%prs%sw%u = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%prs%lw%d = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%prs%lw%u = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%tna%sw%d = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%tna%sw%u = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%tna%lw%d = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%tna%lw%u = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%wnolr%tot = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%wnolr%clr = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%clr%sfc%direct  = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%clr%sfc%diffuse = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%tot%sfc%direct  = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%tot%sfc%diffuse = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%prs%sfc%direct  = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%prs%sfc%diffuse = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%tna%sfc%direct  = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%tna%sfc%diffuse = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%as%toa_uva 	     = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%as%toa_uvb	     = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%as%toa_par	     = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%as%sfc_tot_uva	     = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%as%sfc_tot_uvb	     = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%as%sfc_tot_uvi	     = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%as%sfc_tot_par_dir   = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%as%sfc_tot_par_dif   = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%as%sfc_clr_par_dir   = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%as%sfc_clr_par_dif   = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%as%sfc_prs_par_dir   = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%as%sfc_prs_par_dif   = INT2_DFLT 
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%ent%toa_lwe_out = REAL4_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%ent%atm_lwe_out = REAL4_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%ent%sfc_lwe_out = REAL4_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%ent%sfc_lwe_up  = REAL4_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%ent%sfc_lwe_dn  = REAL4_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%ent%atm_lwe_gen = REAL4_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%ent%sfc_lwe_gen = REAL4_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%ent%toa_swe_inc = REAL4_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%ent%atm_swe_inc = REAL4_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%ent%sfc_swe_inc = REAL4_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%ent%atm_swe_gen = REAL4_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%ent%sfc_swe_gen = REAL4_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%spec%tot%toa%sw%d(1:nswb) = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%spec%tot%toa%sw%u(1:nswb) = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%spec%tot%toa%lw%u(1:nlwb) = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%spec%tot%sfc%sw%d(1:nswb) = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%spec%tot%sfc%sw%u(1:nswb) = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%spec%tot%sfc%lw%d(1:nlwb) = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%spec%tot%sfc%lw%u(1:nlwb) = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%misc%hr_month 	    =  INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%misc%regnum            =  INT4_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%misc%toaswinsolation   = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%misc%sfcalbedo_source  = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%misc%sfc_pres 	    = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%misc%sfc_hgt   	    = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%misc%sfc_lev   	    = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%misc%error 	    = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%misc%ut_aot_840   	    = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%misc%o3_du 	    = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%ut%clr%sw%d = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%ut%clr%sw%u = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%ut%clr%lw%d = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%ut%clr%lw%u = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%ut%tot%sw%d = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%ut%tot%sw%u = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%ut%tot%lw%d = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%ut%tot%lw%u = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%ut%prs%sw%d = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%ut%prs%sw%u = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%ut%prs%lw%d = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%ut%prs%lw%u = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%ut%tna%sw%d = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%ut%tna%sw%u = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%ut%tna%lw%d = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%ut%tna%lw%u = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%ut%wnolr%tot = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%ut%wnolr%clr = INT2_DFLT 
+ED4_SYNI_STRUCTURE.f90:       SYNI4%ut%var%pw           = REAL4_DFLT   
+ED4_SYNI_STRUCTURE.f90:       SYNI4%ut%var%uth	         = REAL4_DFLT  
+ED4_SYNI_STRUCTURE.f90:       SYNI4%ut%var%sfcalb       = REAL4_DFLT  
+ED4_SYNI_STRUCTURE.f90:       SYNI4%ut%var%aot	         = REAL4_DFLT 
+ED4_SYNI_STRUCTURE.f90:       SYNI4%ut%var%skint	 = REAL4_DFLT   
+ED4_SYNI_STRUCTURE.f90:       SYNI4%ut%var%cldfrac(1:4) = REAL4_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%ut%var%cldtemp(1:4) = REAL4_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%ut%var%cldtau(1:4)  = REAL4_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%ut%var%Iwp(1:4)     = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%ut%var%Lwp(1:4)     = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%var%pw           = REAL4_DFLT   
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%var%uth	         = REAL4_DFLT  
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%var%sfcalb       = REAL4_DFLT  
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%var%aot	         = REAL4_DFLT 
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%var%skint	 = REAL4_DFLT   
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%var%cldfrac(1:4) = REAL4_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%var%cldtemp(1:4) = REAL4_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%var%cldtau(1:4)  = REAL4_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%var%Iwp(1:4)     = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:       SYNI4%tu%var%Lwp(1:4)     = INT2_DFLT
+ED4_SYNI_STRUCTURE.f90:      END  SUBROUTINE SYNI4_null
+ED4_SYNI_STRUCTURE.f90:      SUBROUTINE SYNI4_print
+ED4_SYNI_STRUCTURE.f90:!   SYNI4_print
+ED4_SYNI_STRUCTURE.f90:!    Purpose - Diagnostic routine for printing SYNI4 values
+ED4_SYNI_STRUCTURE.f90:      Print*,' SYNI4 Header:'
+ED4_SYNI_STRUCTURE.f90:      print 100 ,'SYNI4_head%spec_sw_bounds',(SYNI4_head%spec_sw_bounds(il),il=1,nswb+1)
+ED4_SYNI_STRUCTURE.f90:      print 100 ,'SYNI4_head%spec_lw_bounds',(SYNI4_head%spec_lw_bounds(il),il=1,nlwb+1)
+ED4_SYNI_STRUCTURE.f90:      print 101, 'SYNI4%ut%clr%sw%d',-1.,(ufp(SYNI4%ut%clr%sw%d(il)) ,il=2,nl2)
+ED4_SYNI_STRUCTURE.f90:      print 101, 'SYNI4%ut%clr%sw%u',(ufp(SYNI4%ut%clr%sw%u(il)) ,il=1,nl2)
+ED4_SYNI_STRUCTURE.f90:      print 101, 'SYNI4%ut%clr%lw%d',-1.,(ufp(SYNI4%ut%clr%lw%d(il)) ,il=2,nl2)
+ED4_SYNI_STRUCTURE.f90:      print 101, 'SYNI4%ut%clr%lw%u',(ufp(SYNI4%ut%clr%lw%u(il)) ,il=1,nl2)
+ED4_SYNI_STRUCTURE.f90:!      print 101, 'SYNI4%ut%clr%wn%d',-1.,(ufp(SYNI4%ut%clr%wn%d(il)) ,il=2,nl2)
+ED4_SYNI_STRUCTURE.f90:!      print 101, 'SYNI4%ut%clr%wn%u',(ufp(SYNI4%ut%clr%wn%u(il)) ,il=1,nl2)
+ED4_SYNI_STRUCTURE.f90:      print 101, 'SYNI4%ut%tot%sw%d',-1.,(ufp(SYNI4%ut%tot%sw%d(il)) ,il=2,nl2)
+ED4_SYNI_STRUCTURE.f90:      print 101, 'SYNI4%ut%tot%sw%u',(ufp(SYNI4%ut%tot%sw%u(il)) ,il=1,nl2)
+ED4_SYNI_STRUCTURE.f90:      print 101, 'SYNI4%ut%tot%lw%d',-1.,(ufp(SYNI4%ut%tot%lw%d(il)) ,il=2,nl2)
+ED4_SYNI_STRUCTURE.f90:      print 101, 'SYNI4%ut%tot%lw%u',(ufp(SYNI4%ut%tot%lw%u(il)) ,il=1,nl2)
+ED4_SYNI_STRUCTURE.f90:!      print 101, 'SYNI4%ut%tot%wn%d',-1.,(ufp(SYNI4%ut%tot%wn%d(il)) ,il=2,nl2)
+ED4_SYNI_STRUCTURE.f90:!      print 101, 'SYNI4%ut%tot%wn%u',(ufp(SYNI4%ut%tot%wn%u(il)) ,il=1,nl2)
+ED4_SYNI_STRUCTURE.f90:      print 101, 'SYNI4%ut%prs%sw%d',-1.,(ufp(SYNI4%ut%prs%sw%d(il)) ,il=2,nl2)
+ED4_SYNI_STRUCTURE.f90:      print 101, 'SYNI4%ut%prs%sw%u',(ufp(SYNI4%ut%prs%sw%u(il)) ,il=1,nl2)
+ED4_SYNI_STRUCTURE.f90:      print 101, 'SYNI4%ut%prs%lw%d',-1.,(ufp(SYNI4%ut%prs%lw%d(il)) ,il=2,nl2)
+ED4_SYNI_STRUCTURE.f90:      print 101, 'SYNI4%ut%prs%lw%u',(ufp(SYNI4%ut%prs%lw%u(il)) ,il=1,nl2)
+ED4_SYNI_STRUCTURE.f90:!      print 101, 'SYNI4%ut%prs%wn%d',-1.,(ufp(SYNI4%ut%prs%wn%d(il)) ,il=2,nl2)
+ED4_SYNI_STRUCTURE.f90:!      print 101, 'SYNI4%ut%prs%wn%u',(ufp(SYNI4%ut%prs%wn%u(il)) ,il=1,nl2)
+ED4_SYNI_STRUCTURE.f90:      print 101, 'SYNI4%ut%tna%sw%d',-1.,(ufp(SYNI4%ut%tna%sw%d(il)) ,il=2,nl2)
+ED4_SYNI_STRUCTURE.f90:      print 101, 'SYNI4%ut%tna%sw%u',(ufp(SYNI4%ut%tna%sw%u(il)) ,il=1,nl2)
+ED4_SYNI_STRUCTURE.f90:      print 101, 'SYNI4%ut%tna%lw%d',-1.,(ufp(SYNI4%ut%tna%lw%d(il)) ,il=2,nl2)
+ED4_SYNI_STRUCTURE.f90:      print 101, 'SYNI4%ut%tna%lw%u',(ufp(SYNI4%ut%tna%lw%u(il)) ,il=1,nl2)
+ED4_SYNI_STRUCTURE.f90:      print 101, 'SYNI4%ut%wnolr%tot', ufp(SYNI4%ut%wnolr%tot )
+ED4_SYNI_STRUCTURE.f90:      print 101, 'SYNI4%ut%wnolr%clr', ufp(SYNI4%ut%wnolr%clr )
+ED4_SYNI_STRUCTURE.f90:      print 101,'SYNI4%ut%var%pw',SYNI4%ut%var%pw         
+ED4_SYNI_STRUCTURE.f90:      print 101,'SYNI4%ut%var%uth ',SYNI4%ut%var%uth        
+ED4_SYNI_STRUCTURE.f90:      print 101,'SYNI4%ut%var%sfcalb',SYNI4%ut%var%sfcalb     
+ED4_SYNI_STRUCTURE.f90:      print 101,'SYNI4%ut%var%aot',SYNI4%ut%var%aot        
+ED4_SYNI_STRUCTURE.f90:      print 101,'SYNI4%ut%var%skint',SYNI4%ut%var%skint      
+ED4_SYNI_STRUCTURE.f90:      print 101,'SYNI4%ut%var%cldfrac(1:4)',SYNI4%ut%var%cldfrac(1:4)
+ED4_SYNI_STRUCTURE.f90:      print 101,'SYNI4%ut%var%cldtemp(1:4)',SYNI4%ut%var%cldtemp(1:4)
+ED4_SYNI_STRUCTURE.f90:      print 101,'SYNI4%ut%var%cldtau(1:4)' ,SYNI4%ut%var%cldtau(1:4) 
+ED4_SYNI_STRUCTURE.f90:      print 101,'SYNI4%ut%var$Iwp(1:4)',(ufp(SYNI4%ut%var%Iwp(il)) ,il=1,4)
+ED4_SYNI_STRUCTURE.f90:      print 101,'SYNI4%ut%var$Lwp(1:4)',(ufp(SYNI4%ut%var%Lwp(il)) ,il=1,4)
+ED4_SYNI_STRUCTURE.f90:      print 101, 'SYNI4%tu%clr%sw%d',-1.,(ufp(SYNI4%tu%clr%sw%d(il)) ,il=2,nl)
+ED4_SYNI_STRUCTURE.f90:      print 101, 'SYNI4%tu%clr%sw%u',(ufp(SYNI4%tu%clr%sw%u(il)) ,il=1,nl)
+ED4_SYNI_STRUCTURE.f90:      print 101, 'SYNI4%tu%clr%lw%d',-1.,(ufp(SYNI4%tu%clr%lw%d(il)) ,il=2,nl)
+ED4_SYNI_STRUCTURE.f90:      print 101, 'SYNI4%tu%clr%lw%u',(ufp(SYNI4%tu%clr%lw%u(il)) ,il=1,nl)
+ED4_SYNI_STRUCTURE.f90:!      print 101, 'SYNI4%tu%clr%wn%d',(ufp(SYNI4%tu%clr%wn%d(il)) ,il=1,nl)
+ED4_SYNI_STRUCTURE.f90:!      print 101, 'SYNI4%tu%clr%wn%u',(ufp(SYNI4%tu%clr%wn%u(il)) ,il=1,nl)
+ED4_SYNI_STRUCTURE.f90:      print 101, 'SYNI4%tu%tot%sw%d',-1.,(ufp(SYNI4%tu%tot%sw%d(il)) ,il=2,nl)
+ED4_SYNI_STRUCTURE.f90:      print 101, 'SYNI4%tu%tot%sw%u',(ufp(SYNI4%tu%tot%sw%u(il)) ,il=1,nl)
+ED4_SYNI_STRUCTURE.f90:      print 101, 'SYNI4%tu%tot%lw%d',-1.,(ufp(SYNI4%tu%tot%lw%d(il)) ,il=2,nl)
+ED4_SYNI_STRUCTURE.f90:      print 101, 'SYNI4%tu%tot%lw%u',(ufp(SYNI4%tu%tot%lw%u(il)) ,il=1,nl)
+ED4_SYNI_STRUCTURE.f90:!      print 101, 'SYNI4%tu%tot%wn%d',(ufp(SYNI4%tu%tot%wn%d(il)) ,il=1,nl)
+ED4_SYNI_STRUCTURE.f90:!      print 101, 'SYNI4%tu%tot%wn%u',(ufp(SYNI4%tu%tot%wn%u(il)) ,il=1,nl)
+ED4_SYNI_STRUCTURE.f90:      print 101, 'SYNI4%tu%prs%sw%d',-1.,(ufp(SYNI4%tu%prs%sw%d(il)) ,il=2,nl)
+ED4_SYNI_STRUCTURE.f90:      print 101, 'SYNI4%tu%prs%sw%u',(ufp(SYNI4%tu%prs%sw%u(il)) ,il=1,nl)
+ED4_SYNI_STRUCTURE.f90:      print 101, 'SYNI4%tu%prs%lw%d',-1.,(ufp(SYNI4%tu%prs%lw%d(il)) ,il=2,nl)
+ED4_SYNI_STRUCTURE.f90:      print 101, 'SYNI4%tu%prs%lw%u',(ufp(SYNI4%tu%prs%lw%u(il)) ,il=1,nl)
+ED4_SYNI_STRUCTURE.f90:!      print 101, 'SYNI4%tu%prs%wn%d',(ufp(SYNI4%tu%prs%wn%d(il)) ,il=1,nl)
+ED4_SYNI_STRUCTURE.f90:!      print 101, 'SYNI4%tu%prs%wn%u',(ufp(SYNI4%tu%prs%wn%u(il)) ,il=1,nl)
+ED4_SYNI_STRUCTURE.f90:      print 101, 'SYNI4%tu%tna%sw%d',-1.,(ufp(SYNI4%tu%tna%sw%d(il)) ,il=2,nl)
+ED4_SYNI_STRUCTURE.f90:      print 101, 'SYNI4%tu%tna%sw%u',(ufp(SYNI4%tu%tna%sw%u(il)) ,il=1,nl)
+ED4_SYNI_STRUCTURE.f90:      print 101, 'SYNI4%tu%tna%lw%d',-1.,(ufp(SYNI4%tu%tna%lw%d(il)) ,il=2,nl)
+ED4_SYNI_STRUCTURE.f90:      print 101, 'SYNI4%tu%tna%lw%u',(ufp(SYNI4%tu%tna%lw%u(il)) ,il=1,nl)
+ED4_SYNI_STRUCTURE.f90:      print 101, 'SYNI4%tu%wnolr%tot', ufp(SYNI4%tu%wnolr%tot )
+ED4_SYNI_STRUCTURE.f90:      print 101, 'SYNI4%tu%wnolr%clr', ufp(SYNI4%tu%wnolr%clr )
+ED4_SYNI_STRUCTURE.f90:!      print 101, 'SYNI4%tu%tna%wn%d',(ufp(SYNI4%tu%tna%wn%d(il)) ,il=1,nl)
+ED4_SYNI_STRUCTURE.f90:!      print 101, 'SYNI4%tu%tna%wn%u',(ufp(SYNI4%tu%tna%wn%u(il)) ,il=1,nl)
+ED4_SYNI_STRUCTURE.f90:      print 101,'SYNI4%tu%var%pw',SYNI4%tu%var%pw         
+ED4_SYNI_STRUCTURE.f90:      print 101,'SYNI4%tu%var%uth ',SYNI4%tu%var%uth        
+ED4_SYNI_STRUCTURE.f90:      print 101,'SYNI4%tu%var%sfcalb',SYNI4%tu%var%sfcalb     
+ED4_SYNI_STRUCTURE.f90:      print 101,'SYNI4%tu%var%aot',SYNI4%tu%var%aot        
+ED4_SYNI_STRUCTURE.f90:      print 101,'SYNI4%tu%var%skint',SYNI4%tu%var%skint      
+ED4_SYNI_STRUCTURE.f90:      print 101,'SYNI4%tu%var%cldfrac(1:4)',SYNI4%tu%var%cldfrac(1:4)
+ED4_SYNI_STRUCTURE.f90:      print 101,'SYNI4%tu%var%cldtemp(1:4)',SYNI4%tu%var%cldtemp(1:4)
+ED4_SYNI_STRUCTURE.f90:      print 101,'SYNI4%tu%var%cldtau(1:4)' ,SYNI4%tu%var%cldtau(1:4) 
+ED4_SYNI_STRUCTURE.f90:      print 101,'SYNI4%tu%var$Iwp(1:4)',(ufp(SYNI4%tu%var%Iwp(il)) ,il=1,4)
+ED4_SYNI_STRUCTURE.f90:      print 101,'SYNI4%tu%var$Lwp(1:4)',(ufp(SYNI4%tu%var%Lwp(il)) ,il=1,4)
+ED4_SYNI_STRUCTURE.f90:      print 101, 'SYNI4%tu%clr%sfc%direct'  	, ufp(SYNI4%tu%clr%sfc%direct)
+ED4_SYNI_STRUCTURE.f90:      print 101, 'SYNI4%tu%clr%sfc%diffuse'  , ufp(SYNI4%tu%clr%sfc%diffuse) 
+ED4_SYNI_STRUCTURE.f90:      print 101, 'SYNI4%tu%tot%sfc%direct'   , ufp(SYNI4%tu%tot%sfc%direct)
+ED4_SYNI_STRUCTURE.f90:      print 101, 'SYNI4%tu%tot%sfc%diffuse'  , ufp(SYNI4%tu%tot%sfc%diffuse) 
+ED4_SYNI_STRUCTURE.f90:      print 101, 'SYNI4%tu%prs%sfc%direct'   , ufp(SYNI4%tu%prs%sfc%direct)  
+ED4_SYNI_STRUCTURE.f90:      print 101, 'SYNI4%tu%prs%sfc%diffuse'  , ufp(SYNI4%tu%prs%sfc%diffuse) 
+ED4_SYNI_STRUCTURE.f90:      print 101, 'SYNI4%tu%tna%sfc%direct'   , ufp(SYNI4%tu%tna%sfc%direct)  
+ED4_SYNI_STRUCTURE.f90:      print 101, 'SYNI4%tu%tna%sfc%diffuse'  , ufp(SYNI4%tu%tna%sfc%diffuse) 
+ED4_SYNI_STRUCTURE.f90:      print 101, 'SYNI4%tu%as%toa_uva         ', ufp(SYNI4%tu%as%toa_uva)	     
+ED4_SYNI_STRUCTURE.f90:      print 101, 'SYNI4%tu%as%toa_uvb         ', ufp(SYNI4%tu%as%toa_uvb)	     
+ED4_SYNI_STRUCTURE.f90:      print 101, 'SYNI4%tu%as%toa_par         ', ufp(SYNI4%tu%as%toa_par)	     
+ED4_SYNI_STRUCTURE.f90:      print 101, 'SYNI4%tu%as%sfc_tot_uva     ', ufp(SYNI4%tu%as%sfc_tot_uva)    
+ED4_SYNI_STRUCTURE.f90:      print 101, 'SYNI4%tu%as%sfc_tot_uvb     ', ufp(SYNI4%tu%as%sfc_tot_uvb)    
+ED4_SYNI_STRUCTURE.f90:      print 101, 'SYNI4%tu%as%sfc_tot_uvi     ', ufp(SYNI4%tu%as%sfc_tot_uvi)    
+ED4_SYNI_STRUCTURE.f90:      print 101, 'SYNI4%tu%as%sfc_tot_par_dir ', ufp(SYNI4%tu%as%sfc_tot_par_dir)
+ED4_SYNI_STRUCTURE.f90:      print 101, 'SYNI4%tu%as%sfc_tot_par_dif ', ufp(SYNI4%tu%as%sfc_tot_par_dif)
+ED4_SYNI_STRUCTURE.f90:      print 101, 'SYNI4%tu%as%sfc_clr_par_dir ', ufp(SYNI4%tu%as%sfc_clr_par_dir)    
+ED4_SYNI_STRUCTURE.f90:      print 101, 'SYNI4%tu%as%sfc_clr_par_dif ', ufp(SYNI4%tu%as%sfc_clr_par_dif) 
+ED4_SYNI_STRUCTURE.f90:      print 101, 'SYNI4%tu%as%sfc_prs_par_dir ', ufp(SYNI4%tu%as%sfc_prs_par_dir)    
+ED4_SYNI_STRUCTURE.f90:      print 101, 'SYNI4%tu%as%sfc_prs_par_dif ', ufp(SYNI4%tu%as%sfc_prs_par_dif) 
+ED4_SYNI_STRUCTURE.f90:      print 101, 'SYNI4%tu%spec%tot%toa%sw%d',(ufp(SYNI4%tu%spec%tot%toa%sw%d(il)) ,il=1,nswb)
+ED4_SYNI_STRUCTURE.f90:      print 101, 'SYNI4%tu%spec%tot%toa%sw%u',(ufp(SYNI4%tu%spec%tot%toa%sw%u(il)) ,il=1,nswb) 
+ED4_SYNI_STRUCTURE.f90:!!      print 101, 'SYNI4%tu%spec%tot%toa%lw%d',(ufp(SYNI4%tu%spec%tot%toa%lw%d(il)) ,il=1,nlwb)
+ED4_SYNI_STRUCTURE.f90:      print 101, 'SYNI4%tu%spec%tot%toa%lw%u',(ufp(SYNI4%tu%spec%tot%toa%lw%u(il)) ,il=1,nlwb)
+ED4_SYNI_STRUCTURE.f90:      print 101, 'SYNI4%tu%spec%tot%sfc%sw%d',(ufp(SYNI4%tu%spec%tot%sfc%sw%d(il)) ,il=1,nswb)
+ED4_SYNI_STRUCTURE.f90:      print 101, 'SYNI4%tu%spec%tot%sfc%sw%u',(ufp(SYNI4%tu%spec%tot%sfc%sw%u(il)) ,il=1,nswb)
+ED4_SYNI_STRUCTURE.f90:      print 101, 'SYNI4%tu%spec%tot%sfc%lw%d',(ufp(SYNI4%tu%spec%tot%sfc%lw%d(il)) ,il=1,nlwb)
+ED4_SYNI_STRUCTURE.f90:      print 101, 'SYNI4%tu%spec%tot%sfc%lw%u',(ufp(SYNI4%tu%spec%tot%sfc%lw%u(il)) ,il=1,nlwb)
+ED4_SYNI_STRUCTURE.f90:      print 103, ' SYNI4%tu%ent%toa_lwe_out', SYNI4%tu%ent%toa_lwe_out
+ED4_SYNI_STRUCTURE.f90:      print 103, ' SYNI4%tu%ent%atm_lwe_out', SYNI4%tu%ent%atm_lwe_out
+ED4_SYNI_STRUCTURE.f90:      print 103, ' SYNI4%tu%ent%sfc_lwe_out', SYNI4%tu%ent%sfc_lwe_out
+ED4_SYNI_STRUCTURE.f90:      print 103, ' SYNI4%tu%ent%sfc_lwe_up',  SYNI4%tu%ent%sfc_lwe_up
+ED4_SYNI_STRUCTURE.f90:      print 103, ' SYNI4%tu%ent%sfc_lwe_dn',  SYNI4%tu%ent%sfc_lwe_dn
+ED4_SYNI_STRUCTURE.f90:      print 103, ' SYNI4%tu%ent%atm_lwe_gen', SYNI4%tu%ent%atm_lwe_gen
+ED4_SYNI_STRUCTURE.f90:      print 103, ' SYNI4%tu%ent%sfc_lwe_gen', SYNI4%tu%ent%sfc_lwe_gen
+ED4_SYNI_STRUCTURE.f90:      print 103, ' SYNI4%tu%ent%toa_swe_inc', SYNI4%tu%ent%toa_swe_inc
+ED4_SYNI_STRUCTURE.f90:      print 103, ' SYNI4%tu%ent%atm_swe_inc', SYNI4%tu%ent%atm_swe_inc
+ED4_SYNI_STRUCTURE.f90:      print 103, ' SYNI4%tu%ent%sfc_swe_inc', SYNI4%tu%ent%sfc_swe_inc
+ED4_SYNI_STRUCTURE.f90:      print 103, ' SYNI4%tu%ent%atm_swe_gen', SYNI4%tu%ent%atm_swe_gen
+ED4_SYNI_STRUCTURE.f90:      print 103, ' SYNI4%tu%ent%sfc_swe_gen', SYNI4%tu%ent%sfc_swe_gen
+ED4_SYNI_STRUCTURE.f90:      print*,'SYNI4 MISC'
+ED4_SYNI_STRUCTURE.f90:      print 100,'SYNI4%misc%hr_month' ,SYNI4%misc%hr_month
+ED4_SYNI_STRUCTURE.f90:      print 100,'SYNI4%misc%regnum' ,SYNI4%misc%regnum
+ED4_SYNI_STRUCTURE.f90:      print 101 ,'SYNI4%misc%toaswinsolation' , ufp(SYNI4%misc%toaswinsolation) 
+ED4_SYNI_STRUCTURE.f90:      print 100 ,'SYNI4%misc%sfcalbedo_source',SYNI4%misc%sfcalbedo_source
+ED4_SYNI_STRUCTURE.f90:      print 100,'SYNI4%misc%sfc_lev', SYNI4%misc%sfc_lev
+ED4_SYNI_STRUCTURE.f90:      print 100,'SYNI4%misc%sfc_pres', SYNI4%misc%sfc_pres
+ED4_SYNI_STRUCTURE.f90:      print 100,'SYNI4%misc%sfc_hgt', SYNI4%misc%sfc_hgt
+ED4_SYNI_STRUCTURE.f90:      print 100 ,'SYNI4%misc%error (untuned) '  ,SYNI4%misc%error(1)
+ED4_SYNI_STRUCTURE.f90:      print 100 ,'SYNI4%misc%error (tuned)   '  ,SYNI4%misc%error(2)
+ED4_SYNI_STRUCTURE.f90:      print 101 ,'SYNI4%misc%ut_aot_840' , SYNI4%misc%ut_aot_840 *0.0001  !!!!! different packing not ufp
+ED4_SYNI_STRUCTURE.f90:      print 101 ,'SYNI4%misc%o3_du' , ufp(SYNI4%misc%o3_du)
+ED4_SYNI_STRUCTURE.f90:      END SUBROUTINE SYNI4_print
+FL_Pass_Interface.f90:   USE ed4_syni_structure , ONLY : syni4 ,pfp ,syni4_print,SYNI4_NULL,nswb,nlwb
+FL_Pass_Interface.f90:   IF (IPass == 1) CALL SYNI4_NULL !Initalize on Untuned pass
+FL_Pass_Interface.f90:   SYNI4%misc%hr_month         = HrBox
+FL_Pass_Interface.f90:   SYNI4%misc%regnum           = RegionNum_CERES 
+FL_Pass_Interface.f90:   SYNI4%misc%error(ipass)     = fi%ierror
+FL_Pass_Interface.f90:   SYNI4%misc%sfc_lev          = skyp%sfclev
+FL_Pass_Interface.f90:   SYNI4%misc%sfc_pres         = fi%pp(fi%nv+1)
+FL_Pass_Interface.f90:   SYNI4%misc%sfc_hgt          = fi%zz(fi%nv+1)
+FL_Pass_Interface.f90:   IF ( fi%ierror == 0 ) SYNI4%misc%toaswinsolation  = pfp(skyp%clr%sw%d(1))
+FL_Pass_Interface.f90:   SYNI4%misc%sfcalbedo_source = sg%bba_source_flag
+FL_Pass_Interface.f90:!!      CALL output_IWP_LWP(SYNI4%ut%var%Iwp(1:4) ,SYNI4%ut%var%Lwp(1:4),isp) 
+FL_Pass_Interface.f90:      SYNI4%ut%clr%sw%d(2) = pfp(skyp%clr%sw%d(kb))
+FL_Pass_Interface.f90:      SYNI4%ut%tot%sw%d(2) = pfp(skyp%tot%sw%d(kb))
+FL_Pass_Interface.f90:      SYNI4%ut%prs%sw%d(2) = pfp(skyp%prs%sw%d(kb))
+FL_Pass_Interface.f90:      SYNI4%ut%tna%sw%d(2) = pfp(skyp%tna%sw%d(kb))
+FL_Pass_Interface.f90:      SYNI4%ut%clr%sw%u(1) = pfp(skyp%clr%sw%u(1) )
+FL_Pass_Interface.f90:      SYNI4%ut%tot%sw%u(1) = pfp(skyp%tot%sw%u(1) )
+FL_Pass_Interface.f90:      SYNI4%ut%prs%sw%u(1) = pfp(skyp%prs%sw%u(1) )
+FL_Pass_Interface.f90:      SYNI4%ut%tna%sw%u(1) = pfp(skyp%tna%sw%u(1) )
+FL_Pass_Interface.f90:      SYNI4%ut%clr%sw%u(2) = pfp(skyp%clr%sw%u(kb))
+FL_Pass_Interface.f90:      SYNI4%ut%tot%sw%u(2) = pfp(skyp%tot%sw%u(kb))
+FL_Pass_Interface.f90:      SYNI4%ut%prs%sw%u(2) = pfp(skyp%prs%sw%u(kb))
+FL_Pass_Interface.f90:      SYNI4%ut%tna%sw%u(2) = pfp(skyp%tna%sw%u(kb))
+FL_Pass_Interface.f90:      SYNI4%ut%clr%lw%d(2) = pfp(skyp%clr%lw%d(kb))
+FL_Pass_Interface.f90:      SYNI4%ut%tot%lw%d(2) = pfp(skyp%tot%lw%d(kb))
+FL_Pass_Interface.f90:      SYNI4%ut%prs%lw%d(2) = pfp(skyp%prs%lw%d(kb))
+FL_Pass_Interface.f90:      SYNI4%ut%tna%lw%d(2) = pfp(skyp%tna%lw%d(kb))
+FL_Pass_Interface.f90:      SYNI4%ut%clr%lw%u(1) = pfp(skyp%clr%lw%u(1) )
+FL_Pass_Interface.f90:      SYNI4%ut%tot%lw%u(1) = pfp(skyp%tot%lw%u(1) )
+FL_Pass_Interface.f90:      SYNI4%ut%prs%lw%u(1) = pfp(skyp%prs%lw%u(1) )
+FL_Pass_Interface.f90:      SYNI4%ut%tna%lw%u(1) = pfp(skyp%tna%lw%u(1) )
+FL_Pass_Interface.f90:      SYNI4%ut%clr%lw%u(2) = pfp(skyp%clr%lw%u(kb))
+FL_Pass_Interface.f90:      SYNI4%ut%tot%lw%u(2) = pfp(skyp%tot%lw%u(kb))
+FL_Pass_Interface.f90:      SYNI4%ut%prs%lw%u(2) = pfp(skyp%prs%lw%u(kb))
+FL_Pass_Interface.f90:      SYNI4%ut%tna%lw%u(2) = pfp(skyp%tna%lw%u(kb))
+FL_Pass_Interface.f90:      SYNI4%ut%wnolr%tot = pfp( ftoa(2)%trwn_f )
+FL_Pass_Interface.f90:      SYNI4%ut%wnolr%clr = pfp( ftoa(1)%trwn_f )
+FL_Pass_Interface.f90:     SYNI4%ut%var%pw  =  wv(ipass)         
+FL_Pass_Interface.f90:     SYNI4%ut%var%uth =  uth(ipass)
+FL_Pass_Interface.f90:       SYNI4%ut%var%sfcalb = skyp%tot%sw%u(skyp%sfclev)/skyp%tot%sw%d(skyp%sfclev)
+FL_Pass_Interface.f90:     SYNI4%ut%var%aot      = SUM(fi%a_taus(1,1:fi%nac)) 
+FL_Pass_Interface.f90:     SYNI4%ut%var%skint    = fi%pts
+FL_Pass_Interface.f90:     SYNI4%ut%var%cldfrac(isp(1:4)) = fi%fc(1:4)%cldfrac
+FL_Pass_Interface.f90:     SYNI4%ut%var%cldtemp(isp(1:4)) = fi%pt(fi%fc(1:4)%icld_top(1))
+FL_Pass_Interface.f90:     SYNI4%ut%var%cldtau(isp(1:4))  =  fi%fc(1:4)%tau_vis(1)+&
+FL_Pass_Interface.f90:     WHERE ( SYNI4%ut%var%cldfrac <= 0 ) 
+FL_Pass_Interface.f90:       SYNI4%ut%var%cldtemp(1:4) = -9999.
+FL_Pass_Interface.f90:       SYNI4%ut%var%cldtau(1:4) = -9999.
+FL_Pass_Interface.f90:     SYNI4%misc%ut_aot_840 = NINT(aot_by_band(11) *10000) 
+FL_Pass_Interface.f90:     IF ( aot_by_band(11) > 3.0 ) SYNI4%misc%ut_aot_840 = 30000.
+FL_Pass_Interface.f90:     SYNI4%misc%o3_du = pfp(sg%o3)
+FL_Pass_Interface.f90:      SYNI4%tu%clr%sw%d(k) = pfp(skyp%clr%sw%d(k))
+FL_Pass_Interface.f90:      SYNI4%tu%tot%sw%d(k) = pfp(skyp%tot%sw%d(k))
+FL_Pass_Interface.f90:      SYNI4%tu%prs%sw%d(k) = pfp(skyp%prs%sw%d(k))
+FL_Pass_Interface.f90:      SYNI4%tu%tna%sw%d(k) = pfp(skyp%tna%sw%d(k))
+FL_Pass_Interface.f90:      SYNI4%tu%clr%lw%d(k) = pfp(skyp%clr%lw%d(k))
+FL_Pass_Interface.f90:      SYNI4%tu%tot%lw%d(k) = pfp(skyp%tot%lw%d(k))
+FL_Pass_Interface.f90:      SYNI4%tu%prs%lw%d(k) = pfp(skyp%prs%lw%d(k))
+FL_Pass_Interface.f90:      SYNI4%tu%tna%lw%d(k) = pfp(skyp%tna%lw%d(k))
+FL_Pass_Interface.f90:      SYNI4%tu%clr%sw%u(k) = pfp(skyp%clr%sw%u(k) )
+FL_Pass_Interface.f90:      SYNI4%tu%tot%sw%u(k) = pfp(skyp%tot%sw%u(k) )
+FL_Pass_Interface.f90:      SYNI4%tu%prs%sw%u(k) = pfp(skyp%prs%sw%u(k) )
+FL_Pass_Interface.f90:      SYNI4%tu%tna%sw%u(k) = pfp(skyp%tna%sw%u(k) )
+FL_Pass_Interface.f90:      SYNI4%tu%clr%lw%u(k) = pfp(skyp%clr%lw%u(k))
+FL_Pass_Interface.f90:      SYNI4%tu%tot%lw%u(k) = pfp(skyp%tot%lw%u(k))
+FL_Pass_Interface.f90:      SYNI4%tu%prs%lw%u(k) = pfp(skyp%prs%lw%u(k))
+FL_Pass_Interface.f90:      SYNI4%tu%tna%lw%u(k) = pfp(skyp%tna%lw%u(k))
+FL_Pass_Interface.f90:     SYNI4%tu%wnolr%tot = pfp( ftoa(2)%trwn_f )
+FL_Pass_Interface.f90:     SYNI4%tu%wnolr%clr = pfp( ftoa(1)%trwn_f )
+FL_Pass_Interface.f90:     SYNI4%tu%clr%sfc%direct  = pfp( fsfc(1)%swdir )
+FL_Pass_Interface.f90:     SYNI4%tu%clr%sfc%diffuse = pfp( fsfc(1)%swdif )
+FL_Pass_Interface.f90:     SYNI4%tu%tot%sfc%direct  = pfp( fsfc(2)%swdir )
+FL_Pass_Interface.f90:     SYNI4%tu%tot%sfc%diffuse = pfp( fsfc(2)%swdif )
+FL_Pass_Interface.f90:     SYNI4%tu%prs%sfc%direct  = pfp( fsfc(3)%swdir )
+FL_Pass_Interface.f90:     SYNI4%tu%prs%sfc%diffuse = pfp( fsfc(3)%swdif )
+FL_Pass_Interface.f90:     SYNI4%tu%tna%sfc%direct  = pfp( fsfc(4)%swdir )
+FL_Pass_Interface.f90:     SYNI4%tu%tna%sfc%diffuse = pfp( fsfc(4)%swdif )
+FL_Pass_Interface.f90:     SYNI4%tu%as%toa_uva     = pfp(fouv(1)%toa_uva*10.) !! Wm-2  to DeciWm-2
+FL_Pass_Interface.f90:     SYNI4%tu%as%toa_uvb     = pfp(fouv(1)%toa_uvb*10.) !! Wm-2  to DeciWm-2
+FL_Pass_Interface.f90:     SYNI4%tu%as%toa_par     = pfp(fouv(1)%toa_par)
+FL_Pass_Interface.f90:     SYNI4%tu%as%sfc_tot_uvi = pfp(fouv(2)%uvindex)
+FL_Pass_Interface.f90:     SYNI4%tu%as%sfc_tot_uva      = pfp(fouv(2)%uva*10 )!! Wm-2  to DeciWm-2)
+FL_Pass_Interface.f90:     SYNI4%tu%as%sfc_tot_uvb      = pfp(fouv(2)%uvb*10 )!! Wm-2  to DeciWm-2
+FL_Pass_Interface.f90:!!    SYNI4%tu%as%sfc_tot_par      = pfp(fouv(2)%par)
+FL_Pass_Interface.f90:      SYNI4%tu%as%sfc_tot_par_dif  = pfp(fouv(2)%par/ (1+fouv(2)%par_rdirdif)      )
+FL_Pass_Interface.f90:      SYNI4%tu%as%sfc_tot_par_dir  = pfp(fouv(2)%par -(fouv(2)%par/ (1+fouv(2)%par_rdirdif))  )
+FL_Pass_Interface.f90:      SYNI4%tu%as%sfc_tot_par_dif  = pfp(0.0)
+FL_Pass_Interface.f90:      SYNI4%tu%as%sfc_tot_par_dir  = pfp(0.0)
+FL_Pass_Interface.f90:!!    SYNI4%tu%as%sfc_clr_par      = pfp(fouv(1)%par)
+FL_Pass_Interface.f90:      SYNI4%tu%as%sfc_clr_par_dif  = pfp(fouv(1)%par/ (1+fouv(1)%par_rdirdif)      )
+FL_Pass_Interface.f90:      SYNI4%tu%as%sfc_clr_par_dir  = pfp(fouv(1)%par -(fouv(1)%par/ (1+fouv(1)%par_rdirdif))  )
+FL_Pass_Interface.f90:      SYNI4%tu%as%sfc_clr_par_dif  = pfp(0.0)
+FL_Pass_Interface.f90:      SYNI4%tu%as%sfc_clr_par_dir  = pfp(0.0)
+FL_Pass_Interface.f90:      SYNI4%tu%as%sfc_prs_par_dif  = pfp(fouv(3)%par/ (1+fouv(3)%par_rdirdif)      )
+FL_Pass_Interface.f90:      SYNI4%tu%as%sfc_prs_par_dir  = pfp(fouv(3)%par -(fouv(3)%par/ (1+fouv(3)%par_rdirdif))  )
+FL_Pass_Interface.f90:      SYNI4%tu%as%sfc_prs_par_dif  = pfp(0.0)
+FL_Pass_Interface.f90:      SYNI4%tu%as%sfc_prs_par_dir  = pfp(0.0)
+FL_Pass_Interface.f90:     SYNI4%tu%ent%toa_lwe_out = fo(2)%lw_entropy(1)
+FL_Pass_Interface.f90:     SYNI4%tu%ent%atm_lwe_out = fo(2)%lw_entropy(2)
+FL_Pass_Interface.f90:     SYNI4%tu%ent%sfc_lwe_out = fo(2)%lw_entropy(3)
+FL_Pass_Interface.f90:     SYNI4%tu%ent%sfc_lwe_up  = fo(2)%lw_entropy(4)
+FL_Pass_Interface.f90:     SYNI4%tu%ent%sfc_lwe_dn  = fo(2)%lw_entropy(5)
+FL_Pass_Interface.f90:     SYNI4%tu%ent%atm_lwe_gen = fo(2)%lw_entropy(6)
+FL_Pass_Interface.f90:     SYNI4%tu%ent%sfc_lwe_gen = fo(2)%lw_entropy(7)
+FL_Pass_Interface.f90:     SYNI4%tu%ent%toa_swe_inc = fo(2)%sw_entropy(1)
+FL_Pass_Interface.f90:     SYNI4%tu%ent%atm_swe_inc = fo(2)%sw_entropy(2)
+FL_Pass_Interface.f90:     SYNI4%tu%ent%sfc_swe_inc = fo(2)%sw_entropy(3)
+FL_Pass_Interface.f90:     SYNI4%tu%ent%atm_swe_gen = fo(2)%sw_entropy(4)
+FL_Pass_Interface.f90:     SYNI4%tu%ent%sfc_swe_gen = fo(2)%sw_entropy(5)
+FL_Pass_Interface.f90:!     SYNI4%tu%spec%tot%toa%sw%d(k) = pfp( SUM(fos(2)%rswfd(	  1 ,1:7)) )  
+FL_Pass_Interface.f90:!     SYNI4%tu%spec%tot%toa%sw%u(k) = pfp( SUM(fos(2)%rswfu(	  1 ,1:7)) )
+FL_Pass_Interface.f90:!     SYNI4%tu%spec%tot%sfc%sw%d(k) = pfp( SUM(fos(2)%rswfd(fi%nv+1 ,1:7)) )
+FL_Pass_Interface.f90:!     SYNI4%tu%spec%tot%sfc%sw%u(k) = pfp( SUM(fos(2)%rswfu(fi%nv+1 ,1:7)) )
+FL_Pass_Interface.f90:     SYNI4%tu%spec%tot%toa%sw%d(1) = pfp( SUM( fos(2)%rswfd(	  1 ,1:7)) )
+FL_Pass_Interface.f90:     SYNI4%tu%spec%tot%toa%sw%u(1) = pfp( SUM( fos(2)%rswfu(	  1 ,1:7)) )
+FL_Pass_Interface.f90:     SYNI4%tu%spec%tot%sfc%sw%d(1) = pfp( SUM( fos(2)%rswfd(fi%nv+1 ,1:7)) )
+FL_Pass_Interface.f90:     SYNI4%tu%spec%tot%sfc%sw%u(1) = pfp( SUM( fos(2)%rswfu(fi%nv+1 ,1:7)) )
+FL_Pass_Interface.f90:     SYNI4%tu%spec%tot%toa%sw%d(2) = pfp( SUM( fos(2)%rswfd(	  1 ,8:10)) )
+FL_Pass_Interface.f90:     SYNI4%tu%spec%tot%toa%sw%u(2) = pfp( SUM( fos(2)%rswfu(	  1 ,8:10)) )
+FL_Pass_Interface.f90:     SYNI4%tu%spec%tot%sfc%sw%d(2) = pfp( SUM( fos(2)%rswfd(fi%nv+1 ,8:10)) )
+FL_Pass_Interface.f90:     SYNI4%tu%spec%tot%sfc%sw%u(2) = pfp( SUM( fos(2)%rswfu(fi%nv+1 ,8:10)) )
+FL_Pass_Interface.f90:     SYNI4%tu%spec%tot%toa%sw%d(3) = pfp( SUM( fos(2)%rswfd(	  1 ,11:13)) )
+FL_Pass_Interface.f90:     SYNI4%tu%spec%tot%toa%sw%u(3) = pfp( SUM( fos(2)%rswfu(	  1 ,11:13)) )
+FL_Pass_Interface.f90:     SYNI4%tu%spec%tot%sfc%sw%d(3) = pfp( SUM( fos(2)%rswfd(fi%nv+1 ,11:13)) )
+FL_Pass_Interface.f90:     SYNI4%tu%spec%tot%sfc%sw%u(3) = pfp( SUM( fos(2)%rswfu(fi%nv+1 ,11:13)) )
+FL_Pass_Interface.f90:     SYNI4%tu%spec%tot%toa%sw%d(4) = pfp( SUM( fos(2)%rswfd(	  1 ,14:18)) )
+FL_Pass_Interface.f90:     SYNI4%tu%spec%tot%toa%sw%u(4) = pfp( SUM( fos(2)%rswfu(	  1 ,14:18)) )
+FL_Pass_Interface.f90:     SYNI4%tu%spec%tot%sfc%sw%d(4) = pfp( SUM( fos(2)%rswfd(fi%nv+1 ,14:18)) )
+FL_Pass_Interface.f90:     SYNI4%tu%spec%tot%sfc%sw%u(4) = pfp( SUM( fos(2)%rswfu(fi%nv+1 ,14:18)) )
+FL_Pass_Interface.f90:     SYNI4%tu%spec%tot%toa%lw%u(1) = pfp( SUM(fos(2)%rlwfu(	 1 ,10:13)) + SUM(fos(2)%rlwfu(      1 ,22:23)) ) 
+FL_Pass_Interface.f90:     SYNI4%tu%spec%tot%sfc%lw%d(1) = pfp( SUM(fos(2)%rlwfd(fi%nv+1 ,10:13)) + SUM(fos(2)%rlwfd(fi%nv+1 ,22:23)) )
+FL_Pass_Interface.f90:     SYNI4%tu%spec%tot%sfc%lw%u(1) = pfp( SUM(fos(2)%rlwfu(fi%nv+1 ,10:13)) + SUM(fos(2)%rlwfu(fi%nv+1 ,22:23)) )
+FL_Pass_Interface.f90:     SYNI4%tu%spec%tot%toa%lw%u(2) = pfp( SUM(fos(2)%rlwfu(	 1 ,14:16)) ) 
+FL_Pass_Interface.f90:     SYNI4%tu%spec%tot%sfc%lw%d(2) = pfp( SUM(fos(2)%rlwfd(fi%nv+1 ,14:16)) )
+FL_Pass_Interface.f90:     SYNI4%tu%spec%tot%sfc%lw%u(2) = pfp( SUM(fos(2)%rlwfu(fi%nv+1 ,14:16)) )
+FL_Pass_Interface.f90:     SYNI4%tu%spec%tot%toa%lw%u(3) = pfp( SUM(fos(2)%rlwfu(	 1 ,17:18)) ) 
+FL_Pass_Interface.f90:     SYNI4%tu%spec%tot%sfc%lw%d(3) = pfp( SUM(fos(2)%rlwfd(fi%nv+1 ,17:18)) )
+FL_Pass_Interface.f90:     SYNI4%tu%spec%tot%sfc%lw%u(3) = pfp( SUM(fos(2)%rlwfu(fi%nv+1 ,17:18)) )
+FL_Pass_Interface.f90:     SYNI4%tu%spec%tot%toa%lw%u(4) = pfp( SUM(fos(2)%rlwfu(	 1 ,19:20)) ) 
+FL_Pass_Interface.f90:     SYNI4%tu%spec%tot%sfc%lw%d(4) = pfp( SUM(fos(2)%rlwfd(fi%nv+1 ,19:20)) )
+FL_Pass_Interface.f90:     SYNI4%tu%spec%tot%sfc%lw%u(4) = pfp( SUM(fos(2)%rlwfu(fi%nv+1 ,19:20)) )
+FL_Pass_Interface.f90:     SYNI4%tu%spec%tot%toa%lw%u(5) = pfp( fos(2)%rlwfu(	 1 ,21) ) 
+FL_Pass_Interface.f90:     SYNI4%tu%spec%tot%sfc%lw%d(5) = pfp( fos(2)%rlwfd(fi%nv+1 ,21) )
+FL_Pass_Interface.f90:     SYNI4%tu%spec%tot%sfc%lw%u(5) = pfp( fos(2)%rlwfu(fi%nv+1 ,21) )
+FL_Pass_Interface.f90:    CALL output_IWP_LWP(SYNI4%tu%var%Iwp(1:4) ,SYNI4%tu%var%Lwp(1:4),isp)
+FL_Pass_Interface.f90:    SYNI4%tu%var%pw  =  wv(ipass)         
+FL_Pass_Interface.f90:    SYNI4%tu%var%uth =  uth(ipass)
+FL_Pass_Interface.f90:      SYNI4%tu%var%sfcalb  = skyp%tot%sw%u(skyp%sfclev)/skyp%tot%sw%d(skyp%sfclev)
+FL_Pass_Interface.f90:    SYNI4%tu%var%aot      = SUM(fi%a_taus(1,1:fi%nac)) 
+FL_Pass_Interface.f90:    SYNI4%tu%var%skint    = fi%pts
+FL_Pass_Interface.f90:    SYNI4%tu%var%cldfrac(isp(1:4)) = fi%fc(1:4)%cldfrac
+FL_Pass_Interface.f90:    SYNI4%tu%var%cldtemp(isp(1:4)) = fi%pt(fi%fc(1:4)%icld_top(1))
+FL_Pass_Interface.f90:    SYNI4%tu%var%cldtau(isp(1:4))  =  fi%fc(1:4)%tau_vis(1)+&
+FL_Pass_Interface.f90:    WHERE ( SYNI4%tu%var%cldfrac <= 0 ) 
+FL_Pass_Interface.f90:     SYNI4%tu%var%cldtemp(1:4) = -9999.
+FL_Pass_Interface.f90:     SYNI4%tu%var%cldtau(1:4) = -9999.
+Init_SS7_2.f90:      USE ED4_SYNI_STRUCTURE, ONLY : SYNI4
+Init_SS7_2.f90:       INTEGER SYNI4_reclen
+Init_SS7_2.f90:       INQUIRE (IOLENGTH= SYNI4_reclen) SYNI4
+Init_SS7_2.f90:                               OUnit_SYN, RLength = SYNI4_reclen)
+Reg_Drv.f90:!                 3. Added Write_SYNI_ED4 and call to SYNI4_NULL
+Reg_Drv.f90:      USE ed4_syni_structure , only : SYNI4 ,pfp ,SYNI4_print,SYNI4_NULL    ! 20131118 
+Reg_Drv.f90:        CALL SYNI4_NULL 
+Reg_Drv.f90:        SYNI4%misc%hr_month    = HrBox
+Reg_Drv.f90:        SYNI4%misc%regnum      = RegionNum_CERES 
+Reg_Drv.f90:        SYNI4%misc%error(1:2)  = Flag_RTError   
+Reg_Drv.f90:        SYNI4%misc%toaswinsolation  = pfp( ssrna * u0 )
+Reg_Drv.f90:       CALL Write_SYNI_ED4 ( OUnit_SYN, IRec_SYNI ) !!!  Write SYNI4 structure
+Reg_Drv.f90:  USE ed4_syni_structure , ONLY : SYNI4  
+Reg_Drv.f90:  WRITE (IntSYN_Unit, REC=Rec_Num, IOSTAT=IOS) SYNI4

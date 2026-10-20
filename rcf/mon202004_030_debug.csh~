@@ -1,0 +1,13 @@
+#!/bin/csh
+#$ -S /bin/csh
+#$ -l arch=lx-amd64
+#$ -q scf-rhel.q
+#$ -o /CERES/clouds/workArea/hong/temp/sarb/data/output.log
+#$ -e /CERES/clouds/workArea/hong/temp/sarb/data/error.log
+ 
+ 
+ 
+set workdir=/homedir/ghong/sarb/CER7.2.1P2/rcf/
+cd ${workdir}
+${workdir}run_CER7.2.1P2.pl CER7.2.1P2_PCF_Aqua-MODIS_Alpha4-Ed5_000000.202004Z030 > test030_newSAH.txt_Canada
+ 

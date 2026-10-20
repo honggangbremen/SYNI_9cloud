@@ -1,0 +1,118 @@
+PRO read_tsi, filename, rec_num
+  ;----------------------------------------------------
+  ; Purpose: Read one TSI record (588 bytes) from binary
+  ; Arguments:
+  ;   filename - TSI binary file
+  ;   rec_num  - record number (1-based)
+  ;----------------------------------------------------
+
+  COMPILE_OPT IDL2
+
+  ; Constants
+  reclen = 588L
+  cld_layrs = 4
+  num_overlap = 11
+
+  ; Open the file as unformatted direct-access
+  OPENR, lun, filename, /GET_LUN, BLOCKSIZE=reclen, /F77_UNFORMATTED, ACCESS='DIRECT'
+
+  ; Allocate byte buffer
+  buffer = BYTARR(reclen)
+
+  ; Read the record
+  READU, lun, rec_num, buffer
+
+  ; Release file
+  FREE_LUN, lun
+
+  ; Now decode the buffer — convert into fields
+  ; Use little-endian, adjust if needed
+  offset = 0
+
+  ;---------------------------
+  ; Time and Location (3 int4 + 28 real4 = 124 bytes)
+  ;---------------------------
+  region_num     = FIX(LONG(buffer[offset:offset+3], 0, /LITTLE_ENDIAN))
+  offset += 4
+  hour_box_num   = FIX(LONG(buffer[offset:offset+3], 0, /LITTLE_ENDIAN))
+  offset += 4
+  geo_sat_id     = FIX(LONG(buffer[offset:offset+3], 0, /LITTLE_ENDIAN))
+  offset += 4
+
+  julhr          = FLOAT(buffer[offset:offset+3], 0, /IEEE, /LITTLE_ENDIAN)
+  offset += 4
+  sfc_alt        = FLOAT(buffer[offset:offset+3], 0, /IEEE, /LITTLE_ENDIAN)
+  offset += 4
+  cos_sza        = FLOAT(buffer[offset:offset+3], 0, /IEEE, /LITTLE_ENDIAN)
+  offset += 4
+
+  ; surface percent cover (20)
+  surf_perc_cov  = REFORM(FLOAT(buffer[offset:offset+79], 20, /IEEE, /LITTLE_ENDIAN))
+  offset += 80
+
+  view_angle     = FLOAT(buffer[offset:offset+3], 0, /IEEE, /LITTLE_ENDIAN)
+  offset += 4
+  imager_angle   = FLOAT(buffer[offset:offset+3], 0, /IEEE, /LITTLE_ENDIAN)
+  offset += 4
+
+  ;---------------------------
+  ; Clear Sky (4 real4)
+  ;---------------------------
+  aero_063       = FLOAT(buffer[offset:offset+3], 0, /IEEE, /LITTLE_ENDIAN)
+  offset += 4
+  aero_160       = FLOAT(buffer[offset:offset+3], 0, /IEEE, /LITTLE_ENDIAN)
+  offset += 4
+  ir_rad         = FLOAT(buffer[offset:offset+3], 0, /IEEE, /LITTLE_ENDIAN)
+  offset += 4
+  imager_rad4    = FLOAT(buffer[offset:offset+3], 0, /IEEE, /LITTLE_ENDIAN)
+  offset += 4
+
+  ;---------------------------
+  ; CLOUD LAYERS (4 × 19 real4 = 304 bytes)
+  ;---------------------------
+  cloud_data = FLTARR(4, 19)
+  FOR i = 0, cld_layrs-1 DO BEGIN
+    FOR j = 0, 18 DO BEGIN
+      cloud_data[i, j] = FLOAT(buffer[offset:offset+3], 0, /IEEE, /LITTLE_ENDIAN)
+      offset += 4
+    ENDFOR
+  ENDFOR
+
+  ;---------------------------
+  ; FLUXES (1 int4 + 8 real4 = 36)
+  ;---------------------------
+  flux_flag = LONG(buffer[offset:offset+3], 0, /LITTLE_ENDIAN)
+  offset += 4
+  flux_data = REFORM(FLOAT(buffer[offset:offset+31], 8, /IEEE, /LITTLE_ENDIAN))
+  offset += 32
+
+  ;---------------------------
+  ; Overlap (11 real4 = 44)
+  ;---------------------------
+  overlap_data = REFORM(FLOAT(buffer[offset:offset+43], 11, /IEEE, /LITTLE_ENDIAN))
+  offset += 44
+
+  ;---------------------------
+  ; Surface (1 int4 + 4 real4 = 20)
+  ;---------------------------
+  skintemp_flag = LONG(buffer[offset:offset+3], 0, /LITTLE_ENDIAN)
+  offset += 4
+  surface_data = REFORM(FLOAT(buffer[offset:offset+15], 4, /IEEE, /LITTLE_ENDIAN))
+  offset += 16
+
+  ;---------------------------
+  ; Aerosol (19 real4 = 76)
+  ;---------------------------
+  aerosol_data = REFORM(FLOAT(buffer[offset:offset+75], 19, /IEEE, /LITTLE_ENDIAN))
+  offset += 76
+
+  ;---------------------------
+  ; Print key info
+  ;---------------------------
+  PRINT, 'Record:', rec_num
+  PRINT, 'Region:', region_num, ' Hour box:', hour_box_num, ' Julian hr:', julhr
+  PRINT, 'Cloud radius H2O (layer 1):', cloud_data[0,11]
+  PRINT, 'Cloud radius ICE (layer 1):', cloud_data[0,12]
+  PRINT, 'Cloud optical depth (ln) (layer 1):', cloud_data[0,1]
+
+END

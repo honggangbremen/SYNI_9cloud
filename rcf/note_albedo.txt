@@ -1,0 +1,78 @@
+spec_source_flag
+
+0: MCD43C1 / MODIS BRDF albedo available (msa%ngood > 0) and the grid is mostly that surface type
+For land types: only if land_frac > 0.90
+For snow types: it sets 0 immediately if msa%ngood > 0
+1: Jin LUT ocean, if pfrac > 0.90 for scene 17
+2: Built-in land spectral LUT (syn_land_spec18), only if land_frac > 0.90. when msa%ngood <=0
+   (predominantly land (> 90% land scene fraction), and MCD43C1 is NOT available)
+3: Jin LUT snow (mostly snow), when snow_frac > 0.90
+4: Jin LUT sea ice (mostly ice), when pfrac > 0.90 for scene 20
+5: Jin snow LUT with a CERES snow grain retrieval (SGR), sgt%snow_grain
+6: Jin snow LUT using an old stored valid SGR retrieval.
+So -1 means: none of those "dominant surface" tests fired.
+
+
+msa%ngood > 0 ---> valid MCD43C1 data for this grid box
+
+
+
+
+In the function SAH_diurnal_model_apply(sap),  when spec_source_flag = 2 and IGBP = 1-10, 12, the Wang method is used to compute the scaling ratio. The coefficients (B1 and B2) in the empirical Equation (7) from Wang's paper vary depending on IGBP type. I attach screen shot (Table 2) for B1 and B2 here too.
+
+When spec_source_flag = 2 and IGBP = 11 or > 12, the Dickinson method is used to compute the scaling ratio. Dickinson's formulation corresponds to Equation (6) in Wang's paper (attached). The parameter "C" in Equation (6) corresponds to d3(0, kk) in our code, where only 0 = Broadband is used and d3 is dependent on IGBP types (attached, first column for broadband only).
+
+  0.35, 0.35, 0.35,& ! (11) WETLAND
+  0.10, 0.10, 0.10,& ! (13) URBAN
+  0.12, 0.12, 0.12,& ! (14) CROP MOSAIC
+  0.10, 0.10, 0.10,& ! (15) ANTARCTIC SNOW
+  0.40, 0.40, 0.40,& ! (16) BARREN/DESERT
+  0.41, 0.41, 0.41,& ! (17) OCEAN WATER
+  0.58, 0.58, 0.58,& ! (18) TUNDRA
+  0.10, 0.10, 0.10,& ! (19) FRESH SNOW
+  0.10, 0.10, 0.10,& ! (20) SEA ICE
+  0.10, 0.10, 0.10,& ! (21) Large Grain Snow
+  0.10, 0.10, 0.10,& ! (22) Small Grain Snow
+  0.40, 0.40, 0.40,& ! (23) Green Desert
+  0.40, 0.40, 0.40,& ! (24) Barren Desert
+  0.111,0.111,0.111/ ! (25) SPARE
+
+
+
+#HG-20260319
+in modalbhdf_SYNI.f90
+
+Lons 19.0-20.0: Pixels with good QA (qavals01 <=2):          420
+Lons 19.0-20.0: Pixels with all BRDF params valid:          420
+Final msa%ngood after physical checks:            0
+
+Checking
+WHERE ( qavals01 > 2) to  WHERE ( qavals01 > 3) 
+# almost identifical
+
+IF (alb1(iwvl) < 0.0 .OR. alb1(iwvl) > 1.01) THEN
+   print *, 'Out-of-range alb1:', alb1(iwvl), 'for band', iwvl, 'at ii,jj=', ii, jj
+ENDIF
+# need to verify this.
+
+10 wavelengths used.
+     IF ( count(alb1 < 0 .OR. alb1 > 1.01 ) == 0 ) THEN			 
+       sum1(1:nwvl) = sum1(1:nwvl) + alb1(1:nwvl)
+       msa%ngood  = msa%ngood +1
+     ENDIF			 
+ 
+
+#HG-20260320
+IF ( land_frac > 0.90 ) sg%spec_source_flag = 2      ! SYN Land LUT source
+
+
+
+#HG-20260323
+Each MCD43C1 file is labeled for a specific "center" day (the date in the filename); -#But the retrieval for that day uses data spanning 8 days before and 8 days after the center day-a full 16-day window
+
+
+MCD_Vers(12,31) maps month and day of month to a "version" or "composite" index (1-5) for selecting which MODIS MCD43C1 temporal composite to apply for that day.
+For a given [month,day], MCD_Vers(month, day) tells you which of the 5 input MCD43C1 files to use for that day.
+
+
+

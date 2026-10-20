@@ -1,0 +1,75 @@
+ ========================================================================================================================
+  SYNI4 Header:
+   SYNI4_head%spec_sw_bounds    57000     22857     14500      9060      2500
+   SYNI4_head%spec_lw_bounds     2850      1250       800       540       280         0
+ ------------------------------------------------------------------------------------------------------------------------
+ ------------------------------------------------------------------------------------------------------------------------
+ UNtuned Flux Profiles:(TOA & Surface ONLY)
+ untuned Clear Sky
+           SYNI4%ut%clr%sw%d  -1.0000  571.9750
+           SYNI4%ut%clr%sw%u  95.8500   37.3500
+           SYNI4%ut%clr%lw%d  -1.0000  239.4250
+           SYNI4%ut%clr%lw%u 227.1750  317.1750
+ untuned Total Sky
+           SYNI4%ut%tot%sw%d  -1.0000  149.9000
+           SYNI4%ut%tot%sw%u 440.1000    8.9000
+           SYNI4%ut%tot%lw%d  -1.0000  301.9500
+           SYNI4%ut%tot%lw%u 181.3250  318.5750
+ untuned Pristine Sky
+           SYNI4%ut%prs%sw%d  -1.0000  594.0500
+           SYNI4%ut%prs%sw%u  78.2000   37.3750
+           SYNI4%ut%prs%lw%d  -1.0000  234.6500
+           SYNI4%ut%prs%lw%u 227.4750  317.0750
+ untuned Total Noaerosol Sky
+           SYNI4%ut%tna%sw%d  -1.0000  151.9000
+           SYNI4%ut%tna%sw%u 439.6250    9.0250
+           SYNI4%ut%tna%lw%d  -1.0000  301.1750
+           SYNI4%ut%tna%lw%u 181.3750  318.5500
+ Untuned Emmulated Window OLR
+          SYNI4%ut%wnolr%tot  36.3500
+          SYNI4%ut%wnolr%clr  60.9750
+ --------------------
+ UNTuned Variables
+             SYNI4%ut%var%pw   1.1309
+           SYNI4%ut%var%uth   69.9085
+         SYNI4%ut%var%sfcalb   0.0594
+            SYNI4%ut%var%aot   0.1725
+          SYNI4%ut%var%skint 273.8919
+   SYNI4%ut%var%cldfrac(1:4)   0.0000    0.6658    0.3342    0.0000
+   SYNI4%ut%var%cldtemp(1:4)*********  239.1921  251.4503 *********
+    SYNI4%ut%var%cldtau(1:4)*********   21.4973   18.6667 *********
+       SYNI4%ut%var$Iwp(1:4)   0.0000  598.4000  452.9500    0.0000
+       SYNI4%ut%var$Lwp(1:4)   0.0000    0.0000    0.0000    0.0000
+ ------------------------------------------------------------------------------------------------------------------------
+ TUNED ::Ed4 SYNI Profiles:
+ tuned  Clear Sky
+           SYNI4%tu%clr%sw%d  -1.0000  747.3250  734.3500  686.4750  617.2500  572.0500
+           SYNI4%tu%clr%sw%u  95.8000   94.9500   90.8250   76.9750   61.8000   37.3750
+           SYNI4%tu%clr%lw%d  -1.0000   14.6000   26.7750  101.0750  195.9250  239.4250
+           SYNI4%tu%clr%lw%u 227.2000  227.1750  229.4500  260.1000  300.5250  317.1750
+ tuned Total Sky
+           SYNI4%tu%tot%sw%d  -1.0000  747.3250  735.3750  497.6250  288.8500  266.2500
+           SYNI4%tu%tot%sw%u 342.4500  344.5250  342.7750  175.6750   24.7000   15.3750
+           SYNI4%tu%tot%lw%d  -1.0000   14.6000   26.7750  165.2000  277.7250  300.7250
+           SYNI4%tu%tot%lw%u 176.9750  175.9500  176.3250  213.6250  299.6000  318.5250
+ tuned Pristine Sky
+           SYNI4%tu%prs%sw%d  -1.0000  747.1000  733.9250  688.0750  619.1000  594.0500
+           SYNI4%tu%prs%sw%u  78.2000   76.6750   72.0750   59.4000   43.9500   37.3750
+           SYNI4%tu%prs%lw%d  -1.0000   14.6000   26.7750  100.9500  195.4750  234.6500
+           SYNI4%tu%prs%lw%u 227.5000  227.4750  229.7750  260.3000  300.7000  317.0750
+ tuned Total_Noaerosol Sky
+           SYNI4%tu%tna%sw%d  -1.0000  747.3250  735.5250  499.4750  285.7000  270.0250
+           SYNI4%tu%tna%sw%u 341.1750  343.2250  341.5750  175.2250   18.9000   15.5750
+           SYNI4%tu%tna%lw%d  -1.0000   14.6000   26.7750  165.1500  277.7000  299.8250
+           SYNI4%tu%tna%lw%u 177.0250  176.0000  176.3750  213.6250  299.7750  318.5250
+ Tuned Emmulated Window OLR
+          SYNI4%tu%wnolr%tot  34.5500
+          SYNI4%tu%wnolr%clr  61.0000
+ --------------------
+ Tuned Variables
+             SYNI4%tu%var%pw   1.1309
+           SYNI4%tu%var%uth   69.9085
+         SYNI4%tu%var%sfcalb   0.0577
+            SYNI4%tu%var%aot   0.1725
+          SYNI4%tu%var%skint 273.8919
+SYNOPTIC SARB SUBSYSTEM MAIN-PROCESSOR PGE_EXIT = 202

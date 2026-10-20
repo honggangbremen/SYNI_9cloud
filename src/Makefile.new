@@ -1,0 +1,692 @@
+PROG = $(CERESHOME)/sarb/CER7.2.1P2/bin/CER7.2.1P2_x86_64.exe
+
+SRCS = alblib_data.f90 Ancill_Init.f90 aotfit.f90 ASSALUT_Sfcalb.f90 \
+	CHLOR_CLIM.f90 common_access.f90 Control_Mod.f90 Convert_OptDepth.f90 \
+	CRH_Drv.f90 CRH_SARB.f90 DrivIngest.f90 DrivTab_Var.f90 \
+	ED4_SYNI_STRUCTURE.f90 EM_MAP.f90 FL_Pass_Interface.f90 FL_SetUp.f90 \
+	flsa0404_lut.f90 FLSA_LUT_Utils.f90 flsasnow_lut.f90 GADS_Aer.f90 \
+	IGBP_AdjSnowIce.f90 IGBP_Utils.f90 Init_SS7_2.f90 Lev_Isolate.f90 \
+	MATCH_ed4_hourly_SYNI.f90 modalbhdf_SYNI.f90 nclouds_params.f90 \
+	No_Cloud.f90 overlap_four.f90 QC_Accum.f90 QC_Fin.f90 QC_Init.f90 \
+	read_test.f90 read_zonal_tsi_file.f90 Reg_Drv.f90 SAH_PERT.f90 \
+	SigmaIngest.f90 SigTab_Var.f90 simple_tsi_mod.f90 simple_tsi_read.f90 \
+	stream_corr.f90 SYN_Drv.f90 SYN_ICE_Utils.f90 SYN_IO_Utils.f90 \
+	SYN_SAHA.f90 SYN_SfcAlb_Init.f90 SYN_SG_Utils.f90 SYN_SPECTRAL_18.f90 \
+	Syn_Spectral_Dat_18.f90 SynSARB_Ingest.f90 SynSARB_Meta.f90 \
+	SynSARB_MOA_Utils.f90 TestReadSYNI.f90 TestReadSYNI2.f90 tlu.f90 \
+	tlu_9clouds.f90 tsi_flag_ed4.f90 tsi_type_3x3_mod.f90 \
+	tsi_type_mod.f90 Tune_Code.f90 TuneDrive.f90 UpTropHum.f90 \
+	With_Cloud.f90 Wrap_Up_SS7_2.f90 write_test.f90
+
+OBJS = alblib_data.o Ancill_Init.o aotfit.o ASSALUT_Sfcalb.o CHLOR_CLIM.o \
+	common_access.o Control_Mod.o Convert_OptDepth.o CRH_Drv.o CRH_SARB.o \
+	DrivIngest.o DrivTab_Var.o ED4_SYNI_STRUCTURE.o EM_MAP.o \
+	FL_Pass_Interface.o FL_SetUp.o flsa0404_lut.o FLSA_LUT_Utils.o \
+	flsasnow_lut.o GADS_Aer.o IGBP_AdjSnowIce.o IGBP_Utils.o Init_SS7_2.o \
+	Lev_Isolate.o MATCH_ed4_hourly_SYNI.o modalbhdf_SYNI.o \
+	nclouds_params.o No_Cloud.o overlap_four.o QC_Accum.o QC_Fin.o \
+	QC_Init.o read_test.o read_zonal_tsi_file.o Reg_Drv.o SAH_PERT.o \
+	SigmaIngest.o SigTab_Var.o simple_tsi_mod.o simple_tsi_read.o \
+	stream_corr.o SYN_Drv.o SYN_ICE_Utils.o SYN_IO_Utils.o SYN_SAHA.o \
+	SYN_SfcAlb_Init.o SYN_SG_Utils.o SYN_SPECTRAL_18.o \
+	Syn_Spectral_Dat_18.o SynSARB_Ingest.o SynSARB_Meta.o \
+	SynSARB_MOA_Utils.o TestReadSYNI.o TestReadSYNI2.o tlu.o \
+	tlu_9clouds.o tsi_flag_ed4.o tsi_type_3x3_mod.o tsi_type_mod.o \
+	Tune_Code.o TuneDrive.o UpTropHum.o With_Cloud.o Wrap_Up_SS7_2.o \
+	write_test.o
+OBJS_F = 
+
+TKLIBS = -L$(PGSLIB) -lPGSTK
+CLIBS = $(CERESLIB)/data_products_Ed4.a $(CERESLIB)/cereslib_Ed4.a \
+        /homedir/bhbranch/source_code/Fortran/netcdf_json_standalone/ceres_lut_io_static_lib.a \
+        /SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/lib/libjsonfortran.a
+	
+MOD_FLAG = -I. -I$(CERESLIB)/mod4 -I ../lib/fulib -I ../lib -I/homedir/bhbranch/source_code/Fortran/netcdf_json_standalone/mod
+LIBS = ../lib/fulib/CER7.2.1P2_FuLib_x86_64.a ../lib/CER7.2.1P2_x86_64.a
+INC_FLAG = -I$(NETCDFINC) -I$(PGSINC) -I$(HDFINC) -I$(HDF5INC) -I../include -I./include
+INCLUDE_DIRS = -I/SPG_ops/utils/CERES/TOOLKIT/scf_toolkit5.2.20v1-x86_64/include \
+                   -I$(CERESLIB)/include -I/homedir/bhbranch/source_code/Fortran/netcdf_json_standalone/
+VPATH = .:$(NETCDFINC):$(PGSINC):$(HDFINC):$(HDF5INC):../include:./include
+
+HDF_FLAGS = $(NETCDFDIR) $(HDFEOSDIR) $(HDFEOSLIB) $(HDFDIR) $(HDFLIBS) 
+HDF5_FLAGS = $(HDFEOS5DIR) $(HDFEOS5LIB) $(HDF5DIR) $(HDF5LIBS) 
+DAAC_FLAGS = $(ADD_LFLAGS) $(ADD_LIBS) 
+
+#CC = 
+#CFLAGS = 
+#F90 = 
+#F90COMP = 
+F90COMP = -c -O2 -finit-local-zero -fno-second-underscore -fconvert=big-endian
+#F90COMP = -c -g -O0 -fcheck=all -fbacktrace -finit-local-zero -fno-second-underscore -fconvert=big-endian
+#FCOMP = 
+#F90LOAD = 
+
+all: $(PROG)
+
+$(PROG): $(OBJS) $(OBJS_F) $(LIBS) $(CLIBS) 
+	$(F90) $(F90LOAD) -o $@ $(OBJS) $(OBJS_F) $(NETCDFDIR) $(NETCDFLIBS) $(LIBS) $(CLIBS) \
+	$(TKLIBS) $(HDF_FLAGS) $(HDF5_FLAGS) $(DAAC_FLAGS) 
+
+clean:
+	-\rm -f $(PROG) $(OBJS) $(OBJS_F) 
+	-\rm -f *.mod 
+
+.SUFFIXES: 
+
+.SUFFIXES: .f90 .mod .f .c .o
+
+.f90.o:
+	$(F90) $(F90COMP) $(MOD_FLAG) $(INC_FLAG) $< 
+
+.f90.mod:
+	$(F90) $(F90COMP) $(MOD_FLAG) $(INC_FLAG) $< 
+
+.f.o:
+	$(F90) $(FCOMP) $(MOD_FLAG) $(INC_FLAG) $< 
+
+.c.o:
+	$(CC) $(CFLAGS) $(MOD_FLAG) $(INC_FLAG) $< 
+
+Ancill_Init.o: PGS_ANCINIT_25725.f
+aotfit.o: PGS_ANCINIT_25725.f
+ASSALUT_Sfcalb.o: FLSA_LUT_Utils.o nclouds_params.o PGS_ANCINIT_25725.f \
+	PGS_FLSALUTIO_25724.f
+CHLOR_CLIM.o: FLSA_LUT_Utils.o SYN_IO_Utils.o nclouds_params.o \
+	PGS_ANCINIT_25725.f PGS_FLSALUTIO_25724.f
+common_access.o: FLSA_LUT_Utils.o SYN_IO_Utils.o nclouds_params.o \
+	tsi_type_mod.o PGS_ANCINIT_25725.f PGS_FLSALUTIO_25724.f
+Control_Mod.o: FLSA_LUT_Utils.o SYN_IO_Utils.o nclouds_params.o \
+	tsi_flag_ed4.o tsi_type_mod.o PGS_ANCINIT_25725.f \
+	PGS_FLSALUTIO_25724.f
+Convert_OptDepth.o: FLSA_LUT_Utils.o SYN_IO_Utils.o nclouds_params.o \
+	tsi_flag_ed4.o tsi_type_mod.o PGS_ANCINIT_25725.f \
+	PGS_FLSALUTIO_25724.f
+CRH_Drv.o: CRH_Drv.o FLSA_LUT_Utils.o SYN_IO_Utils.o nclouds_params.o \
+	tsi_flag_ed4.o tsi_type_mod.o PGS_ANCINIT_25725.f \
+	PGS_FLSALUTIO_25724.f
+CRH_SARB.o: CRH_Drv.o FLSA_LUT_Utils.o SYN_IO_Utils.o nclouds_params.o \
+	tsi_flag_ed4.o tsi_type_mod.o PGS_ANCINIT_25725.f \
+	PGS_FLSALUTIO_25724.f
+DrivIngest.o: CRH_Drv.o DrivTab_Var.o FLSA_LUT_Utils.o SYN_IO_Utils.o \
+	nclouds_params.o tsi_flag_ed4.o tsi_type_mod.o PGS_ANCINIT_25725.f \
+	PGS_FLSALUTIO_25724.f
+DrivTab_Var.o: CRH_Drv.o DrivTab_Var.o FLSA_LUT_Utils.o SYN_IO_Utils.o \
+	nclouds_params.o tsi_flag_ed4.o tsi_type_mod.o PGS_ANCINIT_25725.f \
+	PGS_FLSALUTIO_25724.f
+ED4_SYNI_STRUCTURE.o: CRH_Drv.o DrivTab_Var.o FLSA_LUT_Utils.o SYN_IO_Utils.o \
+	nclouds_params.o tsi_flag_ed4.o tsi_type_mod.o PGS_ANCINIT_25725.f \
+	PGS_FLSALUTIO_25724.f
+EM_MAP.o: CRH_Drv.o CRH_SARB.o DrivTab_Var.o FLSA_LUT_Utils.o SYN_IO_Utils.o \
+	nclouds_params.o tsi_flag_ed4.o tsi_type_mod.o PGS_ANCINIT_25725.f \
+	PGS_FLSALUTIO_25724.f
+FL_Pass_Interface.o: CRH_Drv.o CRH_SARB.o DrivTab_Var.o ED4_SYNI_STRUCTURE.o \
+	FLSA_LUT_Utils.o MATCH_ed4_hourly_SYNI.o SYN_IO_Utils.o \
+	SYN_SPECTRAL_18.o common_access.o nclouds_params.o overlap_four.o \
+	tlu_9clouds.o tsi_flag_ed4.o tsi_type_mod.o PGS_ANCINIT_25725.f \
+	PGS_FLSALUTIO_25724.f
+FL_SetUp.o: CRH_Drv.o CRH_SARB.o Convert_OptDepth.o DrivTab_Var.o \
+	ED4_SYNI_STRUCTURE.o FLSA_LUT_Utils.o FL_Pass_Interface.o \
+	MATCH_ed4_hourly_SYNI.o SYN_IO_Utils.o SYN_SPECTRAL_18.o TuneDrive.o \
+	UpTropHum.o With_Cloud.o common_access.o nclouds_params.o \
+	overlap_four.o tlu_9clouds.o tsi_flag_ed4.o tsi_type_mod.o \
+	PGS_ANCINIT_25725.f PGS_FLSALUTIO_25724.f
+flsa0404_lut.o: CRH_Drv.o CRH_SARB.o Convert_OptDepth.o DrivTab_Var.o \
+	ED4_SYNI_STRUCTURE.o FLSA_LUT_Utils.o FL_Pass_Interface.o \
+	MATCH_ed4_hourly_SYNI.o SYN_IO_Utils.o SYN_SPECTRAL_18.o TuneDrive.o \
+	UpTropHum.o With_Cloud.o common_access.o nclouds_params.o \
+	overlap_four.o tlu_9clouds.o tsi_flag_ed4.o tsi_type_mod.o \
+	PGS_ANCINIT_25725.f PGS_FLSALUTIO_25724.f
+FLSA_LUT_Utils.o: CRH_Drv.o CRH_SARB.o Convert_OptDepth.o DrivTab_Var.o \
+	ED4_SYNI_STRUCTURE.o FLSA_LUT_Utils.o FL_Pass_Interface.o \
+	MATCH_ed4_hourly_SYNI.o SYN_IO_Utils.o SYN_SPECTRAL_18.o TuneDrive.o \
+	UpTropHum.o With_Cloud.o common_access.o nclouds_params.o \
+	overlap_four.o tlu_9clouds.o tsi_flag_ed4.o tsi_type_mod.o \
+	PGS_ANCINIT_25725.f PGS_FLSALUTIO_25724.f
+flsasnow_lut.o: CRH_Drv.o CRH_SARB.o Convert_OptDepth.o DrivTab_Var.o \
+	ED4_SYNI_STRUCTURE.o FLSA_LUT_Utils.o FL_Pass_Interface.o \
+	MATCH_ed4_hourly_SYNI.o SYN_IO_Utils.o SYN_SPECTRAL_18.o TuneDrive.o \
+	UpTropHum.o With_Cloud.o common_access.o nclouds_params.o \
+	overlap_four.o tlu_9clouds.o tsi_flag_ed4.o tsi_type_mod.o \
+	PGS_ANCINIT_25725.f PGS_FLSALUTIO_25724.f
+GADS_Aer.o: CRH_Drv.o CRH_SARB.o Convert_OptDepth.o DrivTab_Var.o \
+	ED4_SYNI_STRUCTURE.o FLSA_LUT_Utils.o FL_Pass_Interface.o \
+	MATCH_ed4_hourly_SYNI.o SYN_IO_Utils.o SYN_SPECTRAL_18.o TuneDrive.o \
+	UpTropHum.o With_Cloud.o common_access.o nclouds_params.o \
+	overlap_four.o tlu_9clouds.o tsi_flag_ed4.o tsi_type_mod.o \
+	PGS_ANCINIT_25725.f PGS_FLSALUTIO_25724.f PGS_GADSAER_25715.f
+IGBP_AdjSnowIce.o: CRH_Drv.o CRH_SARB.o Convert_OptDepth.o DrivTab_Var.o \
+	ED4_SYNI_STRUCTURE.o FLSA_LUT_Utils.o FL_Pass_Interface.o \
+	IGBP_Utils.o MATCH_ed4_hourly_SYNI.o SYN_IO_Utils.o SYN_SPECTRAL_18.o \
+	TuneDrive.o UpTropHum.o With_Cloud.o common_access.o nclouds_params.o \
+	overlap_four.o tlu_9clouds.o tsi_flag_ed4.o tsi_type_mod.o \
+	PGS_ANCINIT_25725.f PGS_FLSALUTIO_25724.f PGS_GADSAER_25715.f
+IGBP_Utils.o: CRH_Drv.o CRH_SARB.o Convert_OptDepth.o DrivTab_Var.o \
+	ED4_SYNI_STRUCTURE.o FLSA_LUT_Utils.o FL_Pass_Interface.o \
+	IGBP_Utils.o MATCH_ed4_hourly_SYNI.o SYN_IO_Utils.o SYN_SPECTRAL_18.o \
+	TuneDrive.o UpTropHum.o With_Cloud.o common_access.o nclouds_params.o \
+	overlap_four.o tlu_9clouds.o tsi_flag_ed4.o tsi_type_mod.o \
+	PGS_ANCINIT_25725.f PGS_FLSALUTIO_25724.f PGS_GADSAER_25715.f \
+	PGS_IGBPUTIL_25721.f
+Init_SS7_2.o: Ancill_Init.o CRH_Drv.o CRH_SARB.o Control_Mod.o \
+	Convert_OptDepth.o DrivIngest.o DrivTab_Var.o ED4_SYNI_STRUCTURE.o \
+	FLSA_LUT_Utils.o FL_Pass_Interface.o IGBP_Utils.o \
+	MATCH_ed4_hourly_SYNI.o QC_Init.o SYN_IO_Utils.o SYN_SPECTRAL_18.o \
+	SYN_SfcAlb_Init.o SigmaIngest.o TuneDrive.o UpTropHum.o With_Cloud.o \
+	common_access.o nclouds_params.o overlap_four.o read_zonal_tsi_file.o \
+	tlu_9clouds.o tsi_flag_ed4.o tsi_type_mod.o PGS_ANCINIT_25725.f \
+	PGS_FLSALUTIO_25724.f PGS_GADSAER_25715.f PGS_IGBPUTIL_25721.f
+Lev_Isolate.o: Ancill_Init.o CRH_Drv.o CRH_SARB.o Control_Mod.o \
+	Convert_OptDepth.o DrivIngest.o DrivTab_Var.o ED4_SYNI_STRUCTURE.o \
+	FLSA_LUT_Utils.o FL_Pass_Interface.o IGBP_Utils.o \
+	MATCH_ed4_hourly_SYNI.o QC_Init.o SYN_IO_Utils.o SYN_SPECTRAL_18.o \
+	SYN_SfcAlb_Init.o SigmaIngest.o TuneDrive.o UpTropHum.o With_Cloud.o \
+	common_access.o nclouds_params.o overlap_four.o read_zonal_tsi_file.o \
+	tlu_9clouds.o tsi_flag_ed4.o tsi_type_mod.o PGS_ANCINIT_25725.f \
+	PGS_FLSALUTIO_25724.f PGS_GADSAER_25715.f PGS_IGBPUTIL_25721.f
+MATCH_ed4_hourly_SYNI.o: Ancill_Init.o CRH_Drv.o CRH_SARB.o Control_Mod.o \
+	Convert_OptDepth.o DrivIngest.o DrivTab_Var.o ED4_SYNI_STRUCTURE.o \
+	FLSA_LUT_Utils.o FL_Pass_Interface.o IGBP_Utils.o \
+	MATCH_ed4_hourly_SYNI.o QC_Init.o SYN_IO_Utils.o SYN_SPECTRAL_18.o \
+	SYN_SfcAlb_Init.o SigmaIngest.o TuneDrive.o UpTropHum.o With_Cloud.o \
+	common_access.o nclouds_params.o overlap_four.o read_zonal_tsi_file.o \
+	tlu_9clouds.o tsi_flag_ed4.o tsi_type_mod.o PGS_ANCINIT_25725.f \
+	PGS_FLSALUTIO_25724.f PGS_GADSAER_25715.f PGS_IGBPUTIL_25721.f
+modalbhdf_SYNI.o: Ancill_Init.o CRH_Drv.o CRH_SARB.o Control_Mod.o \
+	Convert_OptDepth.o DrivIngest.o DrivTab_Var.o ED4_SYNI_STRUCTURE.o \
+	FLSA_LUT_Utils.o FL_Pass_Interface.o IGBP_Utils.o \
+	MATCH_ed4_hourly_SYNI.o QC_Init.o SYN_IO_Utils.o SYN_SPECTRAL_18.o \
+	SYN_SfcAlb_Init.o SigmaIngest.o TuneDrive.o UpTropHum.o With_Cloud.o \
+	common_access.o nclouds_params.o overlap_four.o read_zonal_tsi_file.o \
+	tlu_9clouds.o tsi_flag_ed4.o tsi_type_mod.o PGS_ANCINIT_25725.f \
+	PGS_FLSALUTIO_25724.f PGS_GADSAER_25715.f PGS_IGBPUTIL_25721.f \
+	dffunc.f90 hdf.f90
+nclouds_params.o: Ancill_Init.o CRH_Drv.o CRH_SARB.o Control_Mod.o \
+	Convert_OptDepth.o DrivIngest.o DrivTab_Var.o ED4_SYNI_STRUCTURE.o \
+	FLSA_LUT_Utils.o FL_Pass_Interface.o IGBP_Utils.o \
+	MATCH_ed4_hourly_SYNI.o QC_Init.o SYN_IO_Utils.o SYN_SPECTRAL_18.o \
+	SYN_SfcAlb_Init.o SigmaIngest.o TuneDrive.o UpTropHum.o With_Cloud.o \
+	common_access.o nclouds_params.o overlap_four.o read_zonal_tsi_file.o \
+	tlu_9clouds.o tsi_flag_ed4.o tsi_type_mod.o PGS_ANCINIT_25725.f \
+	PGS_FLSALUTIO_25724.f PGS_GADSAER_25715.f PGS_IGBPUTIL_25721.f \
+	dffunc.f90 hdf.f90
+No_Cloud.o: Ancill_Init.o CRH_Drv.o CRH_SARB.o Control_Mod.o \
+	Convert_OptDepth.o DrivIngest.o DrivTab_Var.o ED4_SYNI_STRUCTURE.o \
+	FLSA_LUT_Utils.o FL_Pass_Interface.o IGBP_Utils.o \
+	MATCH_ed4_hourly_SYNI.o QC_Init.o SYN_IO_Utils.o SYN_SPECTRAL_18.o \
+	SYN_SfcAlb_Init.o SigmaIngest.o TuneDrive.o UpTropHum.o With_Cloud.o \
+	common_access.o nclouds_params.o overlap_four.o read_zonal_tsi_file.o \
+	tlu_9clouds.o tsi_flag_ed4.o tsi_type_mod.o PGS_ANCINIT_25725.f \
+	PGS_FLSALUTIO_25724.f PGS_GADSAER_25715.f PGS_IGBPUTIL_25721.f \
+	dffunc.f90 hdf.f90
+overlap_four.o: Ancill_Init.o CRH_Drv.o CRH_SARB.o Control_Mod.o \
+	Convert_OptDepth.o DrivIngest.o DrivTab_Var.o ED4_SYNI_STRUCTURE.o \
+	FLSA_LUT_Utils.o FL_Pass_Interface.o IGBP_Utils.o \
+	MATCH_ed4_hourly_SYNI.o QC_Init.o SYN_IO_Utils.o SYN_SPECTRAL_18.o \
+	SYN_SfcAlb_Init.o SigmaIngest.o TuneDrive.o UpTropHum.o With_Cloud.o \
+	common_access.o nclouds_params.o overlap_four.o read_zonal_tsi_file.o \
+	tlu_9clouds.o tsi_flag_ed4.o tsi_type_mod.o PGS_ANCINIT_25725.f \
+	PGS_FLSALUTIO_25724.f PGS_GADSAER_25715.f PGS_IGBPUTIL_25721.f \
+	dffunc.f90 hdf.f90
+QC_Accum.o: Ancill_Init.o CRH_Drv.o CRH_SARB.o Control_Mod.o \
+	Convert_OptDepth.o DrivIngest.o DrivTab_Var.o ED4_SYNI_STRUCTURE.o \
+	FLSA_LUT_Utils.o FL_Pass_Interface.o IGBP_Utils.o \
+	MATCH_ed4_hourly_SYNI.o QC_Init.o SYN_IO_Utils.o SYN_SPECTRAL_18.o \
+	SYN_SfcAlb_Init.o SigmaIngest.o TuneDrive.o UpTropHum.o With_Cloud.o \
+	common_access.o nclouds_params.o overlap_four.o read_zonal_tsi_file.o \
+	tlu_9clouds.o tsi_flag_ed4.o tsi_type_mod.o PGS_ANCINIT_25725.f \
+	PGS_FLSALUTIO_25724.f PGS_GADSAER_25715.f PGS_IGBPUTIL_25721.f \
+	dffunc.f90 hdf.f90
+QC_Fin.o: Ancill_Init.o CRH_Drv.o CRH_SARB.o Control_Mod.o Convert_OptDepth.o \
+	DrivIngest.o DrivTab_Var.o ED4_SYNI_STRUCTURE.o FLSA_LUT_Utils.o \
+	FL_Pass_Interface.o IGBP_Utils.o MATCH_ed4_hourly_SYNI.o QC_Init.o \
+	SYN_IO_Utils.o SYN_SPECTRAL_18.o SYN_SfcAlb_Init.o SigmaIngest.o \
+	TuneDrive.o UpTropHum.o With_Cloud.o common_access.o nclouds_params.o \
+	overlap_four.o read_zonal_tsi_file.o tlu_9clouds.o tsi_flag_ed4.o \
+	tsi_type_mod.o PGS_ANCINIT_25725.f PGS_FLSALUTIO_25724.f \
+	PGS_GADSAER_25715.f PGS_IGBPUTIL_25721.f dffunc.f90 hdf.f90
+QC_Init.o: Ancill_Init.o CRH_Drv.o CRH_SARB.o Control_Mod.o \
+	Convert_OptDepth.o DrivIngest.o DrivTab_Var.o ED4_SYNI_STRUCTURE.o \
+	FLSA_LUT_Utils.o FL_Pass_Interface.o IGBP_Utils.o \
+	MATCH_ed4_hourly_SYNI.o QC_Init.o SYN_IO_Utils.o SYN_SPECTRAL_18.o \
+	SYN_SfcAlb_Init.o SigmaIngest.o TuneDrive.o UpTropHum.o With_Cloud.o \
+	common_access.o nclouds_params.o overlap_four.o read_zonal_tsi_file.o \
+	tlu_9clouds.o tsi_flag_ed4.o tsi_type_mod.o PGS_ANCINIT_25725.f \
+	PGS_FLSALUTIO_25724.f PGS_GADSAER_25715.f PGS_IGBPUTIL_25721.f \
+	dffunc.f90 hdf.f90
+read_test.o: Ancill_Init.o CRH_Drv.o CRH_SARB.o Control_Mod.o \
+	Convert_OptDepth.o DrivIngest.o DrivTab_Var.o ED4_SYNI_STRUCTURE.o \
+	FLSA_LUT_Utils.o FL_Pass_Interface.o IGBP_Utils.o \
+	MATCH_ed4_hourly_SYNI.o QC_Init.o SYN_IO_Utils.o SYN_SPECTRAL_18.o \
+	SYN_SfcAlb_Init.o SigmaIngest.o TuneDrive.o UpTropHum.o With_Cloud.o \
+	common_access.o nclouds_params.o overlap_four.o read_zonal_tsi_file.o \
+	tlu_9clouds.o tsi_flag_ed4.o tsi_type_mod.o PGS_ANCINIT_25725.f \
+	PGS_FLSALUTIO_25724.f PGS_GADSAER_25715.f PGS_IGBPUTIL_25721.f \
+	dffunc.f90 hdf.f90
+read_zonal_tsi_file.o: Ancill_Init.o CRH_Drv.o CRH_SARB.o Control_Mod.o \
+	Convert_OptDepth.o DrivIngest.o DrivTab_Var.o ED4_SYNI_STRUCTURE.o \
+	FLSA_LUT_Utils.o FL_Pass_Interface.o IGBP_Utils.o \
+	MATCH_ed4_hourly_SYNI.o QC_Init.o SYN_IO_Utils.o SYN_SPECTRAL_18.o \
+	SYN_SfcAlb_Init.o SigmaIngest.o TuneDrive.o UpTropHum.o With_Cloud.o \
+	common_access.o nclouds_params.o overlap_four.o read_zonal_tsi_file.o \
+	tlu_9clouds.o tsi_flag_ed4.o tsi_type_3x3_mod.o tsi_type_mod.o \
+	PGS_ANCINIT_25725.f PGS_FLSALUTIO_25724.f PGS_GADSAER_25715.f \
+	PGS_IGBPUTIL_25721.f dffunc.f90 hdf.f90
+Reg_Drv.o: Ancill_Init.o CRH_Drv.o CRH_SARB.o Control_Mod.o \
+	Convert_OptDepth.o DrivIngest.o DrivTab_Var.o ED4_SYNI_STRUCTURE.o \
+	FLSA_LUT_Utils.o FL_Pass_Interface.o FL_SetUp.o IGBP_Utils.o \
+	Lev_Isolate.o MATCH_ed4_hourly_SYNI.o QC_Accum.o QC_Init.o \
+	SYN_IO_Utils.o SYN_SPECTRAL_18.o SYN_SfcAlb_Init.o SigmaIngest.o \
+	SynSARB_Ingest.o TuneDrive.o UpTropHum.o With_Cloud.o common_access.o \
+	modalbhdf_SYNI.o nclouds_params.o overlap_four.o \
+	read_zonal_tsi_file.o tlu_9clouds.o tsi_flag_ed4.o tsi_type_3x3_mod.o \
+	tsi_type_mod.o PGS_ANCINIT_25725.f PGS_FLSALUTIO_25724.f \
+	PGS_GADSAER_25715.f PGS_IGBPUTIL_25721.f dffunc.f90 hdf.f90
+SAH_PERT.o: Ancill_Init.o CRH_Drv.o CRH_SARB.o Control_Mod.o \
+	Convert_OptDepth.o DrivIngest.o DrivTab_Var.o ED4_SYNI_STRUCTURE.o \
+	FLSA_LUT_Utils.o FL_Pass_Interface.o FL_SetUp.o IGBP_Utils.o \
+	Lev_Isolate.o MATCH_ed4_hourly_SYNI.o QC_Accum.o QC_Init.o SAH_PERT.o \
+	SYN_IO_Utils.o SYN_SPECTRAL_18.o SYN_SfcAlb_Init.o SigmaIngest.o \
+	SynSARB_Ingest.o TuneDrive.o UpTropHum.o With_Cloud.o common_access.o \
+	modalbhdf_SYNI.o nclouds_params.o overlap_four.o \
+	read_zonal_tsi_file.o tlu_9clouds.o tsi_flag_ed4.o tsi_type_3x3_mod.o \
+	tsi_type_mod.o PGS_ANCINIT_25725.f PGS_FLSALUTIO_25724.f \
+	PGS_GADSAER_25715.f PGS_IGBPUTIL_25721.f dffunc.f90 hdf.f90
+SigmaIngest.o: Ancill_Init.o CRH_Drv.o CRH_SARB.o Control_Mod.o \
+	Convert_OptDepth.o DrivIngest.o DrivTab_Var.o ED4_SYNI_STRUCTURE.o \
+	FLSA_LUT_Utils.o FL_Pass_Interface.o FL_SetUp.o IGBP_Utils.o \
+	Lev_Isolate.o MATCH_ed4_hourly_SYNI.o QC_Accum.o QC_Init.o SAH_PERT.o \
+	SYN_IO_Utils.o SYN_SPECTRAL_18.o SYN_SfcAlb_Init.o SigTab_Var.o \
+	SigmaIngest.o SynSARB_Ingest.o TuneDrive.o UpTropHum.o With_Cloud.o \
+	common_access.o modalbhdf_SYNI.o nclouds_params.o overlap_four.o \
+	read_zonal_tsi_file.o tlu_9clouds.o tsi_flag_ed4.o tsi_type_3x3_mod.o \
+	tsi_type_mod.o PGS_ANCINIT_25725.f PGS_FLSALUTIO_25724.f \
+	PGS_GADSAER_25715.f PGS_IGBPUTIL_25721.f dffunc.f90 hdf.f90
+SigTab_Var.o: Ancill_Init.o CRH_Drv.o CRH_SARB.o Control_Mod.o \
+	Convert_OptDepth.o DrivIngest.o DrivTab_Var.o ED4_SYNI_STRUCTURE.o \
+	FLSA_LUT_Utils.o FL_Pass_Interface.o FL_SetUp.o IGBP_Utils.o \
+	Lev_Isolate.o MATCH_ed4_hourly_SYNI.o QC_Accum.o QC_Init.o SAH_PERT.o \
+	SYN_IO_Utils.o SYN_SPECTRAL_18.o SYN_SfcAlb_Init.o SigTab_Var.o \
+	SigmaIngest.o SynSARB_Ingest.o TuneDrive.o UpTropHum.o With_Cloud.o \
+	common_access.o modalbhdf_SYNI.o nclouds_params.o overlap_four.o \
+	read_zonal_tsi_file.o tlu_9clouds.o tsi_flag_ed4.o tsi_type_3x3_mod.o \
+	tsi_type_mod.o PGS_ANCINIT_25725.f PGS_FLSALUTIO_25724.f \
+	PGS_GADSAER_25715.f PGS_IGBPUTIL_25721.f dffunc.f90 hdf.f90
+simple_tsi_mod.o: Ancill_Init.o CRH_Drv.o CRH_SARB.o Control_Mod.o \
+	Convert_OptDepth.o DrivIngest.o DrivTab_Var.o ED4_SYNI_STRUCTURE.o \
+	FLSA_LUT_Utils.o FL_Pass_Interface.o FL_SetUp.o IGBP_Utils.o \
+	Lev_Isolate.o MATCH_ed4_hourly_SYNI.o QC_Accum.o QC_Init.o SAH_PERT.o \
+	SYN_IO_Utils.o SYN_SPECTRAL_18.o SYN_SfcAlb_Init.o SigTab_Var.o \
+	SigmaIngest.o SynSARB_Ingest.o TuneDrive.o UpTropHum.o With_Cloud.o \
+	common_access.o modalbhdf_SYNI.o nclouds_params.o overlap_four.o \
+	read_zonal_tsi_file.o tlu_9clouds.o tsi_flag_ed4.o tsi_type_3x3_mod.o \
+	tsi_type_mod.o PGS_ANCINIT_25725.f PGS_FLSALUTIO_25724.f \
+	PGS_GADSAER_25715.f PGS_IGBPUTIL_25721.f dffunc.f90 hdf.f90
+simple_tsi_read.o: Ancill_Init.o CRH_Drv.o CRH_SARB.o Control_Mod.o \
+	Convert_OptDepth.o DrivIngest.o DrivTab_Var.o ED4_SYNI_STRUCTURE.o \
+	FLSA_LUT_Utils.o FL_Pass_Interface.o FL_SetUp.o IGBP_Utils.o \
+	Lev_Isolate.o MATCH_ed4_hourly_SYNI.o QC_Accum.o QC_Init.o SAH_PERT.o \
+	SYN_IO_Utils.o SYN_SPECTRAL_18.o SYN_SfcAlb_Init.o SigTab_Var.o \
+	SigmaIngest.o SynSARB_Ingest.o TuneDrive.o UpTropHum.o With_Cloud.o \
+	common_access.o modalbhdf_SYNI.o nclouds_params.o overlap_four.o \
+	read_zonal_tsi_file.o simple_tsi_mod.o tlu_9clouds.o tsi_flag_ed4.o \
+	tsi_type_3x3_mod.o tsi_type_mod.o PGS_ANCINIT_25725.f \
+	PGS_FLSALUTIO_25724.f PGS_GADSAER_25715.f PGS_IGBPUTIL_25721.f \
+	dffunc.f90 hdf.f90
+stream_corr.o: Ancill_Init.o CRH_Drv.o CRH_SARB.o Control_Mod.o \
+	Convert_OptDepth.o DrivIngest.o DrivTab_Var.o ED4_SYNI_STRUCTURE.o \
+	FLSA_LUT_Utils.o FL_Pass_Interface.o FL_SetUp.o IGBP_Utils.o \
+	Lev_Isolate.o MATCH_ed4_hourly_SYNI.o QC_Accum.o QC_Init.o SAH_PERT.o \
+	SYN_IO_Utils.o SYN_SPECTRAL_18.o SYN_SfcAlb_Init.o SigTab_Var.o \
+	SigmaIngest.o SynSARB_Ingest.o TuneDrive.o UpTropHum.o With_Cloud.o \
+	common_access.o modalbhdf_SYNI.o nclouds_params.o overlap_four.o \
+	read_zonal_tsi_file.o simple_tsi_mod.o stream_corr.o tlu_9clouds.o \
+	tsi_flag_ed4.o tsi_type_3x3_mod.o tsi_type_mod.o PGS_ANCINIT_25725.f \
+	PGS_FLSALUTIO_25724.f PGS_GADSAER_25715.f PGS_IGBPUTIL_25721.f \
+	dffunc.f90 hdf.f90
+SYN_Drv.o: Ancill_Init.o CRH_Drv.o CRH_SARB.o Control_Mod.o \
+	Convert_OptDepth.o DrivIngest.o DrivTab_Var.o ED4_SYNI_STRUCTURE.o \
+	FLSA_LUT_Utils.o FL_Pass_Interface.o FL_SetUp.o IGBP_Utils.o \
+	Init_SS7_2.o Lev_Isolate.o MATCH_ed4_hourly_SYNI.o QC_Accum.o \
+	QC_Init.o Reg_Drv.o SAH_PERT.o SYN_IO_Utils.o SYN_SPECTRAL_18.o \
+	SYN_SfcAlb_Init.o SigTab_Var.o SigmaIngest.o SynSARB_Ingest.o \
+	TuneDrive.o UpTropHum.o With_Cloud.o Wrap_Up_SS7_2.o common_access.o \
+	modalbhdf_SYNI.o nclouds_params.o overlap_four.o \
+	read_zonal_tsi_file.o simple_tsi_mod.o stream_corr.o tlu_9clouds.o \
+	tsi_flag_ed4.o tsi_type_3x3_mod.o tsi_type_mod.o PGS_ANCINIT_25725.f \
+	PGS_FLSALUTIO_25724.f PGS_GADSAER_25715.f PGS_IGBPUTIL_25721.f \
+	dffunc.f90 hdf.f90
+SYN_ICE_Utils.o: Ancill_Init.o CRH_Drv.o CRH_SARB.o Control_Mod.o \
+	Convert_OptDepth.o DrivIngest.o DrivTab_Var.o ED4_SYNI_STRUCTURE.o \
+	FLSA_LUT_Utils.o FL_Pass_Interface.o FL_SetUp.o IGBP_Utils.o \
+	Init_SS7_2.o Lev_Isolate.o MATCH_ed4_hourly_SYNI.o QC_Accum.o \
+	QC_Init.o Reg_Drv.o SAH_PERT.o SYN_IO_Utils.o SYN_SPECTRAL_18.o \
+	SYN_SfcAlb_Init.o SigTab_Var.o SigmaIngest.o SynSARB_Ingest.o \
+	TuneDrive.o UpTropHum.o With_Cloud.o Wrap_Up_SS7_2.o common_access.o \
+	modalbhdf_SYNI.o nclouds_params.o overlap_four.o \
+	read_zonal_tsi_file.o simple_tsi_mod.o stream_corr.o tlu_9clouds.o \
+	tsi_flag_ed4.o tsi_type_3x3_mod.o tsi_type_mod.o PGS_ANCINIT_25725.f \
+	PGS_FLSALUTIO_25724.f PGS_GADSAER_25715.f PGS_IGBPUTIL_25721.f \
+	dffunc.f90 hdf.f90
+SYN_IO_Utils.o: Ancill_Init.o CRH_Drv.o CRH_SARB.o Control_Mod.o \
+	Convert_OptDepth.o DrivIngest.o DrivTab_Var.o ED4_SYNI_STRUCTURE.o \
+	FLSA_LUT_Utils.o FL_Pass_Interface.o FL_SetUp.o IGBP_Utils.o \
+	Init_SS7_2.o Lev_Isolate.o MATCH_ed4_hourly_SYNI.o QC_Accum.o \
+	QC_Init.o Reg_Drv.o SAH_PERT.o SYN_IO_Utils.o SYN_SPECTRAL_18.o \
+	SYN_SfcAlb_Init.o SigTab_Var.o SigmaIngest.o SynSARB_Ingest.o \
+	TuneDrive.o UpTropHum.o With_Cloud.o Wrap_Up_SS7_2.o common_access.o \
+	modalbhdf_SYNI.o nclouds_params.o overlap_four.o \
+	read_zonal_tsi_file.o simple_tsi_mod.o stream_corr.o tlu_9clouds.o \
+	tsi_flag_ed4.o tsi_type_3x3_mod.o tsi_type_mod.o PGS_ANCINIT_25725.f \
+	PGS_FLSALUTIO_25724.f PGS_GADSAER_25715.f PGS_IGBPUTIL_25721.f \
+	dffunc.f90 hdf.f90
+SYN_SAHA.o: Ancill_Init.o CRH_Drv.o CRH_SARB.o Control_Mod.o \
+	Convert_OptDepth.o DrivIngest.o DrivTab_Var.o ED4_SYNI_STRUCTURE.o \
+	FLSA_LUT_Utils.o FL_Pass_Interface.o FL_SetUp.o IGBP_Utils.o \
+	Init_SS7_2.o Lev_Isolate.o MATCH_ed4_hourly_SYNI.o QC_Accum.o \
+	QC_Init.o Reg_Drv.o SAH_PERT.o SYN_IO_Utils.o SYN_SAHA.o \
+	SYN_SPECTRAL_18.o SYN_SfcAlb_Init.o SigTab_Var.o SigmaIngest.o \
+	SynSARB_Ingest.o Syn_Spectral_Dat_18.o TuneDrive.o UpTropHum.o \
+	With_Cloud.o Wrap_Up_SS7_2.o common_access.o modalbhdf_SYNI.o \
+	nclouds_params.o overlap_four.o read_zonal_tsi_file.o \
+	simple_tsi_mod.o stream_corr.o tlu_9clouds.o tsi_flag_ed4.o \
+	tsi_type_3x3_mod.o tsi_type_mod.o PGS_ANCINIT_25725.f \
+	PGS_FLSALUTIO_25724.f PGS_GADSAER_25715.f PGS_IGBPUTIL_25721.f \
+	dffunc.f90 hdf.f90
+SYN_SfcAlb_Init.o: ASSALUT_Sfcalb.o Ancill_Init.o CRH_Drv.o CRH_SARB.o \
+	Control_Mod.o Convert_OptDepth.o DrivIngest.o DrivTab_Var.o \
+	ED4_SYNI_STRUCTURE.o FLSA_LUT_Utils.o FL_Pass_Interface.o FL_SetUp.o \
+	IGBP_Utils.o Init_SS7_2.o Lev_Isolate.o MATCH_ed4_hourly_SYNI.o \
+	QC_Accum.o QC_Init.o Reg_Drv.o SAH_PERT.o SYN_IO_Utils.o SYN_SAHA.o \
+	SYN_SPECTRAL_18.o SYN_SfcAlb_Init.o SigTab_Var.o SigmaIngest.o \
+	SynSARB_Ingest.o Syn_Spectral_Dat_18.o TuneDrive.o UpTropHum.o \
+	With_Cloud.o Wrap_Up_SS7_2.o common_access.o modalbhdf_SYNI.o \
+	nclouds_params.o overlap_four.o read_zonal_tsi_file.o \
+	simple_tsi_mod.o stream_corr.o tlu_9clouds.o tsi_flag_ed4.o \
+	tsi_type_3x3_mod.o tsi_type_mod.o PGS_ANCINIT_25725.f \
+	PGS_FLSALUTIO_25724.f PGS_GADSAER_25715.f PGS_IGBPUTIL_25721.f \
+	dffunc.f90 hdf.f90
+SYN_SG_Utils.o: ASSALUT_Sfcalb.o Ancill_Init.o CHLOR_CLIM.o CRH_Drv.o \
+	CRH_SARB.o Control_Mod.o Convert_OptDepth.o DrivIngest.o \
+	DrivTab_Var.o ED4_SYNI_STRUCTURE.o FLSA_LUT_Utils.o \
+	FL_Pass_Interface.o FL_SetUp.o IGBP_Utils.o Init_SS7_2.o \
+	Lev_Isolate.o MATCH_ed4_hourly_SYNI.o QC_Accum.o QC_Init.o Reg_Drv.o \
+	SAH_PERT.o SYN_ICE_Utils.o SYN_IO_Utils.o SYN_SAHA.o \
+	SYN_SPECTRAL_18.o SYN_SfcAlb_Init.o SigTab_Var.o SigmaIngest.o \
+	SynSARB_Ingest.o Syn_Spectral_Dat_18.o TuneDrive.o UpTropHum.o \
+	With_Cloud.o Wrap_Up_SS7_2.o common_access.o modalbhdf_SYNI.o \
+	nclouds_params.o overlap_four.o read_zonal_tsi_file.o \
+	simple_tsi_mod.o stream_corr.o tlu_9clouds.o tsi_flag_ed4.o \
+	tsi_type_3x3_mod.o tsi_type_mod.o PGS_ANCINIT_25725.f \
+	PGS_FLSALUTIO_25724.f PGS_GADSAER_25715.f PGS_IGBPUTIL_25721.f \
+	dffunc.f90 hdf.f90
+SYN_SPECTRAL_18.o: ASSALUT_Sfcalb.o Ancill_Init.o CHLOR_CLIM.o CRH_Drv.o \
+	CRH_SARB.o Control_Mod.o Convert_OptDepth.o DrivIngest.o \
+	DrivTab_Var.o ED4_SYNI_STRUCTURE.o EM_MAP.o FLSA_LUT_Utils.o \
+	FL_Pass_Interface.o FL_SetUp.o IGBP_Utils.o Init_SS7_2.o \
+	Lev_Isolate.o MATCH_ed4_hourly_SYNI.o QC_Accum.o QC_Init.o Reg_Drv.o \
+	SAH_PERT.o SYN_ICE_Utils.o SYN_IO_Utils.o SYN_SAHA.o \
+	SYN_SPECTRAL_18.o SYN_SfcAlb_Init.o SigTab_Var.o SigmaIngest.o \
+	SynSARB_Ingest.o Syn_Spectral_Dat_18.o TuneDrive.o UpTropHum.o \
+	With_Cloud.o Wrap_Up_SS7_2.o common_access.o flsa0404_lut.o \
+	modalbhdf_SYNI.o nclouds_params.o overlap_four.o \
+	read_zonal_tsi_file.o simple_tsi_mod.o stream_corr.o tlu_9clouds.o \
+	tsi_flag_ed4.o tsi_type_3x3_mod.o tsi_type_mod.o PGS_ANCINIT_25725.f \
+	PGS_FLSALUTIO_25724.f PGS_GADSAER_25715.f PGS_IGBPUTIL_25721.f \
+	dffunc.f90 hdf.f90
+Syn_Spectral_Dat_18.o: ASSALUT_Sfcalb.o Ancill_Init.o CHLOR_CLIM.o CRH_Drv.o \
+	CRH_SARB.o Control_Mod.o Convert_OptDepth.o DrivIngest.o \
+	DrivTab_Var.o ED4_SYNI_STRUCTURE.o EM_MAP.o FLSA_LUT_Utils.o \
+	FL_Pass_Interface.o FL_SetUp.o IGBP_Utils.o Init_SS7_2.o \
+	Lev_Isolate.o MATCH_ed4_hourly_SYNI.o QC_Accum.o QC_Init.o Reg_Drv.o \
+	SAH_PERT.o SYN_ICE_Utils.o SYN_IO_Utils.o SYN_SAHA.o \
+	SYN_SPECTRAL_18.o SYN_SfcAlb_Init.o SigTab_Var.o SigmaIngest.o \
+	SynSARB_Ingest.o Syn_Spectral_Dat_18.o TuneDrive.o UpTropHum.o \
+	With_Cloud.o Wrap_Up_SS7_2.o common_access.o flsa0404_lut.o \
+	modalbhdf_SYNI.o nclouds_params.o overlap_four.o \
+	read_zonal_tsi_file.o simple_tsi_mod.o stream_corr.o tlu_9clouds.o \
+	tsi_flag_ed4.o tsi_type_3x3_mod.o tsi_type_mod.o PGS_ANCINIT_25725.f \
+	PGS_FLSALUTIO_25724.f PGS_GADSAER_25715.f PGS_IGBPUTIL_25721.f \
+	dffunc.f90 hdf.f90
+SynSARB_Ingest.o: ASSALUT_Sfcalb.o Ancill_Init.o CHLOR_CLIM.o CRH_Drv.o \
+	CRH_SARB.o Control_Mod.o Convert_OptDepth.o DrivIngest.o \
+	DrivTab_Var.o ED4_SYNI_STRUCTURE.o EM_MAP.o FLSA_LUT_Utils.o \
+	FL_Pass_Interface.o FL_SetUp.o IGBP_AdjSnowIce.o IGBP_Utils.o \
+	Init_SS7_2.o Lev_Isolate.o MATCH_ed4_hourly_SYNI.o No_Cloud.o \
+	QC_Accum.o QC_Init.o Reg_Drv.o SAH_PERT.o SYN_ICE_Utils.o \
+	SYN_IO_Utils.o SYN_SAHA.o SYN_SPECTRAL_18.o SYN_SfcAlb_Init.o \
+	SigTab_Var.o SigmaIngest.o SynSARB_Ingest.o Syn_Spectral_Dat_18.o \
+	TuneDrive.o UpTropHum.o With_Cloud.o Wrap_Up_SS7_2.o aotfit.o \
+	common_access.o flsa0404_lut.o modalbhdf_SYNI.o nclouds_params.o \
+	overlap_four.o read_zonal_tsi_file.o simple_tsi_mod.o stream_corr.o \
+	tlu_9clouds.o tsi_flag_ed4.o tsi_type_3x3_mod.o tsi_type_mod.o \
+	PGS_ANCINIT_25725.f PGS_FLSALUTIO_25724.f PGS_GADSAER_25715.f \
+	PGS_IGBPUTIL_25721.f PGS_TSIRET_26004.f dffunc.f90 hdf.f90
+SynSARB_Meta.o: ASSALUT_Sfcalb.o Ancill_Init.o CHLOR_CLIM.o CRH_Drv.o \
+	CRH_SARB.o Control_Mod.o Convert_OptDepth.o DrivIngest.o \
+	DrivTab_Var.o ED4_SYNI_STRUCTURE.o EM_MAP.o FLSA_LUT_Utils.o \
+	FL_Pass_Interface.o FL_SetUp.o IGBP_AdjSnowIce.o IGBP_Utils.o \
+	Init_SS7_2.o Lev_Isolate.o MATCH_ed4_hourly_SYNI.o No_Cloud.o \
+	QC_Accum.o QC_Init.o Reg_Drv.o SAH_PERT.o SYN_ICE_Utils.o \
+	SYN_IO_Utils.o SYN_SAHA.o SYN_SPECTRAL_18.o SYN_SfcAlb_Init.o \
+	SigTab_Var.o SigmaIngest.o SynSARB_Ingest.o Syn_Spectral_Dat_18.o \
+	TuneDrive.o UpTropHum.o With_Cloud.o Wrap_Up_SS7_2.o aotfit.o \
+	common_access.o flsa0404_lut.o modalbhdf_SYNI.o nclouds_params.o \
+	overlap_four.o read_zonal_tsi_file.o simple_tsi_mod.o stream_corr.o \
+	tlu_9clouds.o tsi_flag_ed4.o tsi_type_3x3_mod.o tsi_type_mod.o \
+	PGS_ANCINIT_25725.f PGS_FLSALUTIO_25724.f PGS_GADSAER_25715.f \
+	PGS_IGBPUTIL_25721.f PGS_SARBMETA_25726.f PGS_TSIRET_26004.f \
+	dffunc.f90 hdf.f90
+SynSARB_MOA_Utils.o: ASSALUT_Sfcalb.o Ancill_Init.o CHLOR_CLIM.o CRH_Drv.o \
+	CRH_SARB.o Control_Mod.o Convert_OptDepth.o DrivIngest.o \
+	DrivTab_Var.o ED4_SYNI_STRUCTURE.o EM_MAP.o FLSA_LUT_Utils.o \
+	FL_Pass_Interface.o FL_SetUp.o IGBP_AdjSnowIce.o IGBP_Utils.o \
+	Init_SS7_2.o Lev_Isolate.o MATCH_ed4_hourly_SYNI.o No_Cloud.o \
+	QC_Accum.o QC_Init.o Reg_Drv.o SAH_PERT.o SYN_ICE_Utils.o \
+	SYN_IO_Utils.o SYN_SAHA.o SYN_SPECTRAL_18.o SYN_SfcAlb_Init.o \
+	SigTab_Var.o SigmaIngest.o SynSARB_Ingest.o Syn_Spectral_Dat_18.o \
+	TuneDrive.o UpTropHum.o With_Cloud.o Wrap_Up_SS7_2.o aotfit.o \
+	common_access.o flsa0404_lut.o modalbhdf_SYNI.o nclouds_params.o \
+	overlap_four.o read_zonal_tsi_file.o simple_tsi_mod.o stream_corr.o \
+	tlu_9clouds.o tsi_flag_ed4.o tsi_type_3x3_mod.o tsi_type_mod.o \
+	PGS_ANCINIT_25725.f PGS_FLSALUTIO_25724.f PGS_GADSAER_25715.f \
+	PGS_IGBPUTIL_25721.f PGS_SARBMETA_25726.f PGS_TSIRET_26004.f \
+	dffunc.f90 hdf.f90
+TestReadSYNI.o: ASSALUT_Sfcalb.o Ancill_Init.o CHLOR_CLIM.o CRH_Drv.o \
+	CRH_SARB.o Control_Mod.o Convert_OptDepth.o DrivIngest.o \
+	DrivTab_Var.o ED4_SYNI_STRUCTURE.o EM_MAP.o FLSA_LUT_Utils.o \
+	FL_Pass_Interface.o FL_SetUp.o IGBP_AdjSnowIce.o IGBP_Utils.o \
+	Init_SS7_2.o Lev_Isolate.o MATCH_ed4_hourly_SYNI.o No_Cloud.o \
+	QC_Accum.o QC_Init.o Reg_Drv.o SAH_PERT.o SYN_ICE_Utils.o \
+	SYN_IO_Utils.o SYN_SAHA.o SYN_SPECTRAL_18.o SYN_SfcAlb_Init.o \
+	SigTab_Var.o SigmaIngest.o SynSARB_Ingest.o Syn_Spectral_Dat_18.o \
+	TuneDrive.o UpTropHum.o With_Cloud.o Wrap_Up_SS7_2.o aotfit.o \
+	common_access.o flsa0404_lut.o modalbhdf_SYNI.o nclouds_params.o \
+	overlap_four.o read_zonal_tsi_file.o simple_tsi_mod.o stream_corr.o \
+	tlu_9clouds.o tsi_flag_ed4.o tsi_type_3x3_mod.o tsi_type_mod.o \
+	PGS_ANCINIT_25725.f PGS_FLSALUTIO_25724.f PGS_GADSAER_25715.f \
+	PGS_IGBPUTIL_25721.f PGS_SARBMETA_25726.f PGS_TSIRET_26004.f \
+	dffunc.f90 hdf.f90
+TestReadSYNI2.o: ASSALUT_Sfcalb.o Ancill_Init.o CHLOR_CLIM.o CRH_Drv.o \
+	CRH_SARB.o Control_Mod.o Convert_OptDepth.o DrivIngest.o \
+	DrivTab_Var.o ED4_SYNI_STRUCTURE.o EM_MAP.o FLSA_LUT_Utils.o \
+	FL_Pass_Interface.o FL_SetUp.o IGBP_AdjSnowIce.o IGBP_Utils.o \
+	Init_SS7_2.o Lev_Isolate.o MATCH_ed4_hourly_SYNI.o No_Cloud.o \
+	QC_Accum.o QC_Init.o Reg_Drv.o SAH_PERT.o SYN_ICE_Utils.o \
+	SYN_IO_Utils.o SYN_SAHA.o SYN_SPECTRAL_18.o SYN_SfcAlb_Init.o \
+	SigTab_Var.o SigmaIngest.o SynSARB_Ingest.o Syn_Spectral_Dat_18.o \
+	TuneDrive.o UpTropHum.o With_Cloud.o Wrap_Up_SS7_2.o aotfit.o \
+	common_access.o flsa0404_lut.o modalbhdf_SYNI.o nclouds_params.o \
+	overlap_four.o read_zonal_tsi_file.o simple_tsi_mod.o stream_corr.o \
+	tlu_9clouds.o tsi_flag_ed4.o tsi_type_3x3_mod.o tsi_type_mod.o \
+	PGS_ANCINIT_25725.f PGS_FLSALUTIO_25724.f PGS_GADSAER_25715.f \
+	PGS_IGBPUTIL_25721.f PGS_SARBMETA_25726.f PGS_TSIRET_26004.f \
+	dffunc.f90 hdf.f90
+tlu.o: ASSALUT_Sfcalb.o Ancill_Init.o CHLOR_CLIM.o CRH_Drv.o CRH_SARB.o \
+	Control_Mod.o Convert_OptDepth.o DrivIngest.o DrivTab_Var.o \
+	ED4_SYNI_STRUCTURE.o EM_MAP.o FLSA_LUT_Utils.o FL_Pass_Interface.o \
+	FL_SetUp.o IGBP_AdjSnowIce.o IGBP_Utils.o Init_SS7_2.o Lev_Isolate.o \
+	MATCH_ed4_hourly_SYNI.o No_Cloud.o QC_Accum.o QC_Init.o Reg_Drv.o \
+	SAH_PERT.o SYN_ICE_Utils.o SYN_IO_Utils.o SYN_SAHA.o \
+	SYN_SPECTRAL_18.o SYN_SfcAlb_Init.o SigTab_Var.o SigmaIngest.o \
+	SynSARB_Ingest.o Syn_Spectral_Dat_18.o TuneDrive.o UpTropHum.o \
+	With_Cloud.o Wrap_Up_SS7_2.o aotfit.o common_access.o flsa0404_lut.o \
+	modalbhdf_SYNI.o nclouds_params.o overlap_four.o \
+	read_zonal_tsi_file.o simple_tsi_mod.o stream_corr.o tlu_9clouds.o \
+	tsi_flag_ed4.o tsi_type_3x3_mod.o tsi_type_mod.o PGS_ANCINIT_25725.f \
+	PGS_FLSALUTIO_25724.f PGS_GADSAER_25715.f PGS_IGBPUTIL_25721.f \
+	PGS_SARBMETA_25726.f PGS_TSIRET_26004.f dffunc.f90 hdf.f90
+tlu_9clouds.o: ASSALUT_Sfcalb.o Ancill_Init.o CHLOR_CLIM.o CRH_Drv.o \
+	CRH_SARB.o Control_Mod.o Convert_OptDepth.o DrivIngest.o \
+	DrivTab_Var.o ED4_SYNI_STRUCTURE.o EM_MAP.o FLSA_LUT_Utils.o \
+	FL_Pass_Interface.o FL_SetUp.o IGBP_AdjSnowIce.o IGBP_Utils.o \
+	Init_SS7_2.o Lev_Isolate.o MATCH_ed4_hourly_SYNI.o No_Cloud.o \
+	QC_Accum.o QC_Init.o Reg_Drv.o SAH_PERT.o SYN_ICE_Utils.o \
+	SYN_IO_Utils.o SYN_SAHA.o SYN_SPECTRAL_18.o SYN_SfcAlb_Init.o \
+	SigTab_Var.o SigmaIngest.o SynSARB_Ingest.o Syn_Spectral_Dat_18.o \
+	TuneDrive.o UpTropHum.o With_Cloud.o Wrap_Up_SS7_2.o aotfit.o \
+	common_access.o flsa0404_lut.o modalbhdf_SYNI.o nclouds_params.o \
+	overlap_four.o read_zonal_tsi_file.o simple_tsi_mod.o stream_corr.o \
+	tlu_9clouds.o tsi_flag_ed4.o tsi_type_3x3_mod.o tsi_type_mod.o \
+	PGS_ANCINIT_25725.f PGS_FLSALUTIO_25724.f PGS_GADSAER_25715.f \
+	PGS_IGBPUTIL_25721.f PGS_SARBMETA_25726.f PGS_TSIRET_26004.f \
+	dffunc.f90 hdf.f90
+tsi_flag_ed4.o: ASSALUT_Sfcalb.o Ancill_Init.o CHLOR_CLIM.o CRH_Drv.o \
+	CRH_SARB.o Control_Mod.o Convert_OptDepth.o DrivIngest.o \
+	DrivTab_Var.o ED4_SYNI_STRUCTURE.o EM_MAP.o FLSA_LUT_Utils.o \
+	FL_Pass_Interface.o FL_SetUp.o IGBP_AdjSnowIce.o IGBP_Utils.o \
+	Init_SS7_2.o Lev_Isolate.o MATCH_ed4_hourly_SYNI.o No_Cloud.o \
+	QC_Accum.o QC_Init.o Reg_Drv.o SAH_PERT.o SYN_ICE_Utils.o \
+	SYN_IO_Utils.o SYN_SAHA.o SYN_SPECTRAL_18.o SYN_SfcAlb_Init.o \
+	SigTab_Var.o SigmaIngest.o SynSARB_Ingest.o Syn_Spectral_Dat_18.o \
+	TuneDrive.o UpTropHum.o With_Cloud.o Wrap_Up_SS7_2.o aotfit.o \
+	common_access.o flsa0404_lut.o modalbhdf_SYNI.o nclouds_params.o \
+	overlap_four.o read_zonal_tsi_file.o simple_tsi_mod.o stream_corr.o \
+	tlu_9clouds.o tsi_flag_ed4.o tsi_type_3x3_mod.o tsi_type_mod.o \
+	PGS_ANCINIT_25725.f PGS_FLSALUTIO_25724.f PGS_GADSAER_25715.f \
+	PGS_IGBPUTIL_25721.f PGS_SARBMETA_25726.f PGS_TSIRET_26004.f \
+	dffunc.f90 hdf.f90
+tsi_type_3x3_mod.o: ASSALUT_Sfcalb.o Ancill_Init.o CHLOR_CLIM.o CRH_Drv.o \
+	CRH_SARB.o Control_Mod.o Convert_OptDepth.o DrivIngest.o \
+	DrivTab_Var.o ED4_SYNI_STRUCTURE.o EM_MAP.o FLSA_LUT_Utils.o \
+	FL_Pass_Interface.o FL_SetUp.o IGBP_AdjSnowIce.o IGBP_Utils.o \
+	Init_SS7_2.o Lev_Isolate.o MATCH_ed4_hourly_SYNI.o No_Cloud.o \
+	QC_Accum.o QC_Init.o Reg_Drv.o SAH_PERT.o SYN_ICE_Utils.o \
+	SYN_IO_Utils.o SYN_SAHA.o SYN_SPECTRAL_18.o SYN_SfcAlb_Init.o \
+	SigTab_Var.o SigmaIngest.o SynSARB_Ingest.o Syn_Spectral_Dat_18.o \
+	TuneDrive.o UpTropHum.o With_Cloud.o Wrap_Up_SS7_2.o aotfit.o \
+	common_access.o flsa0404_lut.o modalbhdf_SYNI.o nclouds_params.o \
+	overlap_four.o read_zonal_tsi_file.o simple_tsi_mod.o stream_corr.o \
+	tlu_9clouds.o tsi_flag_ed4.o tsi_type_3x3_mod.o tsi_type_mod.o \
+	PGS_ANCINIT_25725.f PGS_FLSALUTIO_25724.f PGS_GADSAER_25715.f \
+	PGS_IGBPUTIL_25721.f PGS_SARBMETA_25726.f PGS_TSIRET_26004.f \
+	dffunc.f90 hdf.f90
+tsi_type_mod.o: ASSALUT_Sfcalb.o Ancill_Init.o CHLOR_CLIM.o CRH_Drv.o \
+	CRH_SARB.o Control_Mod.o Convert_OptDepth.o DrivIngest.o \
+	DrivTab_Var.o ED4_SYNI_STRUCTURE.o EM_MAP.o FLSA_LUT_Utils.o \
+	FL_Pass_Interface.o FL_SetUp.o IGBP_AdjSnowIce.o IGBP_Utils.o \
+	Init_SS7_2.o Lev_Isolate.o MATCH_ed4_hourly_SYNI.o No_Cloud.o \
+	QC_Accum.o QC_Init.o Reg_Drv.o SAH_PERT.o SYN_ICE_Utils.o \
+	SYN_IO_Utils.o SYN_SAHA.o SYN_SPECTRAL_18.o SYN_SfcAlb_Init.o \
+	SigTab_Var.o SigmaIngest.o SynSARB_Ingest.o Syn_Spectral_Dat_18.o \
+	TuneDrive.o UpTropHum.o With_Cloud.o Wrap_Up_SS7_2.o aotfit.o \
+	common_access.o flsa0404_lut.o modalbhdf_SYNI.o nclouds_params.o \
+	overlap_four.o read_zonal_tsi_file.o simple_tsi_mod.o stream_corr.o \
+	tlu_9clouds.o tsi_flag_ed4.o tsi_type_3x3_mod.o tsi_type_mod.o \
+	PGS_ANCINIT_25725.f PGS_CERES_25000.f PGS_FLSALUTIO_25724.f \
+	PGS_GADSAER_25715.f PGS_IGBPUTIL_25721.f PGS_SARBMETA_25726.f \
+	PGS_SMF.f PGS_TSIRET_26004.f PGS_TSI_25910.f dffunc.f90 hdf.f90
+Tune_Code.o: ASSALUT_Sfcalb.o Ancill_Init.o CHLOR_CLIM.o CRH_Drv.o CRH_SARB.o \
+	Control_Mod.o Convert_OptDepth.o DrivIngest.o DrivTab_Var.o \
+	ED4_SYNI_STRUCTURE.o EM_MAP.o FLSA_LUT_Utils.o FL_Pass_Interface.o \
+	FL_SetUp.o IGBP_AdjSnowIce.o IGBP_Utils.o Init_SS7_2.o Lev_Isolate.o \
+	MATCH_ed4_hourly_SYNI.o No_Cloud.o QC_Accum.o QC_Init.o Reg_Drv.o \
+	SAH_PERT.o SYN_ICE_Utils.o SYN_IO_Utils.o SYN_SAHA.o \
+	SYN_SPECTRAL_18.o SYN_SfcAlb_Init.o SigTab_Var.o SigmaIngest.o \
+	SynSARB_Ingest.o Syn_Spectral_Dat_18.o TuneDrive.o UpTropHum.o \
+	With_Cloud.o Wrap_Up_SS7_2.o aotfit.o common_access.o flsa0404_lut.o \
+	modalbhdf_SYNI.o nclouds_params.o overlap_four.o \
+	read_zonal_tsi_file.o simple_tsi_mod.o stream_corr.o tlu_9clouds.o \
+	tsi_flag_ed4.o tsi_type_3x3_mod.o tsi_type_mod.o PGS_ANCINIT_25725.f \
+	PGS_CERES_25000.f PGS_FLSALUTIO_25724.f PGS_GADSAER_25715.f \
+	PGS_IGBPUTIL_25721.f PGS_SARBMETA_25726.f PGS_SMF.f \
+	PGS_TSIRET_26004.f PGS_TSI_25910.f dffunc.f90 hdf.f90
+TuneDrive.o: ASSALUT_Sfcalb.o Ancill_Init.o CHLOR_CLIM.o CRH_Drv.o CRH_SARB.o \
+	Control_Mod.o Convert_OptDepth.o DrivIngest.o DrivTab_Var.o \
+	ED4_SYNI_STRUCTURE.o EM_MAP.o FLSA_LUT_Utils.o FL_Pass_Interface.o \
+	FL_SetUp.o IGBP_AdjSnowIce.o IGBP_Utils.o Init_SS7_2.o Lev_Isolate.o \
+	MATCH_ed4_hourly_SYNI.o No_Cloud.o QC_Accum.o QC_Init.o Reg_Drv.o \
+	SAH_PERT.o SYN_ICE_Utils.o SYN_IO_Utils.o SYN_SAHA.o \
+	SYN_SPECTRAL_18.o SYN_SfcAlb_Init.o SigTab_Var.o SigmaIngest.o \
+	SynSARB_Ingest.o Syn_Spectral_Dat_18.o TuneDrive.o Tune_Code.o \
+	UpTropHum.o With_Cloud.o Wrap_Up_SS7_2.o aotfit.o common_access.o \
+	flsa0404_lut.o modalbhdf_SYNI.o nclouds_params.o overlap_four.o \
+	read_zonal_tsi_file.o simple_tsi_mod.o stream_corr.o tlu_9clouds.o \
+	tsi_flag_ed4.o tsi_type_3x3_mod.o tsi_type_mod.o PGS_ANCINIT_25725.f \
+	PGS_CERES_25000.f PGS_FLSALUTIO_25724.f PGS_GADSAER_25715.f \
+	PGS_IGBPUTIL_25721.f PGS_SARBMETA_25726.f PGS_SMF.f \
+	PGS_TSIRET_26004.f PGS_TSI_25910.f dffunc.f90 hdf.f90
+UpTropHum.o: ASSALUT_Sfcalb.o Ancill_Init.o CHLOR_CLIM.o CRH_Drv.o CRH_SARB.o \
+	Control_Mod.o Convert_OptDepth.o DrivIngest.o DrivTab_Var.o \
+	ED4_SYNI_STRUCTURE.o EM_MAP.o FLSA_LUT_Utils.o FL_Pass_Interface.o \
+	FL_SetUp.o IGBP_AdjSnowIce.o IGBP_Utils.o Init_SS7_2.o Lev_Isolate.o \
+	MATCH_ed4_hourly_SYNI.o No_Cloud.o QC_Accum.o QC_Init.o Reg_Drv.o \
+	SAH_PERT.o SYN_ICE_Utils.o SYN_IO_Utils.o SYN_SAHA.o \
+	SYN_SPECTRAL_18.o SYN_SfcAlb_Init.o SigTab_Var.o SigmaIngest.o \
+	SynSARB_Ingest.o Syn_Spectral_Dat_18.o TuneDrive.o Tune_Code.o \
+	UpTropHum.o With_Cloud.o Wrap_Up_SS7_2.o aotfit.o common_access.o \
+	flsa0404_lut.o modalbhdf_SYNI.o nclouds_params.o overlap_four.o \
+	read_zonal_tsi_file.o simple_tsi_mod.o stream_corr.o tlu_9clouds.o \
+	tsi_flag_ed4.o tsi_type_3x3_mod.o tsi_type_mod.o PGS_ANCINIT_25725.f \
+	PGS_CERES_25000.f PGS_FLSALUTIO_25724.f PGS_GADSAER_25715.f \
+	PGS_IGBPUTIL_25721.f PGS_SARBMETA_25726.f PGS_SMF.f \
+	PGS_TSIRET_26004.f PGS_TSI_25910.f dffunc.f90 hdf.f90
+With_Cloud.o: ASSALUT_Sfcalb.o Ancill_Init.o CHLOR_CLIM.o CRH_Drv.o \
+	CRH_SARB.o Control_Mod.o Convert_OptDepth.o DrivIngest.o \
+	DrivTab_Var.o ED4_SYNI_STRUCTURE.o EM_MAP.o FLSA_LUT_Utils.o \
+	FL_Pass_Interface.o FL_SetUp.o IGBP_AdjSnowIce.o IGBP_Utils.o \
+	Init_SS7_2.o Lev_Isolate.o MATCH_ed4_hourly_SYNI.o No_Cloud.o \
+	QC_Accum.o QC_Init.o Reg_Drv.o SAH_PERT.o SYN_ICE_Utils.o \
+	SYN_IO_Utils.o SYN_SAHA.o SYN_SPECTRAL_18.o SYN_SfcAlb_Init.o \
+	SigTab_Var.o SigmaIngest.o SynSARB_Ingest.o Syn_Spectral_Dat_18.o \
+	TuneDrive.o Tune_Code.o UpTropHum.o With_Cloud.o Wrap_Up_SS7_2.o \
+	aotfit.o common_access.o flsa0404_lut.o modalbhdf_SYNI.o \
+	nclouds_params.o overlap_four.o read_zonal_tsi_file.o \
+	simple_tsi_mod.o stream_corr.o tlu_9clouds.o tsi_flag_ed4.o \
+	tsi_type_3x3_mod.o tsi_type_mod.o PGS_ANCINIT_25725.f \
+	PGS_CERES_25000.f PGS_FLSALUTIO_25724.f PGS_GADSAER_25715.f \
+	PGS_IGBPUTIL_25721.f PGS_SARBMETA_25726.f PGS_SMF.f \
+	PGS_TSIRET_26004.f PGS_TSI_25910.f dffunc.f90 hdf.f90
+Wrap_Up_SS7_2.o: ASSALUT_Sfcalb.o Ancill_Init.o CHLOR_CLIM.o CRH_Drv.o \
+	CRH_SARB.o Control_Mod.o Convert_OptDepth.o DrivIngest.o \
+	DrivTab_Var.o ED4_SYNI_STRUCTURE.o EM_MAP.o FLSA_LUT_Utils.o \
+	FL_Pass_Interface.o FL_SetUp.o IGBP_AdjSnowIce.o IGBP_Utils.o \
+	Init_SS7_2.o Lev_Isolate.o MATCH_ed4_hourly_SYNI.o No_Cloud.o \
+	QC_Accum.o QC_Fin.o QC_Init.o Reg_Drv.o SAH_PERT.o SYN_ICE_Utils.o \
+	SYN_IO_Utils.o SYN_SAHA.o SYN_SPECTRAL_18.o SYN_SfcAlb_Init.o \
+	SigTab_Var.o SigmaIngest.o SynSARB_Ingest.o SynSARB_Meta.o \
+	Syn_Spectral_Dat_18.o TuneDrive.o Tune_Code.o UpTropHum.o \
+	With_Cloud.o Wrap_Up_SS7_2.o aotfit.o common_access.o flsa0404_lut.o \
+	modalbhdf_SYNI.o nclouds_params.o overlap_four.o \
+	read_zonal_tsi_file.o simple_tsi_mod.o stream_corr.o tlu_9clouds.o \
+	tsi_flag_ed4.o tsi_type_3x3_mod.o tsi_type_mod.o PGS_ANCINIT_25725.f \
+	PGS_CERES_25000.f PGS_FLSALUTIO_25724.f PGS_GADSAER_25715.f \
+	PGS_IGBPUTIL_25721.f PGS_SARBMETA_25726.f PGS_SMF.f \
+	PGS_TSIRET_26004.f PGS_TSI_25910.f PGS_WRAPSYN_26006.f dffunc.f90 \
+	hdf.f90
+write_test.o: ASSALUT_Sfcalb.o Ancill_Init.o CHLOR_CLIM.o CRH_Drv.o \
+	CRH_SARB.o Control_Mod.o Convert_OptDepth.o DrivIngest.o \
+	DrivTab_Var.o ED4_SYNI_STRUCTURE.o EM_MAP.o FLSA_LUT_Utils.o \
+	FL_Pass_Interface.o FL_SetUp.o IGBP_AdjSnowIce.o IGBP_Utils.o \
+	Init_SS7_2.o Lev_Isolate.o MATCH_ed4_hourly_SYNI.o No_Cloud.o \
+	QC_Accum.o QC_Fin.o QC_Init.o Reg_Drv.o SAH_PERT.o SYN_ICE_Utils.o \
+	SYN_IO_Utils.o SYN_SAHA.o SYN_SPECTRAL_18.o SYN_SfcAlb_Init.o \
+	SigTab_Var.o SigmaIngest.o SynSARB_Ingest.o SynSARB_Meta.o \
+	Syn_Spectral_Dat_18.o TuneDrive.o Tune_Code.o UpTropHum.o \
+	With_Cloud.o Wrap_Up_SS7_2.o aotfit.o common_access.o flsa0404_lut.o \
+	modalbhdf_SYNI.o nclouds_params.o overlap_four.o \
+	read_zonal_tsi_file.o simple_tsi_mod.o stream_corr.o tlu_9clouds.o \
+	tsi_flag_ed4.o tsi_type_3x3_mod.o tsi_type_mod.o PGS_ANCINIT_25725.f \
+	PGS_CERES_25000.f PGS_FLSALUTIO_25724.f PGS_GADSAER_25715.f \
+	PGS_IGBPUTIL_25721.f PGS_SARBMETA_25726.f PGS_SMF.f \
+	PGS_TSIRET_26004.f PGS_TSI_25910.f PGS_WRAPSYN_26006.f dffunc.f90 \
+	hdf.f90

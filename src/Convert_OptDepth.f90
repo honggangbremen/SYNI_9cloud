@@ -1,0 +1,516 @@
+MODULE Convert_OptDepth
+!
+!
+!*****************************************************************************
+!
+! !F90
+!
+! !Name:
+!   Convert_OptDepth
+!
+! !Description:
+!    Routine ID - M5.2.2.1
+!
+!    Purpose - To provide the functions necessary for the conversion of
+!              optical depth to liquid water content
+!
+!
+! !Input Parameters:
+!    NONE
+!
+! !Output Parameters:
+!    NONE
+!
+! !Team-Unique Header:
+!
+!  Modules Used:
+!    FL_IO_Params     - (SARBlib) Used by Sbr. OptDepth_LWC
+!    Profile_Params   - (SARBlib) Used by Sbr. OptDepth_LWC
+!    SARB_General     - (SARBlib)
+!    SARB_Var         - (SARBlib) Used by Sbr. OptDepth_LWC
+!    SARBInput_Params - (SARBlib) Used by Sbr. OptDepth_LWC
+!
+!  Internal Routines:
+!    cld_thk      - Determines cloud thickness
+!    OptDepth_LWC - Drives the conversion of optical depth to liquid 
+!                   water content
+!    tau_wp       - Converts optical depth (logarithmic) to liquid water path
+!    wp_wc        - Converts liquid water path to liquid water content
+!
+! !Revision History:
+!  Version 4.0   August 18, 2006 - SCCR #634  
+!                Thomas Caldwell, SAIC, t.e.caldwell@larc.nasa.gov
+!                 Modified function cld_thk
+!  Version 3.5   August 1, 2003 - SCCR #458
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                 1. Modified Sbr. OptDepth_LWC
+!  Version 3.3   December 20, 2002 - SCCR #408
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                 1. Modified Sbr. OptDepth_LWC
+!  Version 1.0   March 21, 1996
+!                Fred Rose, AS&M, f.g.rose@larc.nasa.gov
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!
+! !END
+!
+!*****************************************************************************
+!
+!
+      USE FL_IO_Params
+      USE Profile_Params
+      
+      USE nclouds_params  !HG-2025.0722
+
+!      USE SARB_General
+      USE SARB_Var
+      USE SARBInput_Params
+!
+!
+CONTAINS
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!
+      SUBROUTINE OptDepth_LWC (IPass,                                  & ! I
+                                      CBot)                              ! O
+!
+!
+!*****************************************************************************
+!
+! !F90
+!
+! !Name:
+!   OptDepth_LWC
+!
+! !Description:
+!    Routine ID - 5.2.2.1
+!
+!    Purpose - To convert optical depth to liquid water content
+!
+!
+! !Input Parameters:
+!    IPass - Array index indicating the pass through the model
+!
+! !Output Parameters:
+!    CBot - Array of cloud bottom heights (hPa)
+!
+! !Team-Unique Header:
+!
+!  Key Local Variables:
+!    taucc - Optical depth mean value (logarithmic)
+! 
+!  Modules Used:
+!    FL_IO_Params     - (SARBlib) Parameters: Default_REAL4_FL, IcePart_size*, 
+!                                             IW_content*, LiquidPart_size*, 
+!                                             LW_content*
+!    Profile_Params   - (SARBlib) Parameters: MaxLev_Cld, MetIn
+!    SARB_Var         - (SARBlib) Parameters: CldTop, EffTemp, ipz, OptDepth_mn,
+!                                             part_rad*, Phase_mn
+!    SARBInput_Params - (SARBlib) Parameters: IcePhase, LiqPhase, MaxLiq_Phase
+!
+!  Internal Routines Used:
+!    cld_thk
+!    tau_wp
+!    wp_wc
+!
+! !Revision History:
+!  Version 3.5   August 1, 2003 - SCCR #458
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                 Modified definition of CBot
+!  Version 3.3   December 20, 2002 - SCCR #408
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                  1. Addition of input variable IPass to the calling
+!                     argument list--used for EffTemp and OptDepth_mn arrays.
+!  Version 1.0   March 21, 1996
+!                Fred Rose, AS&M, f.g.rose@larc.nasa.gov
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!
+! !END
+!
+!*****************************************************************************
+!
+!
+      INTEGER, INTENT (IN)  :: IPass
+!      REAL,    INTENT (OUT) :: CBot ( MaxLev_Cld)
+      REAL,    INTENT (OUT) :: CBot ( nclouds)  !HG-2025.0722
+!
+      INTEGER :: CH_Idx
+      REAL    :: dz
+      REAL    :: taucc
+      REAL    :: WaterContent
+!
+!
+!      ipz ( 1:MaxLev_Cld) = 0
+!      IW_content ( IPass, 1:MaxLev_Cld) = 0.0
+!      LW_content ( IPass, 1:MaxLev_Cld) = 0.0
+
+      ipz ( 1:nclouds) = 0    !! HG-2025.0722
+      IW_content ( IPass, 1:nclouds) = 0.0
+      LW_content ( IPass, 1:nclouds) = 0.0
+!
+!      DO CH_Idx = 1, MaxLev_Cld
+      DO CH_Idx = 1, nclouds
+          IF (CldTop ( IPass, CH_Idx) /= Default_REAL4_FL                   &
+                      .AND. CldTop ( IPass, CH_Idx) > 0.) THEN
+!
+              IF ( Phase_mn ( CH_Idx) <= MaxLiq_Phase) THEN
+!             *** Water
+!
+                  ipz ( CH_Idx) = INT (LiqPhase)
+!
+              ELSE
+!             *** Ice
+!      
+                  ipz ( CH_Idx) = INT (IcePhase)
+!
+              END IF
+!
+!
+
+              taucc = OptDepth_mn ( IPass, CH_Idx) 
+!
+!
+!         *** Convert Optical depth to liquid water path
+              cw ( CH_Idx) = tau_wp (1, taucc, part_rad ( CH_Idx),         &
+                                                            ipz ( CH_Idx))
+!
+!
+!         *** Convert cloud temperature/optical depth to cloud thickness 
+              dz = cld_thk (EffTemp ( IPass, CH_Idx), taucc)
+! 
+!
+!         *** Convert water path to water content
+!
+              WaterContent = wp_wc (cw ( CH_Idx), dz)
+!
+              CBot ( CH_Idx) = gppb (CldTop ( IPass, CH_Idx), dz,              &
+                                    (ModLev_Temp ( MetIn, ModLev_Cnt ( MetIn)) &
+                                     + EffTemp ( IPass, CH_Idx)) * 0.5)
+!
+!#####       CBot ( CH_Idx) = gppb (CldTop ( IPass, CH_Idx), dz,              &
+!#####                      (EffTemp ( IPass, CH_Idx) * (1.0 + dz*6.0) ) * 0.5)
+!
+
+              IF ( ipz ( CH_Idx) == INT (IcePhase)) THEN
+!             *** Ice
+!
+                  IW_content ( IPass, CH_Idx) = WaterContent
+!
+              ELSE 
+!             *** Liquid
+!
+                  LW_content ( IPass, CH_Idx) = WaterContent
+!
+              END IF
+!
+!
+          ELSE
+!         *** No cloud for this layer.
+!
+              part_rad ( CH_Idx) = 0.0
+              ipz ( CH_Idx) = 0
+              LiquidPart_size ( IPass, CH_Idx) = 0.0
+              IcePart_size ( IPass, CH_Idx) = 0.0
+! 
+          END IF
+!  
+      END DO
+! 
+!
+      END SUBROUTINE OptDepth_LWC
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!
+      FUNCTION cld_thk (tc, tau) Result (dz)
+!
+!*****************************************************************************
+!
+! !F90
+!
+! !Name:
+!    cld_thk
+!
+! !Description:
+!    Routine ID - 5.2.2.1.1
+!
+!    Purpose -
+!
+!
+! !Input Parameters:
+!    tau - optical depth
+!    tc  - cloud top (effective) temperature
+!
+! !Output Parameters:
+!    dz - Cloud thickness (km)
+!
+! !Revision History:
+!  Version 4.0   August 18, 2006 - SCCR #634  
+!                Thomas Caldwell, SAIC, t.e.caldwell@larc.nasa.gov
+!                Commented out this line: 
+!                 IF (dz < dz_min) dz = dz_min
+!                and added new boundary conditions for dz
+!  Version 1.0   March 21, 1996
+!                Fred Rose, AS&M, f.g.rose@larc.nasa.gov
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!
+! !end
+!
+!******************************************************************************
+!
+        REAL, INTENT (IN)  :: tau
+        REAL, INTENT (IN)  :: tc
+!
+        REAL            :: dz
+        REAL            :: dzn1, dzn2
+        REAL, PARAMETER :: dz_min = 0.100
+        REAL            :: ti
+        REAL            :: trng
+        REAL            :: w1, w2
+!
+!
+   IF (tc <= 245) THEN
+
+    dz = 7.2  -  0.024 * tc  +  0.95 * LOG (tau)
+
+   ELSE IF (tc >= 275) THEN
+!
+    dz = 0.085 * SQRT (tau)
+
+   ELSE
+!
+    dzn1 = 7.2   -    0.024 * tc  +   0.95 * LOG (tau)
+    dzn2 = 0.085 * SQRT (tau)
+    trng = 275-245
+    ti   = tc-245
+    w1   = ti/trng
+    w2   = (1.0-w1)
+    dz   = dzn1 * w2  +  dzn2 * w1
+!
+   END IF
+!
+!   IF (dz < dz_min) dz = dz_min
+    IF (dz < 0.2 .AND. tc < 235) dz = 0.2
+    IF (tc >= 235 .AND. dz < dz_min) dz = dz_min
+!
+      END FUNCTION cld_thk
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!
+      FUNCTION wp_wc (wp,dz) Result ( wp_wc_result)
+!
+!*****************************************************************************
+!
+! !F90
+!
+! !Name:
+!    wp_wc
+!
+! !Description:
+!    Routine ID - 5.2.2.1.3
+!
+!    Purpose - To convert water path to water content
+!
+!
+! !Input Parameters:
+!    dz - Cloud thickness (km)
+!    wp - Water path
+!
+! !Output Parameters:
+!    wp_wc_result - Water content
+!
+! !Revision History:
+!  Version 1.0   March 21, 1996
+!                Fred Rose, AS&M, f.g.rose@larc.nasa.gov
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!
+! !end
+!
+!******************************************************************************
+!
+!
+        REAL, INTENT (IN)  :: dz
+        REAL, INTENT (IN)  :: wp
+!
+        REAL :: wp_wc_result
+!
+!
+        wp_wc_result = wp / (dz*1000.)
+!
+      END FUNCTION wp_wc
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!
+      FUNCTION tau_wp (idir, rin, radius, ipha) Result (twp_result)
+!
+!
+!*****************************************************************************
+!
+! !F90
+!
+! !Name:
+!   tau_wp
+!
+! !Description:
+!    Routine ID - 5.2.2.1.1
+!
+!    Purpose - To convert visible optical depth to water path
+!
+! 
+! !Input Parameters:
+!    idir   - indicates which way to convert
+!              =  1        TAU ----> WATER PATH
+!              = -1 WATER PATH ----> TAU
+!    ipha   - Cloud particle phase
+!              = 1 ; water
+!              = 2 ; ice
+!    radius - radius of um water droplets
+!    rin    - Tau for idir=1, LWP/IWP for idir=-1
+! 
+! !Output Parameters:
+!   twp_result - Water path/optical depth value
+!
+! !Team-Unique Header:
+!
+!  Explaination of Complex Algorithms:
+!    Technique developed by Pat Minnis, NASA/Langley ASD/RSB
+!
+! !Revision History:
+!  Version 1.0   March 21, 1996
+!                Fred Rose, AS&M, f.g.rose@larc.nasa.gov
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!
+!  Version 2.0   November 14, 1996
+!                Incorporated Pat Minnis's October 30, 1996 modifications
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!
+! !END
+!
+!*****************************************************************************
+!
+        INTEGER, INTENT (IN)  :: idir
+        INTEGER, INTENT (IN)  :: ipha
+        REAL   , INTENT (IN)  :: radius
+        REAL   , INTENT (IN)  :: rin
+!
+        REAL :: alr
+        REAL :: iwpcoefs ( 3)
+        REAL :: qext
+        REAL :: qextcoefs ( 3)
+        REAL :: twp_result
+        REAL :: val
+        REAL :: veae
+!
+! +++ ORIGINAL  iwpcoefs = (/0.1473, 0.2833, -2.594E-4/)
+!
+    iwpcoefs = (/2.453e-1,1.2196e-3,-3.4745e-6/)             !10/30/96
+    qextcoefs = (/2.416, -0.1854, .0209/)
+!
+    IF (ipha == 2) THEN
+!       *** Ice
+!
+! +++ ORIGINAL   veae =  iwpcoefs ( 1)  +  iwpcoefs ( 2) * radius   &
+! +++ ORIGINAL         + iwpcoefs ( 3) * radius * radius
+!
+    veae =   iwpcoefs ( 1) * radius                        &  !10/30/96
+                   + iwpcoefs ( 2) * radius * radius               &
+                   + iwpcoefs ( 3) * radius * radius * radius
+!     
+    val = veae
+!
+    ELSE IF (ipha == 1) THEN
+!       *** Water
+!
+    alr = LOG (radius)
+!
+    qext =   qextcoefs ( 1)  +   qextcoefs ( 2) * alr                &
+                   + qextcoefs ( 3) * alr * alr
+!
+    val = 4. * radius / 3. / qext
+!
+    ELSE
+!       *** Other
+!
+! ### print*, ' ipha not equal to 1 or 2;  ipha =',ipha
+    twp_result = -9999.
+            return
+!
+    END IF
+!
+!
+        IF (idir == 1) THEN
+!       *** TAU ----> WATER PATH
+!
+            twp_result = rin * val  
+!         
+        ELSE IF (idir == -1) THEN
+!       *** WATER PATH ----> TAU
+!
+            twp_result = rin / val
+!  
+        END IF
+!
+      END FUNCTION tau_wp
+!
+!
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!
+      FUNCTION gppb (pt, dz, tbar) RESULT (gppb_result)
+!
+!
+!****************************************************************************
+!
+! !F90
+!
+! !Name
+!   gppb
+!
+! !Description:
+!   Routine ID -
+!
+!   Purpose - To find cloud bottom pressure
+!
+!
+! !Input Parameters:
+!    pt   - Upper Pressure
+!    dz   - Thickness in KM
+!    tbar - Mean virtual temperature of layer
+!
+! !Output Parameters:
+!    gppb_result - bottom pressure
+!
+! !Team-Unique Header:
+!
+!  Comments:
+!    1. This function needs to be yanked from this module and put in
+!       a module named SARB_General
+!
+! !Revision History:
+!  Version 1.0   March 21, 1996
+!                Fred Rose, AS&M, f.g.rose@larc.nasa.gov
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                Initial Version of Code
+!
+! !end
+!
+!****************************************************************************
+!
+!
+      REAL, INTENT (IN) :: dz
+      REAL, INTENT (IN) :: pt
+      REAL, INTENT (IN) :: tbar
+!
+      REAL :: h
+      REAL :: gppb_result
+!
+!
+      h = 29.3* tbar*.001  !! SCALE HEIGHT IN KM
+      gppb_result = pt * EXP (dz/h)
+!
+      END FUNCTION gppb
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+END MODULE Convert_OptDepth
+
+
+
+

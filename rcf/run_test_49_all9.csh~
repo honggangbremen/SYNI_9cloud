@@ -1,0 +1,870 @@
+
+
+./cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+./CER7.2.1P2_pcfgen.pl -date 201304Z001
+
+cd pcf
+cp test.1_33_49 CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+cd ..
+
+cp /CERES/sarb/hong/test_data/test_all_4/comb_2359_CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001 /homedir/ghong/tmp/SARB/tsi/04_09_333/CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001
+
+./run_CER7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 > test.test 
+
+mv /homedir/ghong/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 /CERES/sarb/hong/test_data/test_all_4/out/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001_2359
+
+
+./cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+./CER7.2.1P2_pcfgen.pl -date 201304Z001
+
+cd pcf
+cp test.1_33_49 CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+cd ..
+
+cp /CERES/sarb/hong/test_data/test_all_4/comb_2367_CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001 /homedir/ghong/tmp/SARB/tsi/04_09_333/CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001
+
+./run_CER7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 > test.test 
+
+mv /homedir/ghong/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 /CERES/sarb/hong/test_data/test_all_4/out/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001_2367
+
+
+./cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+./CER7.2.1P2_pcfgen.pl -date 201304Z001
+
+cd pcf
+cp test.1_33_49 CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+cd ..
+
+cp /CERES/sarb/hong/test_data/test_all_4/comb_2368_CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001 /homedir/ghong/tmp/SARB/tsi/04_09_333/CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001
+
+./run_CER7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 > test.test 
+
+mv /homedir/ghong/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 /CERES/sarb/hong/test_data/test_all_4/out/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001_2368
+
+
+./cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+./CER7.2.1P2_pcfgen.pl -date 201304Z001
+
+cd pcf
+cp test.1_33_49 CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+cd ..
+
+cp /CERES/sarb/hong/test_data/test_all_4/comb_2369_CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001 /homedir/ghong/tmp/SARB/tsi/04_09_333/CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001
+
+./run_CER7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 > test.test 
+
+mv /homedir/ghong/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 /CERES/sarb/hong/test_data/test_all_4/out/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001_2369
+
+
+./cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+./CER7.2.1P2_pcfgen.pl -date 201304Z001
+
+cd pcf
+cp test.1_33_49 CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+cd ..
+
+cp /CERES/sarb/hong/test_data/test_all_4/comb_2378_CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001 /homedir/ghong/tmp/SARB/tsi/04_09_333/CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001
+
+./run_CER7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 > test.test 
+
+mv /homedir/ghong/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 /CERES/sarb/hong/test_data/test_all_4/out/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001_2378
+
+
+./cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+./CER7.2.1P2_pcfgen.pl -date 201304Z001
+
+cd pcf
+cp test.1_33_49 CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+cd ..
+
+cp /CERES/sarb/hong/test_data/test_all_4/comb_2379_CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001 /homedir/ghong/tmp/SARB/tsi/04_09_333/CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001
+
+./run_CER7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 > test.test 
+
+mv /homedir/ghong/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 /CERES/sarb/hong/test_data/test_all_4/out/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001_2379
+
+
+./cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+./CER7.2.1P2_pcfgen.pl -date 201304Z001
+
+cd pcf
+cp test.1_33_49 CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+cd ..
+
+cp /CERES/sarb/hong/test_data/test_all_4/comb_2389_CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001 /homedir/ghong/tmp/SARB/tsi/04_09_333/CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001
+
+./run_CER7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 > test.test 
+
+mv /homedir/ghong/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 /CERES/sarb/hong/test_data/test_all_4/out/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001_2389
+
+
+./cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+./CER7.2.1P2_pcfgen.pl -date 201304Z001
+
+cd pcf
+cp test.1_33_49 CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+cd ..
+
+cp /CERES/sarb/hong/test_data/test_all_4/comb_2456_CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001 /homedir/ghong/tmp/SARB/tsi/04_09_333/CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001
+
+./run_CER7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 > test.test 
+
+mv /homedir/ghong/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 /CERES/sarb/hong/test_data/test_all_4/out/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001_2456
+
+
+./cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+./CER7.2.1P2_pcfgen.pl -date 201304Z001
+
+cd pcf
+cp test.1_33_49 CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+cd ..
+
+cp /CERES/sarb/hong/test_data/test_all_4/comb_2457_CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001 /homedir/ghong/tmp/SARB/tsi/04_09_333/CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001
+
+./run_CER7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 > test.test 
+
+mv /homedir/ghong/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 /CERES/sarb/hong/test_data/test_all_4/out/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001_2457
+
+
+./cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+./CER7.2.1P2_pcfgen.pl -date 201304Z001
+
+cd pcf
+cp test.1_33_49 CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+cd ..
+
+cp /CERES/sarb/hong/test_data/test_all_4/comb_2458_CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001 /homedir/ghong/tmp/SARB/tsi/04_09_333/CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001
+
+./run_CER7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 > test.test 
+
+mv /homedir/ghong/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 /CERES/sarb/hong/test_data/test_all_4/out/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001_2458
+
+
+./cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+./CER7.2.1P2_pcfgen.pl -date 201304Z001
+
+cd pcf
+cp test.1_33_49 CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+cd ..
+
+cp /CERES/sarb/hong/test_data/test_all_4/comb_2459_CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001 /homedir/ghong/tmp/SARB/tsi/04_09_333/CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001
+
+./run_CER7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 > test.test 
+
+mv /homedir/ghong/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 /CERES/sarb/hong/test_data/test_all_4/out/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001_2459
+
+
+./cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+./CER7.2.1P2_pcfgen.pl -date 201304Z001
+
+cd pcf
+cp test.1_33_49 CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+cd ..
+
+cp /CERES/sarb/hong/test_data/test_all_4/comb_2467_CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001 /homedir/ghong/tmp/SARB/tsi/04_09_333/CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001
+
+./run_CER7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 > test.test 
+
+mv /homedir/ghong/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 /CERES/sarb/hong/test_data/test_all_4/out/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001_2467
+
+
+./cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+./CER7.2.1P2_pcfgen.pl -date 201304Z001
+
+cd pcf
+cp test.1_33_49 CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+cd ..
+
+cp /CERES/sarb/hong/test_data/test_all_4/comb_2468_CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001 /homedir/ghong/tmp/SARB/tsi/04_09_333/CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001
+
+./run_CER7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 > test.test 
+
+mv /homedir/ghong/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 /CERES/sarb/hong/test_data/test_all_4/out/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001_2468
+
+
+./cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+./CER7.2.1P2_pcfgen.pl -date 201304Z001
+
+cd pcf
+cp test.1_33_49 CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+cd ..
+
+cp /CERES/sarb/hong/test_data/test_all_4/comb_2469_CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001 /homedir/ghong/tmp/SARB/tsi/04_09_333/CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001
+
+./run_CER7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 > test.test 
+
+mv /homedir/ghong/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 /CERES/sarb/hong/test_data/test_all_4/out/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001_2469
+
+
+./cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+./CER7.2.1P2_pcfgen.pl -date 201304Z001
+
+cd pcf
+cp test.1_33_49 CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+cd ..
+
+cp /CERES/sarb/hong/test_data/test_all_4/comb_2478_CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001 /homedir/ghong/tmp/SARB/tsi/04_09_333/CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001
+
+./run_CER7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 > test.test 
+
+mv /homedir/ghong/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 /CERES/sarb/hong/test_data/test_all_4/out/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001_2478
+
+
+./cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+./CER7.2.1P2_pcfgen.pl -date 201304Z001
+
+cd pcf
+cp test.1_33_49 CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+cd ..
+
+cp /CERES/sarb/hong/test_data/test_all_4/comb_2479_CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001 /homedir/ghong/tmp/SARB/tsi/04_09_333/CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001
+
+./run_CER7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 > test.test 
+
+mv /homedir/ghong/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 /CERES/sarb/hong/test_data/test_all_4/out/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001_2479
+
+
+./cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+./CER7.2.1P2_pcfgen.pl -date 201304Z001
+
+cd pcf
+cp test.1_33_49 CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+cd ..
+
+cp /CERES/sarb/hong/test_data/test_all_4/comb_2489_CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001 /homedir/ghong/tmp/SARB/tsi/04_09_333/CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001
+
+./run_CER7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 > test.test 
+
+mv /homedir/ghong/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 /CERES/sarb/hong/test_data/test_all_4/out/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001_2489
+
+
+./cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+./CER7.2.1P2_pcfgen.pl -date 201304Z001
+
+cd pcf
+cp test.1_33_49 CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+cd ..
+
+cp /CERES/sarb/hong/test_data/test_all_4/comb_2567_CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001 /homedir/ghong/tmp/SARB/tsi/04_09_333/CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001
+
+./run_CER7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 > test.test 
+
+mv /homedir/ghong/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 /CERES/sarb/hong/test_data/test_all_4/out/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001_2567
+
+
+./cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+./CER7.2.1P2_pcfgen.pl -date 201304Z001
+
+cd pcf
+cp test.1_33_49 CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+cd ..
+
+cp /CERES/sarb/hong/test_data/test_all_4/comb_2568_CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001 /homedir/ghong/tmp/SARB/tsi/04_09_333/CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001
+
+./run_CER7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 > test.test 
+
+mv /homedir/ghong/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 /CERES/sarb/hong/test_data/test_all_4/out/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001_2568
+
+
+./cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+./CER7.2.1P2_pcfgen.pl -date 201304Z001
+
+cd pcf
+cp test.1_33_49 CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+cd ..
+
+cp /CERES/sarb/hong/test_data/test_all_4/comb_2569_CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001 /homedir/ghong/tmp/SARB/tsi/04_09_333/CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001
+
+./run_CER7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 > test.test 
+
+mv /homedir/ghong/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 /CERES/sarb/hong/test_data/test_all_4/out/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001_2569
+
+
+./cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+./CER7.2.1P2_pcfgen.pl -date 201304Z001
+
+cd pcf
+cp test.1_33_49 CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+cd ..
+
+cp /CERES/sarb/hong/test_data/test_all_4/comb_2578_CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001 /homedir/ghong/tmp/SARB/tsi/04_09_333/CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001
+
+./run_CER7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 > test.test 
+
+mv /homedir/ghong/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 /CERES/sarb/hong/test_data/test_all_4/out/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001_2578
+
+
+./cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+./CER7.2.1P2_pcfgen.pl -date 201304Z001
+
+cd pcf
+cp test.1_33_49 CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+cd ..
+
+cp /CERES/sarb/hong/test_data/test_all_4/comb_2579_CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001 /homedir/ghong/tmp/SARB/tsi/04_09_333/CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001
+
+./run_CER7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 > test.test 
+
+mv /homedir/ghong/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 /CERES/sarb/hong/test_data/test_all_4/out/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001_2579
+
+
+./cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+./CER7.2.1P2_pcfgen.pl -date 201304Z001
+
+cd pcf
+cp test.1_33_49 CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+cd ..
+
+cp /CERES/sarb/hong/test_data/test_all_4/comb_2589_CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001 /homedir/ghong/tmp/SARB/tsi/04_09_333/CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001
+
+./run_CER7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 > test.test 
+
+mv /homedir/ghong/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 /CERES/sarb/hong/test_data/test_all_4/out/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001_2589
+
+
+./cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+./CER7.2.1P2_pcfgen.pl -date 201304Z001
+
+cd pcf
+cp test.1_33_49 CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+cd ..
+
+cp /CERES/sarb/hong/test_data/test_all_4/comb_2678_CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001 /homedir/ghong/tmp/SARB/tsi/04_09_333/CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001
+
+./run_CER7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 > test.test 
+
+mv /homedir/ghong/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 /CERES/sarb/hong/test_data/test_all_4/out/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001_2678
+
+
+./cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+./CER7.2.1P2_pcfgen.pl -date 201304Z001
+
+cd pcf
+cp test.1_33_49 CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+cd ..
+
+cp /CERES/sarb/hong/test_data/test_all_4/comb_2679_CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001 /homedir/ghong/tmp/SARB/tsi/04_09_333/CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001
+
+./run_CER7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 > test.test 
+
+mv /homedir/ghong/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 /CERES/sarb/hong/test_data/test_all_4/out/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001_2679
+
+
+./cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+./CER7.2.1P2_pcfgen.pl -date 201304Z001
+
+cd pcf
+cp test.1_33_49 CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+cd ..
+
+cp /CERES/sarb/hong/test_data/test_all_4/comb_2689_CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001 /homedir/ghong/tmp/SARB/tsi/04_09_333/CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001
+
+./run_CER7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 > test.test 
+
+mv /homedir/ghong/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 /CERES/sarb/hong/test_data/test_all_4/out/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001_2689
+
+
+./cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+./CER7.2.1P2_pcfgen.pl -date 201304Z001
+
+cd pcf
+cp test.1_33_49 CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+cd ..
+
+cp /CERES/sarb/hong/test_data/test_all_4/comb_2789_CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001 /homedir/ghong/tmp/SARB/tsi/04_09_333/CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001
+
+./run_CER7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 > test.test 
+
+mv /homedir/ghong/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 /CERES/sarb/hong/test_data/test_all_4/out/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001_2789
+
+
+./cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+./CER7.2.1P2_pcfgen.pl -date 201304Z001
+
+cd pcf
+cp test.1_33_49 CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+cd ..
+
+cp /CERES/sarb/hong/test_data/test_all_4/comb_3456_CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001 /homedir/ghong/tmp/SARB/tsi/04_09_333/CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001
+
+./run_CER7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 > test.test 
+
+mv /homedir/ghong/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 /CERES/sarb/hong/test_data/test_all_4/out/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001_3456
+
+
+./cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+./CER7.2.1P2_pcfgen.pl -date 201304Z001
+
+cd pcf
+cp test.1_33_49 CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+cd ..
+
+cp /CERES/sarb/hong/test_data/test_all_4/comb_3457_CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001 /homedir/ghong/tmp/SARB/tsi/04_09_333/CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001
+
+./run_CER7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 > test.test 
+
+mv /homedir/ghong/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 /CERES/sarb/hong/test_data/test_all_4/out/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001_3457
+
+
+./cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+./CER7.2.1P2_pcfgen.pl -date 201304Z001
+
+cd pcf
+cp test.1_33_49 CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+cd ..
+
+cp /CERES/sarb/hong/test_data/test_all_4/comb_3458_CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001 /homedir/ghong/tmp/SARB/tsi/04_09_333/CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001
+
+./run_CER7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 > test.test 
+
+mv /homedir/ghong/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 /CERES/sarb/hong/test_data/test_all_4/out/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001_3458
+
+
+./cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+./CER7.2.1P2_pcfgen.pl -date 201304Z001
+
+cd pcf
+cp test.1_33_49 CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+cd ..
+
+cp /CERES/sarb/hong/test_data/test_all_4/comb_3459_CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001 /homedir/ghong/tmp/SARB/tsi/04_09_333/CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001
+
+./run_CER7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 > test.test 
+
+mv /homedir/ghong/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 /CERES/sarb/hong/test_data/test_all_4/out/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001_3459
+
+
+./cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+./CER7.2.1P2_pcfgen.pl -date 201304Z001
+
+cd pcf
+cp test.1_33_49 CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+cd ..
+
+cp /CERES/sarb/hong/test_data/test_all_4/comb_3467_CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001 /homedir/ghong/tmp/SARB/tsi/04_09_333/CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001
+
+./run_CER7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 > test.test 
+
+mv /homedir/ghong/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 /CERES/sarb/hong/test_data/test_all_4/out/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001_3467
+
+
+./cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+./CER7.2.1P2_pcfgen.pl -date 201304Z001
+
+cd pcf
+cp test.1_33_49 CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+cd ..
+
+cp /CERES/sarb/hong/test_data/test_all_4/comb_3468_CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001 /homedir/ghong/tmp/SARB/tsi/04_09_333/CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001
+
+./run_CER7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 > test.test 
+
+mv /homedir/ghong/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 /CERES/sarb/hong/test_data/test_all_4/out/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001_3468
+
+
+./cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+./CER7.2.1P2_pcfgen.pl -date 201304Z001
+
+cd pcf
+cp test.1_33_49 CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+cd ..
+
+cp /CERES/sarb/hong/test_data/test_all_4/comb_3469_CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001 /homedir/ghong/tmp/SARB/tsi/04_09_333/CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001
+
+./run_CER7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 > test.test 
+
+mv /homedir/ghong/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 /CERES/sarb/hong/test_data/test_all_4/out/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001_3469
+
+
+./cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+./CER7.2.1P2_pcfgen.pl -date 201304Z001
+
+cd pcf
+cp test.1_33_49 CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+cd ..
+
+cp /CERES/sarb/hong/test_data/test_all_4/comb_3478_CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001 /homedir/ghong/tmp/SARB/tsi/04_09_333/CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001
+
+./run_CER7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 > test.test 
+
+mv /homedir/ghong/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 /CERES/sarb/hong/test_data/test_all_4/out/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001_3478
+
+
+./cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+./CER7.2.1P2_pcfgen.pl -date 201304Z001
+
+cd pcf
+cp test.1_33_49 CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+cd ..
+
+cp /CERES/sarb/hong/test_data/test_all_4/comb_3479_CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001 /homedir/ghong/tmp/SARB/tsi/04_09_333/CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001
+
+./run_CER7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 > test.test 
+
+mv /homedir/ghong/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 /CERES/sarb/hong/test_data/test_all_4/out/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001_3479
+
+
+./cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+./CER7.2.1P2_pcfgen.pl -date 201304Z001
+
+cd pcf
+cp test.1_33_49 CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+cd ..
+
+cp /CERES/sarb/hong/test_data/test_all_4/comb_3489_CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001 /homedir/ghong/tmp/SARB/tsi/04_09_333/CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001
+
+./run_CER7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 > test.test 
+
+mv /homedir/ghong/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 /CERES/sarb/hong/test_data/test_all_4/out/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001_3489
+
+
+./cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+./CER7.2.1P2_pcfgen.pl -date 201304Z001
+
+cd pcf
+cp test.1_33_49 CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+cd ..
+
+cp /CERES/sarb/hong/test_data/test_all_4/comb_3567_CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001 /homedir/ghong/tmp/SARB/tsi/04_09_333/CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001
+
+./run_CER7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 > test.test 
+
+mv /homedir/ghong/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 /CERES/sarb/hong/test_data/test_all_4/out/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001_3567
+
+
+./cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+./CER7.2.1P2_pcfgen.pl -date 201304Z001
+
+cd pcf
+cp test.1_33_49 CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+cd ..
+
+cp /CERES/sarb/hong/test_data/test_all_4/comb_3568_CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001 /homedir/ghong/tmp/SARB/tsi/04_09_333/CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001
+
+./run_CER7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 > test.test 
+
+mv /homedir/ghong/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 /CERES/sarb/hong/test_data/test_all_4/out/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001_3568
+
+
+./cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+./CER7.2.1P2_pcfgen.pl -date 201304Z001
+
+cd pcf
+cp test.1_33_49 CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+cd ..
+
+cp /CERES/sarb/hong/test_data/test_all_4/comb_3569_CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001 /homedir/ghong/tmp/SARB/tsi/04_09_333/CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001
+
+./run_CER7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 > test.test 
+
+mv /homedir/ghong/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 /CERES/sarb/hong/test_data/test_all_4/out/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001_3569
+
+
+./cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+./CER7.2.1P2_pcfgen.pl -date 201304Z001
+
+cd pcf
+cp test.1_33_49 CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+cd ..
+
+cp /CERES/sarb/hong/test_data/test_all_4/comb_3578_CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001 /homedir/ghong/tmp/SARB/tsi/04_09_333/CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001
+
+./run_CER7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 > test.test 
+
+mv /homedir/ghong/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 /CERES/sarb/hong/test_data/test_all_4/out/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001_3578
+
+
+./cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+./CER7.2.1P2_pcfgen.pl -date 201304Z001
+
+cd pcf
+cp test.1_33_49 CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+cd ..
+
+cp /CERES/sarb/hong/test_data/test_all_4/comb_3579_CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001 /homedir/ghong/tmp/SARB/tsi/04_09_333/CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001
+
+./run_CER7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 > test.test 
+
+mv /homedir/ghong/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 /CERES/sarb/hong/test_data/test_all_4/out/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001_3579
+
+
+./cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+./CER7.2.1P2_pcfgen.pl -date 201304Z001
+
+cd pcf
+cp test.1_33_49 CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+cd ..
+
+cp /CERES/sarb/hong/test_data/test_all_4/comb_3589_CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001 /homedir/ghong/tmp/SARB/tsi/04_09_333/CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001
+
+./run_CER7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 > test.test 
+
+mv /homedir/ghong/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 /CERES/sarb/hong/test_data/test_all_4/out/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001_3589
+
+
+./cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+./CER7.2.1P2_pcfgen.pl -date 201304Z001
+
+cd pcf
+cp test.1_33_49 CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+cd ..
+
+cp /CERES/sarb/hong/test_data/test_all_4/comb_3678_CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001 /homedir/ghong/tmp/SARB/tsi/04_09_333/CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001
+
+./run_CER7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 > test.test 
+
+mv /homedir/ghong/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 /CERES/sarb/hong/test_data/test_all_4/out/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001_3678
+
+
+./cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+./CER7.2.1P2_pcfgen.pl -date 201304Z001
+
+cd pcf
+cp test.1_33_49 CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+cd ..
+
+cp /CERES/sarb/hong/test_data/test_all_4/comb_3679_CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001 /homedir/ghong/tmp/SARB/tsi/04_09_333/CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001
+
+./run_CER7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 > test.test 
+
+mv /homedir/ghong/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 /CERES/sarb/hong/test_data/test_all_4/out/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001_3679
+
+
+./cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+./CER7.2.1P2_pcfgen.pl -date 201304Z001
+
+cd pcf
+cp test.1_33_49 CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+cd ..
+
+cp /CERES/sarb/hong/test_data/test_all_4/comb_3689_CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001 /homedir/ghong/tmp/SARB/tsi/04_09_333/CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001
+
+./run_CER7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 > test.test 
+
+mv /homedir/ghong/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 /CERES/sarb/hong/test_data/test_all_4/out/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001_3689
+
+
+./cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+./CER7.2.1P2_pcfgen.pl -date 201304Z001
+
+cd pcf
+cp test.1_33_49 CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+cd ..
+
+cp /CERES/sarb/hong/test_data/test_all_4/comb_3789_CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001 /homedir/ghong/tmp/SARB/tsi/04_09_333/CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001
+
+./run_CER7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 > test.test 
+
+mv /homedir/ghong/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 /CERES/sarb/hong/test_data/test_all_4/out/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001_3789
+
+
+./cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+./CER7.2.1P2_pcfgen.pl -date 201304Z001
+
+cd pcf
+cp test.1_33_49 CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+cd ..
+
+cp /CERES/sarb/hong/test_data/test_all_4/comb_4567_CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001 /homedir/ghong/tmp/SARB/tsi/04_09_333/CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001
+
+./run_CER7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 > test.test 
+
+mv /homedir/ghong/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 /CERES/sarb/hong/test_data/test_all_4/out/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001_4567
+
+
+./cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+./CER7.2.1P2_pcfgen.pl -date 201304Z001
+
+cd pcf
+cp test.1_33_49 CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+cd ..
+
+cp /CERES/sarb/hong/test_data/test_all_4/comb_4568_CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001 /homedir/ghong/tmp/SARB/tsi/04_09_333/CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001
+
+./run_CER7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 > test.test 
+
+mv /homedir/ghong/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 /CERES/sarb/hong/test_data/test_all_4/out/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001_4568
+
+
+./cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+./CER7.2.1P2_pcfgen.pl -date 201304Z001
+
+cd pcf
+cp test.1_33_49 CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+cd ..
+
+cp /CERES/sarb/hong/test_data/test_all_4/comb_4569_CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001 /homedir/ghong/tmp/SARB/tsi/04_09_333/CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001
+
+./run_CER7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 > test.test 
+
+mv /homedir/ghong/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 /CERES/sarb/hong/test_data/test_all_4/out/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001_4569
+
+
+./cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+./CER7.2.1P2_pcfgen.pl -date 201304Z001
+
+cd pcf
+cp test.1_33_49 CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+cd ..
+
+cp /CERES/sarb/hong/test_data/test_all_4/comb_4578_CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001 /homedir/ghong/tmp/SARB/tsi/04_09_333/CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001
+
+./run_CER7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 > test.test 
+
+mv /homedir/ghong/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 /CERES/sarb/hong/test_data/test_all_4/out/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001_4578
+
+
+./cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+./CER7.2.1P2_pcfgen.pl -date 201304Z001
+
+cd pcf
+cp test.1_33_49 CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+cd ..
+
+cp /CERES/sarb/hong/test_data/test_all_4/comb_4579_CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001 /homedir/ghong/tmp/SARB/tsi/04_09_333/CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001
+
+./run_CER7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 > test.test 
+
+mv /homedir/ghong/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 /CERES/sarb/hong/test_data/test_all_4/out/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001_4579
+
+
+./cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+./CER7.2.1P2_pcfgen.pl -date 201304Z001
+
+cd pcf
+cp test.1_33_49 CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+cd ..
+
+cp /CERES/sarb/hong/test_data/test_all_4/comb_4589_CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001 /homedir/ghong/tmp/SARB/tsi/04_09_333/CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001
+
+./run_CER7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 > test.test 
+
+mv /homedir/ghong/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 /CERES/sarb/hong/test_data/test_all_4/out/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001_4589
+
+
+./cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+./CER7.2.1P2_pcfgen.pl -date 201304Z001
+
+cd pcf
+cp test.1_33_49 CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+cd ..
+
+cp /CERES/sarb/hong/test_data/test_all_4/comb_4678_CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001 /homedir/ghong/tmp/SARB/tsi/04_09_333/CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001
+
+./run_CER7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 > test.test 
+
+mv /homedir/ghong/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 /CERES/sarb/hong/test_data/test_all_4/out/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001_4678
+
+
+./cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+./CER7.2.1P2_pcfgen.pl -date 201304Z001
+
+cd pcf
+cp test.1_33_49 CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+cd ..
+
+cp /CERES/sarb/hong/test_data/test_all_4/comb_4679_CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001 /homedir/ghong/tmp/SARB/tsi/04_09_333/CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001
+
+./run_CER7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 > test.test 
+
+mv /homedir/ghong/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 /CERES/sarb/hong/test_data/test_all_4/out/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001_4679
+
+
+./cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+./CER7.2.1P2_pcfgen.pl -date 201304Z001
+
+cd pcf
+cp test.1_33_49 CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+cd ..
+
+cp /CERES/sarb/hong/test_data/test_all_4/comb_4689_CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001 /homedir/ghong/tmp/SARB/tsi/04_09_333/CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001
+
+./run_CER7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 > test.test 
+
+mv /homedir/ghong/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 /CERES/sarb/hong/test_data/test_all_4/out/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001_4689
+
+
+./cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+./CER7.2.1P2_pcfgen.pl -date 201304Z001
+
+cd pcf
+cp test.1_33_49 CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+cd ..
+
+cp /CERES/sarb/hong/test_data/test_all_4/comb_4789_CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001 /homedir/ghong/tmp/SARB/tsi/04_09_333/CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001
+
+./run_CER7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 > test.test 
+
+mv /homedir/ghong/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 /CERES/sarb/hong/test_data/test_all_4/out/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001_4789
+
+
+./cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+./CER7.2.1P2_pcfgen.pl -date 201304Z001
+
+cd pcf
+cp test.1_33_49 CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+cd ..
+
+cp /CERES/sarb/hong/test_data/test_all_4/comb_5678_CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001 /homedir/ghong/tmp/SARB/tsi/04_09_333/CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001
+
+./run_CER7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 > test.test 
+
+mv /homedir/ghong/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 /CERES/sarb/hong/test_data/test_all_4/out/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001_5678
+
+
+./cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+./CER7.2.1P2_pcfgen.pl -date 201304Z001
+
+cd pcf
+cp test.1_33_49 CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+cd ..
+
+cp /CERES/sarb/hong/test_data/test_all_4/comb_5679_CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001 /homedir/ghong/tmp/SARB/tsi/04_09_333/CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001
+
+./run_CER7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 > test.test 
+
+mv /homedir/ghong/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 /CERES/sarb/hong/test_data/test_all_4/out/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001_5679
+
+
+./cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+./CER7.2.1P2_pcfgen.pl -date 201304Z001
+
+cd pcf
+cp test.1_33_49 CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+cd ..
+
+cp /CERES/sarb/hong/test_data/test_all_4/comb_5689_CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001 /homedir/ghong/tmp/SARB/tsi/04_09_333/CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001
+
+./run_CER7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 > test.test 
+
+mv /homedir/ghong/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 /CERES/sarb/hong/test_data/test_all_4/out/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001_5689
+
+
+./cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+./CER7.2.1P2_pcfgen.pl -date 201304Z001
+
+cd pcf
+cp test.1_33_49 CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+cd ..
+
+cp /CERES/sarb/hong/test_data/test_all_4/comb_5789_CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001 /homedir/ghong/tmp/SARB/tsi/04_09_333/CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001
+
+./run_CER7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 > test.test 
+
+mv /homedir/ghong/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 /CERES/sarb/hong/test_data/test_all_4/out/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001_5789
+
+
+./cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+./CER7.2.1P2_pcfgen.pl -date 201304Z001
+
+cd pcf
+cp test.1_33_49 CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+cd ..
+
+cp /CERES/sarb/hong/test_data/test_all_4/comb_6789_CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001 /homedir/ghong/tmp/SARB/tsi/04_09_333/CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z001
+
+./run_CER7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 > test.test 
+
+mv /homedir/ghong/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 /CERES/sarb/hong/test_data/test_all_4/out/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001_6789
+
+

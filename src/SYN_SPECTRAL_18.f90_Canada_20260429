@@ -1,0 +1,1200 @@
+MODULE SYNSPECTRAL
+!
+! !Revision History:
+!  Version 4.0   August 18, 2006 - SCCR #634  
+!                Thomas Caldwell, SAIC, t.e.caldwell@larc.nasa.gov
+!                Added IMPLICIT NONE statement to correct potential problems 
+!                with uninitialized variables.  Made necessary local 
+!                declarations of variables in subroutines.
+!
+USE SAHA ,only :convert_sah_to_1x1deg, adiff1x1 , snoice1x1 ,mu0_1x1
+USE CRHSARB, only :open_igbp_zone,open_sarbcrh, modify_igbp,ptv,maxast,p17
+USE CHLOR_CLIM
+USE JIN_LUTS_INTERFACE ,only : jlut,jin_all_luts
+
+!USE Syn_Spectral_dat , only: syn_swdn_wgts,syn_land_spec,get_emiss ,syn_swdn_cld_wgts
+USE Syn_Spectral_dat_18 , only:  syn_land_spec18, get_emiss ,colorme_to_broadband ! ,syn_swdn_cld_wgts,syn_swdn_wgts
+
+USE nclouds_params  ! HG-2025.0722
+
+USE EM_MAP
+USE FLSA0404_SURFACE_ALBEDO, only: flsa_lut_loader_0404 ,flsa0404_lut
+!USE FLSASNOW_SURFACE_ALBEDO, only: flsasnow_lut
+USE ASSALUT_Sfcalb ,only : assalut, avg_cloud_condition, assalut_lut
+USE FL_IO_Params
+USE TSI_TYPE_MOD
+USE MOA_IO
+USE RDICEAGEMAP
+USE SARB_MOA_Utils
+USE Sarb_Var
+USE SARB_IO_Utils
+USE sgr_lut, only : sgt,sgr200610_lut
+
+
+USE MODALBHDF_SYNI,only: msa,get_msa
+
+USE TSI_FLAG_ED4, only : parse_tsi_dataflag ,src
+
+
+IMPLICIT NONE
+!
+INTEGER, PARAMETER:: maxcld = nclouds !4 !! MAX# OF CLOUD CONDITIONS (2CRS 4SYN), HG-2025.0722
+REAL, PARAMETER:: u0diffuse = 0.60
+INTEGER, PARAMETER:: omit = -9999.
+TYPE SYNGRID
+!INPUT
+SEQUENCE
+REAL u0! Cos Solar Zenith Angle (0-1)
+REAL pw! PRECIP WATER (CM) (0-7)
+INTEGER 	  ncld    ! Actual # of cloud conditions for grid box
+REAL cldfrac(maxcld)  ! Cloud FRACTION (0-1) for each  Cloud Condition
+REAL  cldtau(maxcld)  ! Cloud Optical Depth for each Cloud Condition
+!
+ REAL  chgt(maxcld) !!B4 Cloud Top Height (m) (0- 14000)
+ REAL  cpz (maxcld) !!B4 Cloud Particle size( 5-30 water) (30-180 ice)
+!
+REAL aertau! Aerosol Optical depth
+REAL wind! Windspeed (m/sec)
+REAL chlor! Chlorophyll Concentration ( g/g?)
+!!!real angex! Angstrom Exponent ( 0-2)  !NO Not Needed now
+REAL tice! Temperature of SEAICE  (K)
+REAL aice! AGE of ICE ( 0 first yr , 1 =multiyr)
+REAL toa_tot! TOTAL SKY TOA ALBEDO  (0-1)
+REAL toa_clr! CLEAR SKY TOA ALBEDO  (0-1)
+REAL o3! O3 Du
+REAL psfc! Surface Pressure (hPa)
+REAL wssa! Aerosol SSA
+REAL clearfrac ! derived
+! OUTPUT 
+REAL ptv(maxast)	! % of each extended scene type in grid box (1-20 IGBP ) ( 21-24 Extended)
+REAL p17    !% of unaltered IGBP 17 Ocean/water
+REAL	bba_untuned ! The intial untuned suface albedo for grid box!
+REAL sfc_spectral_alb(18, 2, 0:maxcld)! INPUT to Fuliou Spectral Albedo ! 1=clear 2=pristine
+REAL sfc_broadband_alb(2, 0:maxcld)! Broadband Albedo corresponding to sfc_spectral_alb
+! These are grid box cloud fraction weighted albedos
+REAL bbainit_grid(2)	  ! 1=w/aot 2=no/aot 
+REAL bbainit_ocean(2)	  ! 1=w/aot 2=no/aot
+REAL bbainit_nonocean(2)  ! 1=w/aot 2=no/aot
+! These are individual sources of sfcalb
+REAL bbalut_clr
+REAL bbalut_sno
+REAL bbalut_sah
+INTEGER bba_source_flag 
+INTEGER spec_source_flag
+!Longwave emissivity
+REAL sfc_spectral_emis(12)
+ integer src_lwtot ! 1= Ceres 2=GEO 3=intrp
+ integer src_swtot
+ integer src_lwclr
+ integer src_swclr
+ real sgr_long_sto(360)  ! Storage of last valid SGR snow grain retrieval.
+END TYPE
+
+TYPE ( SYNGRID ), SAVE :: sg
+
+
+ REAL ocean_th, snowy_th,icey_th, land_th, cry_area,ice_area,snow_area
+ LOGICAL ocean, icey, snowy, land , isclear,istotal ,ishisun 
+  DATA land_th / 90./ !Percentage threshold  land
+  DATA snowy_th /10. / !Percentage threshold  Snowy .
+  DATA  icey_th /10. / !Percentage threshold  Icey 
+ DATA ocean_th / 99./ !Percentage threshold  OCEAN
+ DATA sg%sgr_long_sto/360*-9999./
+
+
+logical :: sgr_on     = .true.
+logical :: flsa_on    = .true.
+logical :: assalut_on = .false.
+
+CONTAINS
+!
+!================================================================
+!
+SUBROUTINE syn_init(ilat)
+!
+INTEGER ilat
+!
+    CALL rd_em_maps(ilat)   ! read emissivity maps 
+!
+    CALL modify_igbp(ilat)  ! THIS SHOULD BE THE CALL USED to READ IN ENTIRE MONTH 
+!    CALL modify_igbp(ilat,myday=5) !! TEST CALL only reads in single day !! IMPORTANT INSTEAD USE "call modify_igbp(ilat)"
+!
+END SUBROUTINE syn_init
+!
+!================================================================
+!
+SUBROUTINE sg_structure_fill(MOA, TSI, ilat, ilon)
+!
+! !Revision History:
+!  Version 4.0   August 18, 2006 - SCCR #634  
+!  1. Reverse TSI cloud condition indexes for use of clouds in "sg%"
+!     for surface properties determination
+!  2. Uncomment assignment of TSI clearsky toa albedo  for use of clouds in
+!     "sg%" for surface properties determination
+!
+TYPE (tsi_type) :: TSI
+TYPE (MOA_TYPE) :: MOA
+INTEGER         :: ilat
+INTEGER         :: ilon
+INTEGER         :: numcld
+INTEGER		:: i
+!INTEGER, PARAMETER :: UNIT7 = 7  
+!! MOST OF THE WORK SHOULD BE HERE IN FILLING  THE "SG%" Inputs...
+!! HERE IS A TEST EXAMPLE OF INPUTS
+!
+sg%u0 = TSI % timeandloc % cos_sol_zenith ! CosSol 
+sg%pw = MOA % Precip_H2O ! Precip water (cm)  
+
+sg%cldfrac = TSI % cld_layer(maxcld:1:-1) % areafrac_total ! Cloud Fraction per CldCondition
+
+WHERE (sg%cldfrac .NE. Default_REAL4_FL )  sg%cldfrac = sg%cldfrac(1:maxcld) / 100.0
+
+ sg%cldtau  = TSI % cld_layer(maxcld:1:-1) % optdepth_mn_log      ! Cloud Optical Depths (0-128) per CldCondition
+ sg%chgt   =  (TSI % cld_layer(maxcld:1:-1) % EFFHT_MN )* 1000.   ! Cloud Top Height (m) (0- 14000)  per CldCondition
+WHERE ( TSI % cld_layer(maxcld:1:-1) %PHASE_MN >  1.5 ) sg%cpz = TSI % cld_layer(maxcld:1:-1)%RADIUS_ICE_MN
+WHERE ( TSI % cld_layer(maxcld:1:-1) %PHASE_MN >= 1.5 ) sg%cpz = TSI % cld_layer(maxcld:1:-1)%RADIUS_H2O_MN
+
+
+WHERE (sg%cldtau .NE. Default_REAL4_FL )  sg%cldtau = EXP ( sg%cldtau )
+!
+numcld = 0
+DO I = 1, maxcld
+  IF ((sg%cldfrac(I) > 0.0 .AND. sg%cldfrac(I) /= Default_REAL4_FL) &
+    .AND. (sg%cldtau(I) > 0.0 .AND. sg%cldtau(I) /= Default_REAL4_FL)) &
+numcld = numcld + 1 
+END DO
+!
+sg%ncld = numcld
+sg%aertau = AerOptDepth ( InitPass)! Aerosol Optical Depth 
+
+!print*,sg%aertau,AerOptDepth ( InitPass),InitPass
+
+sg%wind   = SQRT( MOA % SfcUwind * MOA % SfcUwind + &
+                  MOA % SfcVwind * MOA % SfcVwind)! Wind Speed (m/sec)
+sg%chlor = chlor1deg(ilon,ilat) ! Units are the same (mg/m^3)
+!sg%tice = TSI % surface % surf_skin_temp  ! Ice aka Surface Temperature  ED3
+sg%tice = TSI % surface % sfc_skin_temp  ! Ice aka Surface Temperature 
+sg%aice = iceage_1deg(ilon,ilat) ! Age of Ice (0 = First Yr ,1 = Multi year)
+sg%toa_tot = TSI % fluxestsi % total_alb_mn !! Total Sky TOA Albedo(0-1) 
+sg%toa_clr = TSI % fluxestsi % clear_alb_mn    !! Clear Sky TOA ALbedo(0-1) 
+!sg%toa_clr = Default_REAL4_FL
+!
+sg%o3   = MOA % CO3    ! O3 Du
+sg%psfc = MOA % SfcPres   ! Surface Pressure (hPa)
+sg%wssa = wssa !! Aerosol SSA
+!
+sg%clearfrac = 1.0 - &
+sum ( sg%cldfrac , MASK = sg%cldfrac > 0 .AND.  sg%cldfrac <= 1.00 )
+
+
+
+ call parse_tsi_dataflag(TSI%fluxestsi%data_flg)
+
+sg%src_lwtot = src%lwtot
+sg%src_swtot = src%swtot
+sg%src_lwclr = src%lwclr
+sg%src_swclr = src%swclr
+
+
+
+
+!-- Derived
+!    OPEN (UNIT7, FORM = 'formatted')
+!WRITE (6, *) 'sg%u0 =', sg%u0
+!WRITE (6, *) 'sg%pw =', sg%pw
+!WRITE (6, *) 'sg%ncld =', sg%ncld
+!WRITE (6, *) 'sg%cldfrac =', sg%cldfrac
+!WRITE (6, *) 'sg%cldtau =', sg%cldtau
+!WRITE (6, *) 'sg%aertau =', sg%aertau
+!WRITE (6, *) 'sg%wind =', sg%wind
+!WRITE (6, *) 'sg%chlor =', sg%chlor
+!WRITE (6, *) 'sg%tice =', sg%tice
+!WRITE (6, *) 'sg%aice =', sg%aice
+!WRITE (6, *) 'sg%toa_tot =', sg%toa_tot
+!WRITE (6, *) 'sg%toa_clr =', sg%toa_clr
+!WRITE (6, *) 'sg%o3 =', sg%o3
+!WRITE (6, *) 'sg%psfc =', sg%psfc
+!WRITE (6, *) 'sg%wssa =', sg%wssa
+!WRITE (6, *) '***********************************************'
+!    WRITE (6, *) iceage_1deg(ilon,ilat)
+!WRITE (6, *) ' ' 
+!  
+END SUBROUTINE sg_structure_fill
+!===================================================================
+!SUBROUTINE parse_tsi_dataflag(TSI)   !!!! REPLACED by TSI_flag_ed4.f90
+!TYPE (tsi_type) :: TSI
+!integer ip0,ip1,ip2,ip3,ip4
+!!!Tsi
+!ip0=  TSI%fluxestsi%data_flg
+!ip1 = ip0/1000			!LW TOTAL
+!ip2 = (ip0-(ip1*1000) )/100	!SW TOTAL
+!ip3 = (ip0-(ip1*1000) -(ip2*100) )/10		!LW CLEAR
+!ip4 = (ip0-(ip1*1000) -(ip2*100) - (ip3*10) ) 	!SW CLEAR
+! 
+!! 1= ceres
+!! 2= geo
+!! 3= intrp
+!sg%src_lwtot = ip1
+!sg%src_swtot = ip2
+!sg%src_lwclr = ip3
+!sg%src_swclr = ip4
+!
+!end SUBROUTINE parse_tsi_dataflag
+!================================================================
+!
+SUBROUTINE sarb_gridmaps_apply(ilon,ilat,ida, ihr)
+!
+INTEGER ilat,ilon,ida, ihr
+!
+
+!!HG
+!
+!print *, 'HG20260402, before call grid_weight_alb'
+!print *, 'grid_weight_alb(ilon, ida), sg%u0, ilat, ilon, ida: ', sg%u0, ilat, ilon, ida
+!print *, ' '
+
+IF (sg%u0 > 0.0) &
+
+  CALL grid_weight_alb(ilon,ida)
+
+
+!  
+
+  CALL grid_weight_emis(ilon,ida)
+!
+IF (sg%u0 > 0.0) THEN 
+
+  CALL get_bb_sfcalb(ilon,ilat)
+   !print *, "200 DEBUG: sg%bba_source_flag (CALL get_bb_sfcalb(ilon,ilat) in IF u0 > 0.0) =", sg%bba_source_flag !HG-20250918
+
+ELSE 
+  sg%bba_untuned = Default_REAL4_FL 
+  sg%sfc_spectral_alb = Default_REAL4_FL
+  sg%sfc_broadband_alb = Default_REAL4_FL
+  sg%bbainit_grid = Default_REAL4_FL      
+  sg%bbainit_ocean = Default_REAL4_FL     
+  sg%bbainit_nonocean = Default_REAL4_FL
+  sg%bbalut_clr = Default_REAL4_FL
+  sg%bbalut_sno = Default_REAL4_FL
+  sg%bbalut_sah = Default_REAL4_FL
+  sg%bba_source_flag = Default_INT4_FL
+  sg%spec_source_flag = Default_INT4_FL
+  !HG-20250918
+     !print *, "201 DEBUG: sg%bba_source_flag (CALL get_bb_sfcalb(ilon,ilat) in IF u0 <= 0.0) =", sg%bba_source_flag
+
+ENDIF     
+!
+!    OPEN (26, FILE = '/CERES/sarb/zentz/sarb/bin/sarbsyn/sgtest.v1', &
+!  POSITION= 'append', FORM='unformatted')
+!WRITE (26) ilat,ilon,ihr,sg
+!CLOSE (26)
+END SUBROUTINE sarb_gridmaps_apply
+!
+! ============================================================
+! ============================================================
+!  
+SUBROUTINE grid_weight_emis(ilon,ida)
+! 
+INTEGER ilon,ida ,k
+REAL pfrac
+REAL, DIMENSION(12):: specemis_g1, emis12
+! 
+sg%sfc_spectral_emis  = 0
+specemis_g1(1:12) = 0.0
+!
+
+sg%p17 = p17(ilon)
+
+EXTENDED_SCENE_AVG: DO k=1,maxast
+  pfrac = ptv(k,ida,ilon)*0.01
+!
+  sg%ptv(k) = ptv(k,ida,ilon)
+!
+  IF ( pfrac > 0 ) THEN
+        CALL get_emiss (k ,  emis12 ) ! Table emissivity 
+        specemis_g1(1:12) = specemis_g1(1:12)+ emis12(1:12)*pfrac
+!	print*,k,pfrac,emis12(1:12)
+  ENDIF 
+!
+END DO EXTENDED_SCENE_AVG
+!
+CALL ga_emis(ilon) ! Get grid Avg Cloud WG Emissivities
+!
+sg%sfc_spectral_emis(1:12) = specemis_g1(1:12)
+IF (Emiss855 == 'YES') THEN
+  sg%sfc_spectral_emis(5:7 ) = emis_gridavg(1:3) !! INSERT CLOUD WG EMIS MAP VALUE
+ELSE 
+  sg%sfc_spectral_emis(6:7 ) = emis_gridavg(2:3) 
+ENDIF 
+!print'(a15,12f5.3)','SpecEmis',sg%sfc_spectral_emis(5:7)
+!
+END SUBROUTINE grid_weight_emis
+!
+!================================================================
+!
+SUBROUTINE grid_weight_alb(ilon,ida)
+!
+! Selects spectral Albedo source
+!
+! !Revision History:
+!  Version 4.0   August 18, 2006 - SCCR #634  
+!                Thomas Caldwell, SAIC, t.e.caldwell@larc.nasa.gov
+!                1. Assign fi%ur when running Synoptic to assure 
+!                Set a default min value of chlorophyll if missing from input source
+!                  if  (jlut%chlor < 0 ) jlut%chlor = 0.1
+!
+INTEGER ilon,ida
+INTEGER k ,iaer,icld
+REAL pfrac,cfrac , land_frac ,snow_frac
+REAL, DIMENSION(18) :: specalb_g1,wgts 
+real,dimension(10)::  mohs
+REAL bbalb ,bbalb1
+
+!HG-20260331
+REAL igbp_dom
+integer :: ilon_geo
+
+
+
+
+pfrac = 0
+cfrac = 0 
+land_frac = 0 
+snow_frac = 0
+specalb_g1 = 0
+wgts = 0
+bbalb = 0 
+bbalb1 = 0
+
+!------------------------------------------------------------------------------------
+sg%sfc_spectral_alb  = 0 ;sg%sfc_broadband_alb = 0
+sg%bbainit_grid = 0
+sg%bbainit_ocean = omit
+sg%bbainit_nonocean = omit
+
+sg%p17 = p17(ilon)
+
+sg%spec_source_flag = -1
+snow_frac = (ptv(15,ida,ilon)+ptv(19,ida,ilon)+ptv(21,ida,ilon)+ptv(22,ida,ilon)) *0.01
+jlut%snowradius = -9999.
+AEROSOL_CONDITION : DO iaer = 1,2 !!  1=Aerosols  2=Pristine
+  CLOUD_CONDITION   : DO icld = 0, maxcld
+    IF ( icld == 0) cfrac = sg%clearfrac
+    IF ( icld /= 0) cfrac = sg%cldfrac(icld)
+    
+IF ( cfrac == 0.0 .AND. icld /= 0) CYCLE
+
+jlut%u0  = sg%u0
+!
+IF( icld == 0 ) THEN ! CLEAR or Pristine
+  jlut%tau = 0.0		!PRISTINE
+  IF ( iaer == 1 ) jlut%tau =  sg%aertau !CLEAR
+ELSE !! CLOUDY or Cloud/NOAER
+  jlut%tau = sg%cldtau(icld)      !Cld NO Aerosol
+  IF ( iaer == 1 ) jlut%tau = jlut%tau + sg%aertau !Cld with Aerosol
+ENDIF 
+IF (jlut%tau > 2 )jlut%u0  = u0diffuse !! Large TAU Assume Diffuse Angle
+
+specalb_g1(1:18)  = 0.0 ; bbalb=0
+land_frac= 0
+
+
+! below is original ones, need to check!!!!
+!         msa%rlonW = -179.99+(Ilon-1)
+!         msa%rlonE = -180.01+(Ilon)
+
+
+!!!!!!HG-20260330, make sure MODIS data lon index, how it is defined. 
+
+
+! HG-20260402, Convert ilon (ptv convention: 1=0°E) to MCD43C1 convention (1=-180°)
+ilon_geo = ilon + 180
+if (ilon_geo > 360) ilon_geo = ilon_geo - 360
+
+msa%rlonW = -179.99 + (ilon_geo - 1)
+msa%rlonE = -180.01 + (ilon_geo)
+! HG-20260402, Convert ilon (ptv convention: 1=0°E) to MCD43C1 convention (1=-180°)
+
+
+
+
+
+!!HG-------------20260330         
+!         msa%rlonW = -179.99+(Ilon-1)+180.0
+!         msa%rlonE = -180.01+(Ilon)+180.0
+!if (msa%rlonW .lt. 0.0) msa%rlonW = msa%rlonW + 360.0
+!if (msa%rlonE .lt. 0.0) msa%rlonE = msa%rlonE + 360.0
+!HG-------------20260330         
+         
+
+         
+	 msa%itype = 1  	! 1-continental, 2-maritime
+    	 msa%sza   =  acos(jlut%u0)*180./3.14159	! Solar Zenith Angle (0:90) 0=overhead sun
+	 msa%aot   = jlut%tau	! Aot
+
+         call get_msa
+ 
+!!if ( msa%ngood > 0 ) print'(3f8.2,10f8.4,f6.0,I7,2f8.4)',msa%rlatC, msa%rlonW, msa%rlonE ,msa%modalb(1:10),float(msa%istatus),msa%ngood,msa%sza,msa%aot
+!         print *, 'HG-20260320-test4'
+!         print *, 'ilon, ', ilon
+!
+!         print *, 'msa%rlatC, msa%rlonW, msa%rlonE ,msa%modalb(1:10),float(msa%istatus),msa%ngood,msa%sza,msa%aot, msa%itype'
+!!print *, 'msa%rlonW = -179.99+(Ilon-1), msa%rlonE = -180.01+(Ilon)'
+!         !print'(3f8.2,10f8.4,f6.0,I7,2f8.4)',msa%rlatC, msa%rlonW, msa%rlonE ,msa%modalb(1:10),float(msa%istatus),msa%ngood,msa%sza,msa%aot, msa%itype
+!print *,msa%rlatC, msa%rlonW, msa%rlonE ,msa%modalb(1:10),float(msa%istatus),msa%ngood,msa%sza,msa%aot, msa%itype
+!
+
+EXTENDED_SCENE_AVG: DO k=1,maxast
+!print*,'extended scene ',k
+  pfrac = ptv(k,ida,ilon)*0.01
+  sg%ptv(k) = ptv(k,ida,ilon)
+
+  IF ( pfrac > 0 ) THEN
+!print'(3I6,f8.2),',k,ida,ilon ,pfrac 
+
+    SELECT CASE ( k)  !....... 
+      CASE default
+        STOP 'case not handled'
+      CASE ( 1:14, 16, 18, 23:24 )  !!! IGBP TABLE SPECTRAL ALBEDOES
+       land_frac = land_frac + pfrac
+
+!       !HG-20260320-test7
+!       ! Print diagnostics before MODIS check
+!!       if (k == 16) then
+!print *, '---------- Diagnostic:'
+!!print *, 'ilat=', ilat, 'ilon=', ilon
+!print *, 'Box center lat=', msa%rlatC, 'lon_mid=', (msa%rlonW+msa%rlonE)/2.0, &
+!         'rlonW=', msa%rlonW, 'rlonE=', msa%rlonE
+!
+!igbp_dom = maxloc(ptv(:, ida, ilon), dim=1)
+!print *, 'Dominant IGBP class:', igbp_dom, 'percent:', ptv(igbp_dom, ida, ilon)
+!print *, 'msa%ngood: ', msa%ngood
+!print *, 'land_frac, k: ', land_frac, k
+!!print *, 'All IGBP fractions:', ptv !(:, ida, ilon)
+!!HG----------
+!!endif
+!
+!!HG-20260323 msa%ngood = 0
+
+ if ( msa%ngood > 0 ) then !!! MCD43C1
+    jlut%specalb(1:18) = msa%fu18(1:18)
+    IF ( land_frac > 0.90 )  sg%spec_source_flag = 0 !MCD43C1
+ ELSE
+    call syn_land_spec18 (k, jlut%u0, sg%pw, log(jlut%tau),  jlut%specalb(1:18), bbalb1) 
+    IF ( land_frac > 0.90 ) sg%spec_source_flag = 2 
+ ENDIF
+
+
+!....Zhonghai Jin, Spectral surface albedo LUTs..
+       CASE ( 15 ,19,  21,22 ) !! VARIOUS SNOW
+
+
+        IF ( msa%ngood > 0 ) then 
+         jlut%specalb(1:18) = msa%fu18(1:18)
+         sg%spec_source_flag = 0 !MCD43C1
+!	 print*, 'Xsg%spec_source_flag',sg%spec_source_flag,snow_frac,jlut%specalb(1:18),k,pfrac
+        ELSE	!!!!!!!!!!
+
+!--- Only once per grid box, NOT for each cld condition begin
+       if ( iaer ==1 .and. icld == 0  ) then  ! assign snow grain size only once
+
+          IF ( k == 15 ) jlut%snowradius =  500.1 !Perm Snow
+          IF ( k == 19 ) jlut%snowradius =  100.1 !Fresh Snow
+          IF ( k == 21 ) jlut%snowradius = 1000.1 !Large grain snow
+          IF ( k == 22 ) jlut%snowradius =   50.1 !Small grain snow
+
+!++---- SGR begin, only if lots of "snow"
+         IF ( snow_frac > 0.90 ) then
+          sg%spec_source_flag = 3  !JIN SNOW
+	
+	
+	  if (sg%sgr_long_sto(ilon) > 50 .and. sg%sgr_long_sto(ilon) < 2000 ) then  !!! use Old VALID! Retrieved SGR
+	    jlut%snowradius = sg%sgr_long_sto(ilon)
+	    sg%spec_source_flag = 6  !JIN SNOW w/CERES old SGR retrieval use for diurnal model
+  	  endif!! 
+	
+	  if ( sg%sgr_long_sto(ilon) == 50.2 .or. sg%sgr_long_sto(ilon) ==  1999.2) sg%spec_source_flag = 3 ! FLSA	
+	
+	  if (  sgr_on .AND. &
+	        sg%src_swclr == 1 .AND. &
+	        sg%u0 > 0.1  .AND. sg%u0 < 1.0 .AND. &
+                sg%toa_clr >0 .AND. sg%toa_clr < 1.0 .and.&
+                sg%clearfrac > 0.10 - 1.0E-6 ) then !! ATTEMPT SGR ( SW CLEAR CERES time, valid toa_clr, > 10%clear , DAYtime)  !HG-20250910
+ !               sg%clearfrac > 0.10 ) then !! ATTEMPT SGR ( SW CLEAR CERES time, valid toa_clr, > 10%clear , DAYtime)
+
+	    sgt%toa_alb = sg%toa_clr
+	    sgt%aot     = sg%aertau
+	    sgt%elev    = 8000.* log(1013.25/sg%psfc)      ! Sfc Elevation (m) (0 -8000)
+	    sgt%o3      = sg%o3
+	    sgt%pw      = sg%pw 
+	    sgt%u0      = sg%u0 
+	    call sgr200610_lut ! snowgrain retrieval (SGR)
+ !           print*, 'sgt%snow_grain',sgt%snow_grain
+ 
+	       if ( sgt%snow_grain > 51 .and. sgt%snow_grain < 1999 ) then ! valid sgr
+ 		 sg%sgr_long_sto(ilon) =sgt%snow_grain 
+		 jlut%snowradius = sgt%snow_grain                     
+	         sg%spec_source_flag = 5  !JIN SNOW w/CERES retrieval
+		elseif ( sgt%snow_grain <= 51   ) then  !!  FLSA etc using SMALL grain SGR wait for next valid retrieval
+		  sg%sgr_long_sto(ilon) = 50.2
+		  jlut%snowradius       = 50.2		  
+		  sg%spec_source_flag = 3  !JIN SNOW
+		   
+		elseif ( sgt%snow_grain >= 1999 ) then  !!  FLSA etc using LARGE grain SGR wait for next valid retrieval
+		  sg%sgr_long_sto(ilon) = 1999.2
+		  jlut%snowradius       = 1999.2		  
+		  sg%spec_source_flag = 3  !JIN SNOW
+	       endif
+            endif !! END SGR RETRIEVAL Attempt 
+
+	  
+	 ENDIF !! pfrac > 0.90 Mostly Snow
+!-++--- SGR END	 
+	endif !! assign sgr Only for clear  case maintain same for others.
+!--- Only once per grid box, NOT for each cld condition END
+
+         jlut%soot = 0.0
+         jlut%mode = 'snow' 
+         CALL jin_all_luts !! Snow Spectral Albedo
+!print*, 'sg%spec_source_flag',sg%spec_source_flag,jlut%snowradius,sg%sgr_long_sto(ilon),ilon
+	ENDIF !MCD43C1 or JINLUT
+
+
+
+       CASE ( 17 )   !!! OCEAN/WATER
+         jlut%wind   = sg%wind  
+         jlut%chlor  = sg%chlor 
+         if  (jlut%chlor < 0 ) jlut%chlor = 0.1
+!! jlut%angex  = sg%angex  ! NOT NEEDED NOW
+         jlut%mode = 'water'  
+         CALL jin_all_luts
+         IF ( pfrac > 0.90 ) sg%spec_source_flag = 1  !JIN OCEAN
+       CASE ( 20 )  !!! SEA ICE
+         jlut%tice     = sg%tice 
+         jlut%aice     = sg%aice  
+         jlut%mode = 'ice'  
+         CALL jin_all_luts
+         IF ( pfrac > 0.90 ) sg%spec_source_flag = 4  !JIN ICE
+      END SELECT !.......
+
+
+      bbalb1 = colorme_to_broadband( k,sg%pw,jlut%u0,log(jlut%tau), jlut%specalb(1:18))
+      bbalb = bbalb + bbalb1*pfrac 
+
+
+      IF ( k == 17 )  sg%bbainit_ocean(iaer) = bbalb1
+!
+      specalb_g1(1:18) = specalb_g1(1:18)+ jlut%specalb(1:18)*pfrac
+!print'(a5,i5,f7.3, 15f6.3,f10.3)','PART', k ,pfrac,jlut%specalb,bbalb1
+!
+    ENDIF ! SCENE fraction GT 0.00
+!
+  END DO EXTENDED_SCENE_AVG 
+  
+
+  
+!print'(a5,2i4, 18f6.3,f10.3)','Whole',ida,ilon, specalb_g1(1:18) ,bbalb
+!
+   sg%sfc_spectral_alb(1:18, iaer, icld) = specalb_g1(1:18)
+   sg%sfc_broadband_alb(iaer,icld)       = bbalb
+   sg%bbainit_grid(iaer)                 = sg%bbainit_grid(iaer) + (bbalb*cfrac)
+!
+ END DO CLOUD_CONDITION
+
+  IF ( sg%ptv(17) /= 100 ) &
+  sg%bbainit_nonocean(iaer) = ( sg%bbainit_grid(iaer) -   &
+  sg%ptv(17)*0.01* sg%bbainit_ocean(iaer)  ) / &
+ ( 1.0 - sg%ptv(17)*0.01 ) 
+!   
+END DO AEROSOL_CONDITION
+
+!print'(a3,I4,25f4.0)','PTV',ilon,sg%ptv
+!print'(a5,I4,2f7.2)','PTV17',ilon,sg%ptv(17),sg%p17
+!print'(a15,6f8.3)','BB CLRALB', sg%sfc_broadband_alb(1,0:sg%ncld),sg%bbainit_grid(1)
+!print'(a15,6f8.3)','BB PRSALB', sg%sfc_broadband_alb(2,0:sg%ncld),sg%bbainit_grid(2)
+!PRINT'(a15,6f8.3)','BBSFCALB_oce', sg%bbainit_grid(1),       &
+!sg%bbainit_ocean(1),	&
+!sg%bbainit_nonocean(1), &
+!ptv(17,ida,ilon)*0.01, sg%ptv(17)*0.01
+
+
+!print*,'sg%spec_source_flag',sg%spec_source_flag
+!print*,'sg%u0',sg%u0
+END SUBROUTINE grid_weight_alb
+!
+!================================================================
+real function sahwhensnowice(ilon,ilat)
+USE CRHSARB ,only : igbp, create_contents
+USE SAHPERT ,only : SAHPERT_TYPE ,apply_sahpert
+type (SAHPERT_TYPE) sap
+
+integer ilon,ilat,i,j,k, ktot,ki
+integer*1 content(36),igbpgz(6,360,6)
+REAL content_vector(36,2)
+REAL ,dimension(18) :: wgts,speca
+REAL :: frac, foce 
+REAL:: bbatemp
+
+
+
+
+igbpgz =  reshape( igbp ,(/6,360,6/) )
+ k=0
+do i=1,6
+do j=1,6
+k=k+1
+ content(k) = igbpgz(i,ilon,j)
+! print'(4i6)',ilon,i,j,k,content(k)
+enddo;enddo
+! Find the Untouched IGBP Types and Percent coverages over current 1x1deg box
+ call create_contents(content,content_vector,ktot)
+ 
+ 
+ sap%salb000 = 0.0
+ sap%salb100 = 0.0
+ foce=0.0 
+ do ki=1,ktot
+  k    = content_vector(ki,1)
+  frac = content_vector(ki,2)*0.01
+  if ( frac < 0.0 .or. frac > 1.0001 ) cycle 
+
+!  CALL syn_land_spec (k, u0diffuse, sg%pw, speca(1:15))  
+!  CALL syn_swdn_wgts (u0diffuse, sg%pw, k, wgts) 
+!  sap%salb000= sap%salb000 + SUM (wgts( 1:15) *  speca(1:15) ) * frac  
+  
+   call syn_land_spec18 (k, u0diffuse, sg%pw, 2.0,  speca(1:18), bbatemp) !Diffuse
+   sap%salb000= sap%salb000 + bbatemp * frac  
+  
+  if ( k == 17 )              foce =foce +frac
+ enddo
+
+!   k=19   !! Mostly Land
+!   if ( foce > (100.-land_th)*0.01 ) k = 20 !! Mostly Ocean
+
+  k = 15 ! permanent snow ( larger grain slightly darker)
+ 
+!  CALL syn_land_spec (k, u0diffuse, sg%pw, speca(1:15))  
+!  CALL syn_swdn_wgts (u0diffuse, sg%pw, k, wgts) 
+!  sap%salb100 = SUM (wgts( 1:15) *  speca(1:15) )
+
+  call syn_land_spec18 (k, u0diffuse, sg%pw, 2.0,  speca(1:18), bbatemp) !Diffuse
+  sap%salb100=  bbatemp * frac  
+  
+
+
+ sap%salbXSAH     = adiff1x1(ilon,ilat)   !!! SAH Monthly Mean albedo 
+ sap%cry_fracXSAH = snoice1x1(ilon,ilat)  !!! SAH Monthly Mean SnowIce Fraction
+ sap%mu0 = mu0_1x1(ilon,ilat)
+! print*,'sap%mu0 ', sap%mu0
+ 
+! sap%salb000	     !!! Assumed surface albedo for 0 fraction SNOWorICE
+! sap%salb100        !!! Assumed surface albedo for 1.0 fraction  SNOWorICE
+ sap%cry_frac     =  cry_area*0.01 !!! SNOWorICE fraction
+  
+ call apply_sahpert(sap)
+  
+!print'(a7,I5,20(2f7.2,2x))','RAWIGBP',ilon,(content_vector(k,1:2),k=1,ktot), sap%salb000,sap%salb100,cry_area
+!print'(a7,I5,4ES12.4,3x,2f8.3)','SAHWHEN',ilon, sap%salb000,sap%salbXSAH,sap%salb100 ,sap%cry_fracXSAH, sap%cry_frac, sap%salbSAHCRY
+
+!sahwhensnowice = sap%salbSAHCRY !!! at mu0
+
+		 
+sahwhensnowice	= SAH_diurnal_model_apply(sap)		 
+			 
+			 		 
+end function sahwhensnowice
+!=============================================================================================================== 
+! New for Ed4
+real function SAH_diurnal_model_apply(sap)
+
+USE Syn_Spectral_Dat_18 , only : d3,dickensonx,wangx
+USE SAHPERT ,only : SAHPERT_TYPE ,apply_sahpert
+type (SAHPERT_TYPE) sap			 
+real :: aaa0,aaa1
+real sahx
+integer kk
+
+
+kk = maxval(maxloc(sg%ptv)) ! Predominate IGBP type
+
+print *, ' '
+print *, 'HG-20260428'
+print *, ', kk, sg%spec_source_flag, msa%ngood, msa%istatus: ', kk, sg%spec_source_flag, msa%ngood, msa%istatus
+print *, ' '
+
+if( sg%spec_source_flag == 0 .and. msa%ngood > 0 .and. msa%istatus == 0) then  !! AMCD43C1 Source
+
+ msa%aot = sg%aertau
+ msa%sza = acos(sap%mu0)*180./3.14159
+ call get_msa
+
+ !print *, 'HG-20260320, test3'
+ !print'(3f8.2,10f8.4,f6.0,I7,2f8.4)',msa%rlatC, msa%rlonW, msa%rlonE ,msa%modalb(1:10),float(msa%istatus),msa%ngood,msa%sza,msa%aot
+
+ !stop
+ 
+ aaa0 = msa%modalb(10)
+!
+
+ msa%aot = sg%aertau
+ msa%sza = acos(sg%u0)*180./3.14159
+ call get_msa
+
+ !!HG-20260320
+ !print *, 'HG-20260320, test5'
+ !print'(3f8.2,10f8.4,f6.0,I7,2f8.4)',msa%rlatC, msa%rlonW, msa%rlonE ,msa%modalb(1:10),float(msa%istatus),msa%ngood,msa%sza,msa%aot
+
+ aaa1 = msa%modalb(10)
+
+
+ sahx = sap%salbSAHCRY *  (aaa1/aaa0 )! At sza1 ie at clear SZA for hr-box Acording to MCD43C1 diurnal model
+
+!HG-20260423
+ print  *, 'HG checking aaa0, aaa1'
+ print *, 'sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx'
+ print *, sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+ print *, 'aaa1/aaa0=, ', aaa1/aaa0
+ print *, ' '
+ print *, 'testing dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)'
+ print *, 'sahx= ', dickensonx(sap%salbSAHCRY,0.4,sap%mu0,sg%u0)
+ print *, '(1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) '
+ print *, (1.0+2.0*0.4*sap%mu0) / (1.0+2.0*0.4*sg%u0) 
+ print *, ' '
+ 
+elseif(  sg%spec_source_flag == 1 .or. &  !!! A Zjin LUT source
+       sg%spec_source_flag == 3 .or. & 
+       sg%spec_source_flag == 4 .or. &
+       sg%spec_source_flag == 5 .or. & 
+       sg%spec_source_flag == 6   ) then ! Jin_Luts
+       
+
+    jlut%u0  = sap%mu0
+    jlut%tau = sg%aertau
+    CALL jin_all_luts !! Snow Spectral Albedo
+    aaa0 = colorme_to_broadband( kk ,sg%pw,jlut%u0,log(jlut%tau), jlut%specalb(1:18)) !! SAH Mean u0
+ 
+    jlut%u0  = sg%u0
+    jlut%tau = sg%aertau
+    CALL jin_all_luts !! Snow Spectral Albedo
+    aaa1 = colorme_to_broadband( kk ,sg%pw,jlut%u0,log(jlut%tau), jlut%specalb(1:18)) !!Actual u0
+
+
+    sahx = sap%salbSAHCRY *  (aaa1/aaa0 )! At  sg%u0 ie at clear SZA for hr-box Acording to ZJIN diurnal model
+
+ !   print*, 'SAH / zjin for model',sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+
+else ! Default or possibly bad MCD43C1
+
+ aaa0 = -1.0
+ aaa1 = -1.0
+ 
+!! Move SAH to actual sun angel using simple Dickenson or Wang diurnal models  
+  if ( kk > 12 .or. kk == 11 ) then 
+   sahx = dickensonx(sap%salbSAHCRY,d3(0,kk),sap%mu0,sg%u0) !!! TO DIFFUSE ALBEDO
+  else 
+   sahx = wangx(sap%salbSAHCRY, kk, sap%mu0,sg%u0)!!! TO DIFFUSE ALBEDO
+  endif
+
+endif	! Three types of spectral albedo sources
+
+
+!  print*, 'SAH_diurnal_model',sg%spec_source_flag,sap%salbSAHCRY, sap%mu0,sg%u0,aaa0,aaa1,sahx
+
+
+SAH_diurnal_model_apply = sahx
+
+end function SAH_diurnal_model_apply
+!================================================================
+!
+SUBROUTINE get_bb_sfcalb(ilon,ilat)
+!
+! !Revision History:
+!  Version 4.0   August 18, 2006 - SCCR #634  
+!                Thomas Caldwell, SAIC, t.e.caldwell@larc.nasa.gov
+!                Changed:
+!                sg%bba_untuned = omit
+!                To:
+!                sg%bba_untuned = sg%bbainit_grid(1)
+!           
+
+  !HG-put to test
+USE COMMON_ACCESS , only : HrBox, RegionNum_CERES
+  
+INTEGER ilon,ilat
+REAL spec1,cldlntau,totcldfrac
+REAL albuse
+!real albratio(2,0:maxcld)
+
+REAL alb_nonocean
+REAL :: ctau_wm(maxcld) ,ctau1_wm
+!
+REAL, DIMENSION(18) :: specalb_g1b,wgts ,prsrat
+REAL, DIMENSION(18,2,maxcld) :: spec_diurnal_clrtocld
+INTEGER  ksid,iaer,icld
+REAL :: BBNORMRATIO
+
+!HG
+integer :: ilon_m, dom
+integer :: iiilat, iiilon, ihlat, ihlon
+real    :: rrrlat, rrrlon, rlat, rlon, rhlat, rhlon
+
+
+
+!print*, 'sg%src_swclr',sg%src_swclr
+
+
+ ctau_wm = 0.0
+
+isclear = .FALSE.
+IF (sg%toa_clr >0 .AND. sg%toa_clr < 1.0 .and. sg%clearfrac > 1.0 - 1.0E-6 ) isclear = .TRUE. !!! CLEAR SKY TOA BBALB IS PRESENT  !HG-20250910
+!IF (sg%toa_clr >0 .AND. sg%toa_clr < 1.0 .and. sg%clearfrac > 0.10 ) isclear = .TRUE. !!! CLEAR SKY TOA BBALB IS PRESENT
+
+ishisun = .FALSE.
+IF ( sg%u0 > 0.3 )  ishisun = .TRUE.
+
+istotal = .FALSE.
+IF (sg%toa_tot >0 .AND. sg%toa_tot < 1.0 ) istotal = .TRUE.  !!! TOTAL SKY TOA BBALB IS PRESENT
+
+! if Percent of the EXTENDED SYN scene vector is greater than  snowy_th % Is SNOWY
+snowy =  .FALSE.
+icey  =  .FALSE.
+ ice_area  = sg%ptv(20)
+ snow_area = sg%ptv(15)+sg%ptv(19) +sg%ptv(21)+sg%ptv(22)
+
+!print'(a10,4f8.1,f8.1)','SNOW',sg%ptv(15),sg%ptv(19),sg%ptv(21),sg%ptv(22),snow_area
+ cry_area = snow_area +ice_area
+ IF( ( snow_area)  > snowy_th ) snowy = .TRUE.
+ IF( (  ice_area)  >  icey_th ) icey = .TRUE.
+land = .FALSE.
+IF( (100. - sg%p17) >  land_th  ) land = .TRUE.   !!! IF (NOT NATIVE OCEAN) THEN LAND or SNOW or ICE
+
+IF ( land .AND. (snowy .OR. icey ) ) land = .FALSE.  !IF (SNOWY OR ICEY) Then NOT LAND
+
+OCEAN = .FALSE.
+if ( sg%ptv(17) >= ocean_th  ) ocean = .TRUE.  !! HERE USE DYNAMIC OCEAN ( it's tricky)
+!print*, sg%ptv(17),ocean
+
+
+where ( sg%cldfrac > 0 .and. sg%cldfrac <= 1.0 .and.&
+        sg%cldtau >= 0 .and. sg%cldtau < 1000.) &
+         ctau_wm = exp(sg%cldfrac*log(sg%cldtau) ) ! Cloud Fraction weighted mean Cloud TauS
+ 
+    ctau1_wm = sum ( ctau_wm ) ! Cloud Fraction weighted mean Cloud Tau
+!    print*,'ctau_wm',ctau_wm, ctau1_wm 
+
+sg%bba_source_flag = 0  !!! First assume default albedo
+sg%bba_untuned = sg%bbainit_grid(1)  ! Bring in 'default' cookiecut BBSfcAlb
+! HG-20250918 need to check sg%bba_untuned
+
+sg%bbalut_clr = omit
+sg%bbalut_sno = omit
+sg%bbalut_sah = omit
+
+
+!!!!
+sg%bbalut_sah = sahwhensnowice(ilon,ilat) ! CALL SAH Perturbed by Microwave Snow& Ice
+!!!!!
+!print *, 'RAW SAH: ilon ilat adiff1x1 snoice1x1 mu0_1x1 =', &
+!         ilon, ilat, adiff1x1(ilon,ilat), snoice1x1(ilon,ilat), mu0_1x1(ilon,ilat)
+!print *, 'SAH USED (after pert+diurnal): bbalu_sah =', sg%bbalut_sah
+
+
+
+!---Keep or Adjust Albedo to BroadBand retrieval or history value.
+! The IF-Elseif structure forms a heirarchy be carfull with the order
+!HG-20250915, only keep 0--ocean and 3--SAH
+!sg%bba_source_flag = -9999
+!HG-20260303, condition only for daytime
+
+!print*, 'sg%u0, istotal, ocean, land, snowy, icey, sg%bbalut_sah'
+!print*, sg%u0, istotal, ocean, land, snowy, icey, sg%bbalut_sah
+
+!if (ilon >= 150 .and. ilon <= 186) then
+!   print*, 'Sarah Desert, ilon, sg%bba_source_flag, sg%spec_source_flag, ptv17'
+!   print*, ilon, sg%bba_source_flag, sg%spec_source_flag, sg%PTV(17)
+!   print*, ' '   
+!end if
+!dom = maxloc(sg%ptv(1:24), dim=1)
+
+! Treat "Sahara Desert" as: not ocean, and dominant scene is class 12
+
+!if (ilat == 66 .and. dom == 16 .and. sg%ptv(17) < 1.0) then
+!if (ilat == 66 ) then
+!  print*, 'HrBox, RegionNum_CERES', HrBox, RegionNum_CERES
+!  print*, 'Test conversion, ilat_test, ilon_test, rlat, rlon'
+!  print*, (RegionNum_CERES-1)/360+1, mod(RegionNum_CERES-1,360)+1, &
+!       89.5-real((RegionNum_CERES-1)/360), 179.5-real(mod(RegionNum_CERES-1,360))
+!  if ((179.5-real(mod(RegionNum_CERES-1,360)))> -15.0 .and. (179.5-real(mod(RegionNum_CERES-1,360)))<30.0) then
+!     print*, 'Sahara Desert (by scene): ilat,ilon=', ilat, ilon
+!     print*, 'Fred coversion, ilat, ilon, rlat, rlon:'
+!     iiilat = (RegionNum_CERES-1)/360 + 1
+!     iiilon = mod(RegionNum_CERES-1,360) + 1 
+!     rrrlat = 89.5 - real(iiilat-1)
+!     rrrlon = real(iiilon-1) - 179.5
+!     if (rrrlon < 0.0) rrrlon = rrrlon + 360.0
+!     print*, iiilat, iiilon, rrrlat, rrrlon
+!     print*, 'ptv(16), ', sg%PTV(16)
+!  endif
+!  
+!end if
+
+
+!if (ilat == 66 ) then
+!  print*, 'HrBox, RegionNum_CERES', HrBox, RegionNum_CERES
+!  print*, 'Test conversion, ilat_test, ilon_test, rlat_test, rlon_test'
+!
+!  iiilat = (RegionNum_CERES-1)/360 + 1
+!  iiilon = mod(RegionNum_CERES-1,360) + 1 
+!  rrrlat = 89.5 - real(iiilat-1)
+!  rrrlon = real(iiilon-1) - 179.5
+!  if (rrrlon < 0.0) rrrlon = rrrlon + 360.0 
+!  print*, iiilat, iiilon, rrrlat, rrrlon
+!
+!  print*, ' '
+!!  if (rrrlon > -15.0 .and. rrrlon < 30.0) then
+  call deg1_latlon(ilat, ilon, rlat, rlon)
+!  if (rlon >= 345.0 .or. rlon < 30.0) then
+
+!  !HG-20260402 this is right one -20260423 
+  !    if (msa%rlonW >=-14.0 .and. msa%rlonW < 29.0) then
+
+  !HG-20260428, Canada, 95W to 60W lat=60N
+    if (msa%rlonW >=-95.0 .and. msa%rlonW <= -60.0) then
+
+  
+  print*, 'Canada 60N, (95W-60W), (by scene, syni): ilat,ilon,rlat,rlon='
+!  print*, 'ilat,ilon,rlat,rlon from deg1_latlon which is from 0.5 to 359.5='
+!  print*, 'rlat,rlon from deg1_latlon, (0-180) keeps, (-180-0) + 360'
+!  
+!     print*, ilat, ilon, rlat, rlon
+     print*, 'ptv(16), msa%ngood, ', sg%PTV(16), msa%ngood
+     print*, 'msa%rlonW, msa%rlonE: ', msa%rlonW, msa%rlonE
+!
+!
+print*, 'Before assignment:', 'ilon, ilat, sg%bba_source_flag, sg%spec_source_flag'
+print*, 'Before assignment:', ilon, ilat, sg%bba_source_flag, sg%spec_source_flag
+
+IF ( ocean ) then  ! It' really ocean ( dynamicly varing scene id) ! DEFAULT:OCEAN is Z.Jin BB Sfcalb
+
+ sg%bba_source_flag = 0
+ sg%bba_untuned     = sg%bbainit_ocean(1)
+ !sg%bba_untuned     = sg%bbainit_grid(1) !HG-20250916
+
+!ELSEIF( flsa_on .AND. &
+!    ( (land .OR. snowy .OR. icey) .AND. &
+!       isclear .AND. &
+!       ishisun .AND. &
+!       sg%spec_source_flag <5 )) THEN !! TOA LUT if CLEAR TOA ALB IS PRESENT! !---Clear Sky FLSA LUT
+!	
+!  spec1= log(	  sg%sfc_spectral_alb(  11, 1, 0) ) / &
+!    	 log( sum(sg%sfc_spectral_alb(8:10, 1, 0)/3.0 ) ) !ln(nir/vis) 
+!
+!  sg%bbalut_clr= flsa0404_lut(sg%toa_clr,sg%u0,sg%pw,sg%o3,sg%aertau,spec1,sg%psfc,sg%wssa)
+!
+!!!! IF Portion of NonOceans Albedo is within range use the TOA based Retrieval.
+!
+!  alb_nonocean = -9999.
+!  IF ( sg%ptv(17) /= 100 .AND. sg%ptv(17) >= 0 ) &
+!   alb_nonocean = (  sg%bbalut_clr  -   &
+!   sg%ptv(17)*0.01* sg%bbainit_ocean(1)  ) / &
+!   ( 1.0 - sg%ptv(17)*0.01 )
+!!    PRINT'(a20,3f8.3)','test_nonocean',sg%ptv(17),sg%bbainit_nonocean(1),alb_nonocean
+!  
+!  IF ( (  land .AND. (alb_nonocean > 0 .AND. alb_nonocean < 0.50 ) ) .OR. &
+!  ( (snowy .OR. icey) .AND. (alb_nonocean > 0 .AND. alb_nonocean < 1.00 ) ) ) THEN
+!    sg%bba_untuned = sg%bbalut_clr
+!    sg%bba_source_flag = 1 ! Clear Sky Snow LUT Retrieval (FLSA)
+!  ENDIF 
+!
+!
+!ELSEIF( assalut_on .AND. &
+!    ( snowy .AND. &
+!      istotal .AND. & 
+!      ishisun .AND. &
+!      sg%p17 < ocean_th .AND. &
+!      ctau1_wm < 20 .AND. &
+!      sg%spec_source_flag <5)) THEN  !------ASSALUT Cloudy Sky Snow LUT
+! 
+!!  sg%bbalut_sno  = flsasnow_lut(sg%toa_tot,sg%u0,cldlntau,totcldfrac) ! Used IN Beta3 SYNI
+!   
+!!ASSALUT Inputs Beta4 (May8 2007) 
+!assalut%cfra(1:maxcld) = sg%cldfrac(1:maxcld)  ! Cloud Fraction (0-1)
+!assalut%chgt(1:maxcld) = sg%chgt(1:maxcld)  ! Cloud Top Height (m) (0- 14000)
+!assalut%cpz(1:maxcld)  = sg%cpz(1:maxcld) ! Cloud Particle size( 5-30 water) (30-180 ice)
+!assalut%ctau(1:maxcld) = sg%cldtau(1:maxcld) ! Cloud Tau ( 0-128)
+!assalut%elev    =  8000.* log(1013.25/sg%psfc)      ! Sfc Elevation (m) (0 -8000)
+!assalut%o3	= sg%o3        ! Ozone DU ( 200 -500)
+!assalut%pw	= sg%pw        ! Precipitable water (cm) (0-7)
+!assalut%u0	= sg%u0        ! CosSol (0-1)
+!assalut%toa     = sg%toa_tot   ! TOA ALBEDO (0-1)
+! 
+!  call avg_cloud_condition (assalut)
+!   
+!  call assalut_lut (assalut, sg%bbalut_sno) 
+!  
+!  sg%bba_untuned = sg%bbalut_sno
+!  sg%bba_source_flag = 2  !! Cloudy Sky Snow LUT Retrieval (ASSALUT)
+!
+!!print*,'ASSALUT1',sg%bbalut_sno, sg%toa_tot
+!!print*,'ASSALUT2',assalut%cfra
+!!print*,'ASSALUT3',assalut%chgt
+!!print*,'ASSALUT4',assalut%cpz
+!!print*,'ASSALUT5',assalut%ctau
+!!print*,'ASSALUT6',assalut%elev,assalut%o3, assalut%pw,assalut%u0
+!
+!
+!ELSEIF (sg%spec_source_flag <5 ) then !!Daily Snow/ice Perturbed Surface Albedo History Map Clear Sky Moved by to Specalb implicit diurnal model 
+!! Intended for Clear or Cloudy (Land and SeaIce )
+
+ ELSE
+ sg%bba_untuned  = sg%bbalut_sah  !!! Clear-sky SAH perturbed  at mu0 
+ sg%bba_source_flag = 3  !!! Clear-sky SAH perturbed at moved from mu0 to sg%u0 
+
+!ELSEIF (sg%spec_source_flag ==5 ) then
+! sg%bba_source_flag = 5  ! SGR RETRIEVAL
+!ELSEIF (sg%spec_source_flag ==6 ) then
+! sg%bba_source_flag = 6  ! OLD SGR RETRIEVAL diurnal model spectral shape
+!ELSE
+ENDIF  !..............................................
+
+!!HG-20260303
+!!print*, 'After assignment:', sg%bba_source_flag
+print*, 'After assignment:', 'ilon, ilat, sg%bba_source_flag, sg%spec_source_flag, sg%bbalut_sah'
+print*, 'After assignment:', ilon, ilat, sg%bba_source_flag, sg%spec_source_flag, sg%bbalut_sah
+print*, ' '
+!
+!
+
+! Sahara, HG
+  endif
+  
+!end if
+
+
+
+! HG-20250917
+
+!!------------------------------------------------------------------
+!IF ( sg%bba_source_flag < 0 .or. sg%bba_source_flag > 6 .or. &
+!     sg%bba_untuned < 0.01 .or. sg%bba_untuned > 0.99 ) then 
+! ! DEFAULT: No source of BB surface albedo use existing Scene type  based Clear Sky Value
+! sg%bba_source_flag = sg%bba_source_flag*10 
+! sg%bba_untuned     = sg%bbainit_grid(1)
+!ENDIF  
+
+!------------------------------------------------------------------
+!print'(a20,i3,6L1,f8.3)', 'sg%bba_source_flag=',sg%bba_source_flag,isclear,ocean,land,snowy,icey,ishisun,sg%bba_untuned
+
+
+! Apply Retrieved BROADBAND SFC ALBEDO to Spectral SfcAlb for Multiple Sky conditions 
+! Some needing a diurnal model application
+! print*,sg%bba_untuned,sg%bbainit_grid(1:2)
+
+!Find and keep 'diurnal model' for clear to cloudysky to apply later to normalized clear sky
+ 
+! print'(a8,2I4,18f7.3)', 'ClrUnA',1,0,sg%sfc_spectral_alb(1:18,  1, 0 )
+ 
+ CldCond: do icld   = 1,maxcld !!! FOR CONDITIONS WITH CLOUD ONLY Move to Diffuse Angle
+  if ( sg%cldfrac(icld) == 0.0 ) cycle 
+   AerCond: do iaer =1,2 ! 1=WithAot  2=NOAOT
+   spec_diurnal_clrtocld(1:18,iaer ,icld) = 1.00
+
+   where( sg%sfc_spectral_alb(1:18, iaer, 0 ) .ne. 0 ) &
+   spec_diurnal_clrtocld(1:18,iaer,icld) = sg%sfc_spectral_alb(1:18,iaer,icld) / sg%sfc_spectral_alb(1:18,iaer,0)
+  
+!   print'(a8,2I4,18f7.3)', 'CldUnA',iaer,icld,sg%sfc_spectral_alb(1:18,  iaer, icld )
+!   print'(a4,18f7.3)', 'RAT',spec_diurnal_clrtocld(1:18,iaer,icld)
+
+  enddo AerCond
+ enddo CldCond
+
+
+prsrat(1:18) = sg%sfc_spectral_alb(1:18, 2, 0 )/ sg%sfc_spectral_alb(1:18, 1, 0 ) 
+!print*,'PRSRAT',prsrat
+
+
+! ADJUST CLEAR-SKY and PRISTINE-SKY SPECTRAL ALBEDO!
+IF ( sg%bba_untuned >= 0 .AND. sg%bba_untuned <= 1.0 .AND.  &
+        (sg%bba_source_flag == 1  &
+    .OR. sg%bba_source_flag == 2  &
+    .OR. sg%bba_source_flag == 3 ) ) then
+
+      !print *, "300 DEBUG: sg%bba_source_flag (sg%bba_untuned) =", sg%bba_untuned !HG-20250918
+
+
+    BBNORMRATIO = sg%bba_untuned /sg%sfc_broadband_alb(1,0) !***********
+
+!    print*,'BBNORMRATIO',BBNORMRATIO
+
+    sg%sfc_spectral_alb(1:18, 1, 0 )  =  &
+    sg%sfc_spectral_alb(1:18, 1, 0 ) *  BBNORMRATIO !! Normalize CLEAR-SKY  W/Aerosol
+
+    sg%sfc_spectral_alb(1:18, 2, 0 )  =  &
+    sg%sfc_spectral_alb(1:18, 1, 0 ) * prsrat(1:18)   !! Normalize Pristne-Sky based on Clear-Sky
+    
+    WHERE ( sg%sfc_spectral_alb(1:18, 1:2, 0 ) > 1.0 ) sg%sfc_spectral_alb(1:18, 1:2, 0 ) = 1.0
+    WHERE ( sg%sfc_spectral_alb(1:18, 1:2, 0 ) < 0.0 ) sg%sfc_spectral_alb(1:18, 1:2, 0 ) = 0.0
+    
+
+!albratio(1:2) = sg%bba_untuned / sg%bbainit_grid(1:2)
+!IF ( sg%bba_untuned< 0 .OR. sg%bba_untuned >1.0  &
+!.OR. sg%bba_source_flag == 0  &
+!.OR. sg%bba_source_flag == 5  &
+!.OR. sg%bba_source_flag == 6 ) albratio(1:2) = 1.0
+!Simple Ratio adjustment to BROADBAND SFC ALBEDO for Clear and Pristine 
+!For ALL Cloud Conditions (treat cloudy sky conditions wiht clear retrieval in later step) 
+!sg%sfc_spectral_alb(1:18, 1, : )  =  &
+!sg%sfc_spectral_alb(1:18, 1, : ) * albratio ( 1 )  !! Clear W/Aerosol
+!sg%sfc_spectral_alb(1:18, 2, : )  =  &
+!sg%sfc_spectral_alb(1:18, 2, : ) * albratio ( 2 )  !! Pristine
+!---------
+
+! Cloudy Sky SfcAlb Diurnal Model to Specalbedo ( Not for DEfault or SGR retrievals or ASSALUT)
+!!!!IF ( sg%bba_source_flag == 1 .or. sg%bba_source_flag == 3 ) then !------>>>> Move Clear Sky REtrievals for Cloudy sky conditions
+!  print*,'sg%sfc_spectral_alb(1:15) clr then cloudcond'
+!  print'(a8,2i4,18f6.3)', 'ClrAdj',1,0,sg%sfc_spectral_alb(1:18,  1, 0 )
+
+    CldCond2: do icld   = 1,maxcld !!! FOR CONDITIONS WITH CLOUD ONLY Move Clear / Pristine  to Cloudy Diffuse Angle
+      if ( sg%cldfrac(icld) == 0.0 ) cycle 
+      AerCond2: do iaer =1,2 ! 1=WithAot  2=NOAOT
+      sg%sfc_spectral_alb(1:18, iaer, icld)  =  &
+      sg%sfc_spectral_alb(1:18, iaer, 0 ) *  spec_diurnal_clrtocld(1:18,iaer,icld) !Move according to Diurnal Model
+!      print'(a8,2i4,18f6.3)', 'CldAdj',iaer,icld,sg%sfc_spectral_alb(1:18,  iaer, icld )
+      enddo AerCond2
+    enddo CldCond2
+
+endif ! Only Normalize albedo for a broadband clear sky retrieval!------<<<<
+
+
+WHERE ( sg%sfc_spectral_alb > 1.0 ) sg%sfc_spectral_alb = 1.0
+WHERE ( sg%sfc_spectral_alb < 0.0 ) sg%sfc_spectral_alb = 0.0
+!
+!print'(a25,5f8.3)','BB SALB_CLR_SNO_SAH',sg%bbalut_clr,sg%bbalut_sno,sg%bbalut_sah
+
+! if (sg%spec_source_flag == 3  )stop 'get_bb_sfcalb'
+
+! HG-20250917
+!print *, "DEBUG: sg%bba_source_flag (after assign) =", sg%bba_source_flag
+
+!! HG-20250925
+!if (sg%bba_source_flag > 1000) then
+!print *, "DEBUG 600: sg%bba_source_flag  =", sg%bba_source_flag
+!endif
+
+END SUBROUTINE get_bb_sfcalb
+
+!================================================================
+!
+SUBROUTINE deg1_latlon(ilat,ilon, rlat,rlon)
+
+INTEGER ilat,ilon
+REAL rlat,rlon
+rlat = 89.5 - (ilat-1)  
+rlon = (ilon-1) + 0.5
+if ( rlon < 0 ) rlon =rlon +360.
+END SUBROUTINE deg1_latlon
+!
+!================================================================
+!
+END MODULE SYNSPECTRAL
+

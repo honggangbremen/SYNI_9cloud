@@ -1,0 +1,751 @@
+MODULE read_zonal_tsi_file
+
+    USE netcdf_pool_types_mod
+    USE TSI_TYPE_3x3_MOD
+
+
+    !* TIME AND LOCATION DATA
+     INTEGER, DIMENSION(:,:), ALLOCATABLE ::      region_num                   !4,TSI
+     INTEGER, DIMENSION(:,:), ALLOCATABLE ::      hour_box_num                 !5,TSI
+     INTEGER, DIMENSION(:,:), ALLOCATABLE ::      geo_sat_id
+     REAL, DIMENSION(:,:), ALLOCATABLE   ::      julhr                        !3,TSI
+     REAL, DIMENSION(:,:), ALLOCATABLE   ::      sfc_alt                      !6 TSI
+     REAL, DIMENSION(:,:), ALLOCATABLE    ::      cos_sol_zenith               !7 TSI
+     REAL, DIMENSION(:,:), ALLOCATABLE    ::      view_angle            ! from GGEO
+     REAL, DIMENSION(:,:), ALLOCATABLE    ::      imager_view_angle      !from FSW
+     REAL, DIMENSION(:,:,:), ALLOCATABLE  ::      surf_perc_cov
+
+  !* CLEAR SKY AREA DATA
+     REAL, DIMENSION(:,:), ALLOCATABLE    ::      aero_vis_opdep063           !31 TSI
+     REAL, DIMENSION(:,:), ALLOCATABLE    ::      aero_vis_opdep160           !31a
+  !--- add new params
+     REAL, DIMENSION(:,:), ALLOCATABLE    ::      ir_radiance
+     REAL, DIMENSION(:,:), ALLOCATABLE    ::      imager_rad4
+
+  !* TOA FLUXES
+     INTEGER, DIMENSION(:,:), ALLOCATABLE ::     data_flg
+     REAL, DIMENSION(:,:), ALLOCATABLE   ::      total_sw_mn                  !34 TSI
+     REAL, DIMENSION(:,:), ALLOCATABLE   ::      total_lw_mn                  !36 TSI
+     REAL, DIMENSION(:,:), ALLOCATABLE   ::      total_alb_mn                 !38 TSI
+     REAL, DIMENSION(:,:), ALLOCATABLE   ::      total_wn_mn                  !40 TSI
+     REAL, DIMENSION(:,:), ALLOCATABLE   ::      clear_sw_mn                  !42 TSI
+     REAL, DIMENSION(:,:), ALLOCATABLE   ::      clear_lw_mn                  !44 TSI
+     REAL, DIMENSION(:,:), ALLOCATABLE   ::      clear_alb_mn                 !46 TSI
+     REAL, DIMENSION(:,:), ALLOCATABLE   ::      clear_wn_mn                  !48 TSI
+
+  !* CLOUD INFORMATION
+     REAL , DIMENSION(:,:,:), ALLOCATABLE   ::      areafrac_total          !54  167 TSI
+     REAL , DIMENSION(:,:,:), ALLOCATABLE   ::      optdepth_mn_lnr         !58  172 TSI
+     REAL , DIMENSION(:,:,:), ALLOCATABLE   ::      optdepth_mn_log
+     REAL , DIMENSION(:,:,:), ALLOCATABLE   ::      emiss_ir_mn             !66  182 TSI
+     REAL , DIMENSION(:,:,:), ALLOCATABLE   ::      h2opath_mn              !74  192 TSI
+     REAL , DIMENSION(:,:,:), ALLOCATABLE   ::      icepath_mn              !82  202 TSI
+     REAL , DIMENSION(:,:,:), ALLOCATABLE   ::      toppres_mn              !90  212 TSI
+     REAL , DIMENSION(:,:,:), ALLOCATABLE   ::      effpres_mn              !98  222 TSI
+     REAL , DIMENSION(:,:,:), ALLOCATABLE   ::      efftemp_mn              !106 232 TSI
+     REAL , DIMENSION(:,:,:), ALLOCATABLE   ::      effht_mn                !114 242 TSI
+     REAL , DIMENSION(:,:,:), ALLOCATABLE   ::      botpres_mn              !122 252 TSI
+     REAL , DIMENSION(:,:,:), ALLOCATABLE   ::      radius_h2o_mn           !130 262 TSI
+     REAL , DIMENSION(:,:,:), ALLOCATABLE   ::      radius_ice_mn           !138 272 TSI
+     REAL , DIMENSION(:,:,:), ALLOCATABLE   ::      phase_mn_nc                !146 282 TSI
+     REAL , DIMENSION(:,:,:), ALLOCATABLE   ::      toptemp_mn
+     REAL , DIMENSION(:,:,:), ALLOCATABLE   ::      bottemp_mn
+     REAL , DIMENSION(:,:,:), ALLOCATABLE   ::      top_height
+     REAL , DIMENSION(:,:,:), ALLOCATABLE   ::      bot_height
+
+     !* OVERLAP DATA 
+     REAL , DIMENSION(:,:,:), ALLOCATABLE   ::      areafrac_ov
+
+     !* 3x3 CLOUD DATA
+    real, dimension(:,:,:,:), allocatable :: Cloud_Fraction
+    real, dimension(:,:,:,:), allocatable :: Liquid_Cloud_Fraction
+    real, dimension(:,:,:,:), allocatable :: Ice_Cloud_Fraction
+    real, dimension(:,:,:,:), allocatable :: Cloud_Optical_Depth
+    real, dimension(:,:,:,:), allocatable :: Cloud_Optical_Depth_Linearly_Averaged
+    real, dimension(:,:,:,:), allocatable :: Cloud_Infrared_Emissivity
+    real, dimension(:,:,:,:), allocatable :: Cloud_Liquid_Water_Path
+    real, dimension(:,:,:,:), allocatable :: Cloud_Ice_Water_Path
+    real, dimension(:,:,:,:), allocatable :: Cloud_Top_Pressure
+    real, dimension(:,:,:,:), allocatable :: Cloud_Top_Temperature
+    real, dimension(:,:,:,:), allocatable :: Cloud_Top_Height
+    real, dimension(:,:,:,:), allocatable :: Cloud_Effective_Pressure
+    real, dimension(:,:,:,:), allocatable :: Cloud_Effective_Temperature
+    real, dimension(:,:,:,:), allocatable :: Cloud_Effective_Height
+    real, dimension(:,:,:,:), allocatable :: Cloud_Base_Pressure
+    real, dimension(:,:,:,:), allocatable :: Cloud_Base_Temperature
+    real, dimension(:,:,:,:), allocatable :: Cloud_Liquid_Particle_Radius
+    real, dimension(:,:,:,:), allocatable :: Cloud_Ice_Particle_Radius
+
+    !* SURFACE DATA
+     INTEGER, DIMENSION(:,:), ALLOCATABLE ::      skintemp_flg
+     REAL, DIMENSION(:,:), ALLOCATABLE    ::      lw_surf_emiss
+     REAL, DIMENSION(:,:), ALLOCATABLE    ::      wn_surf_emiss
+     REAL, DIMENSION(:,:), ALLOCATABLE    ::      surf_skin_temp
+     REAL, DIMENSION(:,:), ALLOCATABLE    ::      moa_skin_temp  
+
+  !* AEROSOL DATA
+     REAL, DIMENSION(:,:), ALLOCATABLE    ::      init_aero_optdep
+     REAL, DIMENSION(:,:,:), ALLOCATABLE  ::      aero_const_ratio
+     REAL, DIMENSION(:,:), ALLOCATABLE    ::      optdepth047_land
+     REAL, DIMENSION(:,:), ALLOCATABLE    ::      optdepth055_land
+     REAL, DIMENSION(:,:), ALLOCATABLE    ::      optdepth066_land
+     REAL, DIMENSION(:,:), ALLOCATABLE    ::      optdepth047_ocean
+     REAL, DIMENSION(:,:), ALLOCATABLE    ::      optdepth055_ocean
+     REAL, DIMENSION(:,:), ALLOCATABLE    ::      optdepth066_ocean
+     REAL, DIMENSION(:,:), ALLOCATABLE    ::      optdepth087_ocean
+     REAL, DIMENSION(:,:), ALLOCATABLE    ::      optdepth124_ocean
+     REAL, DIMENSION(:,:), ALLOCATABLE    ::      optdepth164_ocean
+     REAL, DIMENSION(:,:), ALLOCATABLE    ::      optdepth213_ocean
+
+
+    CONTAINS
+
+
+
+    subroutine read_zonal_ncfile(json_packinglist_filename, &
+                                nc_filename, &
+                                nc_pool)
+    USE PCF, ONLY: GetFileName
+    USE netcdf_reader_mod
+    USE json_file_read_mod
+    USE variable_array_mod, only : check_all_variables_in_pool
+    IMPLICIT NONE
+    CHARACTER (len = *), intent(in) :: json_packinglist_FileName
+    CHARACTER (len = *), intent(in) :: nc_filename
+    
+    TYPE(sds_pools), intent(inout) :: nc_pool    
+    INTEGER :: ncid
+
+
+    !handling json and netcdf files
+    !=================================================================
+        print *, "nc_filename: " // "(" // trim(nc_filename) // ")"
+
+        !reads json packinglist file
+        CALL get_data_from_json_file(trim(json_packinglist_filename), nc_pool) !packing list file will be stored in PCF file
+        !reads NetCDF file
+        call read_nc_file &
+            (TRIM(nc_filename), ncid, nc_pool, .false.)
+
+        !verfies all variables from the NetCDF file have been read
+        call check_all_variables_in_pool(nc_pool)
+
+    end subroutine read_zonal_ncfile
+
+
+    subroutine fill_tsi_values(zonal_tsi_input_pool, tsi_3x3_present, printing_on)
+        !this subroutine populates the array values with data from the NetCDF pool type
+        !"netcdf_pool_types_mod" is needed to access the netcdf_pool information
+        !"variable_array_mod" is needed to convert the sds_pools arrays into standard arrays
+        USE netcdf_pool_types_mod
+        USE variable_array_mod
+        implicit none
+        TYPE(sds_pools), intent(inout) :: zonal_tsi_input_pool
+        logical, intent(in) :: tsi_3x3_present
+        logical, optional, intent(in) :: printing_on
+        logical :: printing_control, control_3x3
+
+        
+        
+        printing_control = (present(printing_on) .AND. printing_on)
+        control_3x3 =  tsi_3x3_present
+
+        call fill_2d_int_array(region_num,"region_num",zonal_tsi_input_pool)                   !4,TSI
+        call fill_2d_int_array(hour_box_num,"hour_box_num",zonal_tsi_input_pool)                 !5,TSI
+        call fill_2d_int_array(geo_sat_id,"geo_sat_id",zonal_tsi_input_pool)
+        call fill_2d_array(julhr,"julhr",zonal_tsi_input_pool)                        !3,TSI
+        call fill_2d_array(sfc_alt,"sfc_alt",zonal_tsi_input_pool)                      !6 TSI
+        call fill_2d_array(cos_sol_zenith,"cos_sol_zenith",zonal_tsi_input_pool)               !7 TSI
+        call fill_3d_array(surf_perc_cov,"surf_perc_cov",zonal_tsi_input_pool)  !8-27 TSI
+        call fill_2d_array(view_angle,"view_angle",zonal_tsi_input_pool)            ! from GGEO
+        call fill_2d_array(imager_view_angle,"imager_view_angle",zonal_tsi_input_pool)      !from FSW
+
+    !* CLEAR SKY AREA DATA
+        call fill_2d_array(aero_vis_opdep063,"aero_vis_opdep063",zonal_tsi_input_pool)           !31 TSI
+        call fill_2d_array(aero_vis_opdep160,"aero_vis_opdep160",zonal_tsi_input_pool)           !31a
+    !--- add new params
+        call fill_2d_array(ir_radiance,"ir_radiance",zonal_tsi_input_pool)
+        call fill_2d_array(imager_rad4,"imager_rad4",zonal_tsi_input_pool)
+
+    !* TOA FLUXES
+        call fill_2d_int_array(data_flg,"data_flg",zonal_tsi_input_pool)
+        call fill_2d_array(total_sw_mn,"total_sw_mn",zonal_tsi_input_pool)                  !34 TSI
+        call fill_2d_array(total_lw_mn,"total_lw_mn",zonal_tsi_input_pool)                  !36 TSI
+        call fill_2d_array(total_alb_mn,"total_alb_mn",zonal_tsi_input_pool)                 !38 TSI
+        call fill_2d_array(total_wn_mn,"total_wn_mn",zonal_tsi_input_pool)                  !40 TSI
+        call fill_2d_array(clear_sw_mn,"clear_sw_mn",zonal_tsi_input_pool)                  !42 TSI
+        call fill_2d_array(clear_lw_mn,"clear_lw_mn",zonal_tsi_input_pool)                  !44 TSI
+        call fill_2d_array(clear_alb_mn,"clear_alb_mn",zonal_tsi_input_pool)                 !46 TSI
+        call fill_2d_array(clear_wn_mn,"clear_wn_mn",zonal_tsi_input_pool)                  !48 TSI
+
+    !* CLOUD INFORMATION
+        call fill_3d_array(areafrac_total,"areafrac_total",zonal_tsi_input_pool)          !54  167 TSI
+        call fill_3d_array(optdepth_mn_lnr,"optdepth_mn_lnr",zonal_tsi_input_pool)         !58  172 TSI
+        call fill_3d_array(optdepth_mn_log,"optdepth_mn_log",zonal_tsi_input_pool)
+        call fill_3d_array(emiss_ir_mn,"emiss_ir_mn",zonal_tsi_input_pool)             !66  182 TSI
+        call fill_3d_array(h2opath_mn,"h2opath_mn",zonal_tsi_input_pool)              !74  192 TSI
+        call fill_3d_array(icepath_mn,"icepath_mn",zonal_tsi_input_pool)              !82  202 TSI
+        call fill_3d_array(toppres_mn,"toppres_mn",zonal_tsi_input_pool)              !90  212 TSI
+        call fill_3d_array(effpres_mn,"effpres_mn",zonal_tsi_input_pool)              !98  222 TSI
+        call fill_3d_array(efftemp_mn,"efftemp_mn",zonal_tsi_input_pool)              !106 232 TSI
+        call fill_3d_array(effht_mn,"effht_mn",zonal_tsi_input_pool)                !114 242 TSI
+        call fill_3d_array(botpres_mn,"botpres_mn",zonal_tsi_input_pool)              !122 252 TSI
+        call fill_3d_array(radius_h2o_mn,"radius_h2o_mn",zonal_tsi_input_pool)           !130 262 TSI
+        call fill_3d_array(radius_ice_mn,"radius_ice_mn",zonal_tsi_input_pool)           !138 272 TSI
+        call fill_3d_array(phase_mn_nc,"phase_mn",zonal_tsi_input_pool)                !146 282 TSI
+        call fill_3d_array(toptemp_mn,"toptemp_mn",zonal_tsi_input_pool)
+        call fill_3d_array(bottemp_mn,"bottemp_mn",zonal_tsi_input_pool)
+        call fill_3d_array(top_height,"top_height",zonal_tsi_input_pool)
+        call fill_3d_array(bot_height,"bot_height",zonal_tsi_input_pool)
+
+        !* OVERLAP DATA 
+        call fill_3d_array(areafrac_ov,"areafrac_ov",zonal_tsi_input_pool)
+
+        !* 3X3 CLOUD DATA
+        IF(control_3x3) then
+            call fill_4d_array(Cloud_Fraction,"Cloud_Fraction", zonal_tsi_input_pool)
+            call fill_4d_array(Liquid_Cloud_Fraction,"Liquid_Cloud_Fraction", zonal_tsi_input_pool)
+            call fill_4d_array(Ice_Cloud_Fraction,"Ice_Cloud_Fraction", zonal_tsi_input_pool)
+            call fill_4d_array(Cloud_Optical_Depth,"Cloud_Optical_Depth", zonal_tsi_input_pool)
+            call fill_4d_array(Cloud_Optical_Depth_Linearly_Averaged,"Cloud_Optical_Depth_Linearly_Averaged", zonal_tsi_input_pool)
+            call fill_4d_array(Cloud_Infrared_Emissivity,"Cloud_Infrared_Emissivity", zonal_tsi_input_pool)
+            call fill_4d_array(Cloud_Liquid_Water_Path,"Cloud_Liquid_Water_Path", zonal_tsi_input_pool)
+            call fill_4d_array(Cloud_Ice_Water_Path,"Cloud_Ice_Water_Path", zonal_tsi_input_pool)
+            call fill_4d_array(Cloud_Top_Pressure,"Cloud_Top_Pressure", zonal_tsi_input_pool)
+            call fill_4d_array(Cloud_Top_Temperature,"Cloud_Top_Temperature", zonal_tsi_input_pool)
+            call fill_4d_array(Cloud_Top_Height,"Cloud_Top_Height", zonal_tsi_input_pool)
+            call fill_4d_array(Cloud_Effective_Pressure,"Cloud_Effective_Pressure", zonal_tsi_input_pool)
+            call fill_4d_array(Cloud_Effective_Temperature,"Cloud_Effective_Temperature", zonal_tsi_input_pool)
+            call fill_4d_array(Cloud_Effective_Height,"Cloud_Effective_Height", zonal_tsi_input_pool)
+            call fill_4d_array(Cloud_Base_Pressure,"Cloud_Base_Pressure", zonal_tsi_input_pool)
+            call fill_4d_array(Cloud_Base_Temperature,"Cloud_Base_Temperature", zonal_tsi_input_pool)
+            call fill_4d_array(Cloud_Liquid_Particle_Radius,"Cloud_Liquid_Particle_Radius", zonal_tsi_input_pool)
+            call fill_4d_array(Cloud_Ice_Particle_Radius,"Cloud_Ice_Particle_Radius", zonal_tsi_input_pool)
+        endif
+
+        
+        ! * SURFACE DATA
+        call fill_2d_int_array(skintemp_flg,"skintemp_flg",zonal_tsi_input_pool)
+        call fill_2d_array(lw_surf_emiss,  "lw_surf_emiss",  zonal_tsi_input_pool)
+        call fill_2d_array(wn_surf_emiss,  "wn_surf_emiss",  zonal_tsi_input_pool)
+        call fill_2d_array(surf_skin_temp, "surf_skin_temp", zonal_tsi_input_pool)
+        call fill_2d_array(moa_skin_temp, "moa_skin_temp", zonal_tsi_input_pool)
+        
+        ! * AEROSOL DATA
+        call fill_3d_array(aero_const_ratio,"aero_const_ratio",zonal_tsi_input_pool)
+        call fill_2d_array(init_aero_optdep, "init_aero_optdep", zonal_tsi_input_pool)
+        call fill_2d_array(optdepth047_land, "optdepth047_land", zonal_tsi_input_pool)
+        call fill_2d_array(optdepth055_land, "optdepth055_land", zonal_tsi_input_pool)
+        call fill_2d_array(optdepth066_land, "optdepth066_land", zonal_tsi_input_pool)
+        call fill_2d_array(optdepth047_ocean, "optdepth047_ocean", zonal_tsi_input_pool)
+        call fill_2d_array(optdepth055_ocean, "optdepth055_ocean", zonal_tsi_input_pool)
+        call fill_2d_array(optdepth066_ocean, "optdepth066_ocean", zonal_tsi_input_pool)
+        call fill_2d_array(optdepth087_ocean, "optdepth087_ocean", zonal_tsi_input_pool)
+        call fill_2d_array(optdepth124_ocean, "optdepth124_ocean", zonal_tsi_input_pool)
+        call fill_2d_array(optdepth164_ocean, "optdepth164_ocean", zonal_tsi_input_pool)
+        call fill_2d_array(optdepth213_ocean, "optdepth213_ocean", zonal_tsi_input_pool)
+
+
+    end subroutine fill_tsi_values
+
+    subroutine fill_3x3_tsi_struct(tsi_3x3,iregion,ihour)
+        TYPE(TSI_3X3_TYPE), intent(inout) :: tsi_3x3
+        integer, intent(in) :: iregion, ihour
+        integer :: iopt, ipres
+
+        !timeandloc
+        tsi_3x3%timeandloc%region_num         = region_num(iregion, ihour)
+        tsi_3x3%timeandloc%hour_box_num       = hour_box_num(iregion, ihour)
+        tsi_3x3%timeandloc%geo_sat_id         = geo_sat_id(iregion, ihour)
+
+        tsi_3x3%timeandloc%julhr              = julhr(iregion, ihour)
+        tsi_3x3%timeandloc%sfc_alt            = sfc_alt(iregion, ihour)
+        tsi_3x3%timeandloc%cos_sol_zenith     = cos_sol_zenith(iregion, ihour)
+
+        tsi_3x3%timeandloc%view_angle         = view_angle(iregion, ihour)
+        tsi_3x3%timeandloc%imager_view_angle  = imager_view_angle(iregion, ihour)
+
+        !clear_sky_area_data
+        tsi_3x3%clrsky_area_data%aero_vis_opdep063 = aero_vis_opdep063(iregion, ihour)
+        tsi_3x3%clrsky_area_data%aero_vis_opdep160 = aero_vis_opdep160(iregion, ihour)
+
+        tsi_3x3%clrsky_area_data%ir_radiance       = ir_radiance(iregion, ihour)
+        tsi_3x3%clrsky_area_data%imager_rad4       = imager_rad4(iregion, ihour)
+
+        !fluxestsi
+        tsi_3x3%fluxestsi%data_flg     = data_flg(iregion, ihour)
+        tsi_3x3%fluxestsi%total_sw_mn  = total_sw_mn(iregion, ihour)
+        tsi_3x3%fluxestsi%total_lw_mn  = total_lw_mn(iregion, ihour)
+        tsi_3x3%fluxestsi%total_alb_mn = total_alb_mn(iregion, ihour)
+        tsi_3x3%fluxestsi%total_wn_mn  = total_wn_mn(iregion, ihour)
+        tsi_3x3%fluxestsi%clear_sw_mn  = clear_sw_mn(iregion, ihour)
+        tsi_3x3%fluxestsi%clear_lw_mn  = clear_lw_mn(iregion, ihour)
+        tsi_3x3%fluxestsi%clear_alb_mn = clear_alb_mn(iregion, ihour)
+        tsi_3x3%fluxestsi%clear_wn_mn  = clear_wn_mn(iregion, ihour)
+
+        ! !overlap
+        ! tsi_3x3%overlap%areafrac_ov = areafrac_ov(iregion, ihour)
+
+        !aerosol
+        tsi_3x3%aerosol%init_aero_optdep = init_aero_optdep(iregion, ihour)
+        tsi_3x3%aerosol%optdepth047_land = optdepth047_land(iregion, ihour)
+        tsi_3x3%aerosol%optdepth055_land = optdepth055_land(iregion, ihour)
+        tsi_3x3%aerosol%optdepth066_land = optdepth066_land(iregion, ihour)
+        tsi_3x3%aerosol%optdepth047_ocean = optdepth047_ocean(iregion, ihour)
+        tsi_3x3%aerosol%optdepth055_ocean = optdepth055_ocean(iregion, ihour)
+        tsi_3x3%aerosol%optdepth066_ocean = optdepth066_ocean(iregion, ihour)
+        tsi_3x3%aerosol%optdepth087_ocean = optdepth087_ocean(iregion, ihour)
+        tsi_3x3%aerosol%optdepth124_ocean = optdepth124_ocean(iregion, ihour)
+        tsi_3x3%aerosol%optdepth164_ocean = optdepth164_ocean(iregion, ihour)
+        tsi_3x3%aerosol%optdepth213_ocean = optdepth213_ocean(iregion, ihour)
+
+        !surface
+        tsi_3x3%surface%lw_surf_emiss  = lw_surf_emiss(iregion, ihour)
+        tsi_3x3%surface%wn_surf_emiss  = wn_surf_emiss(iregion, ihour)
+        tsi_3x3%surface%sfc_skin_temp = surf_skin_temp(iregion, ihour)
+
+        !3X3 Clouds
+        do ipres = 1, 3
+            do iopt = 1, 3 
+                tsi_3x3%cld_bin(ipres,iopt)%areafrac_total  =  Cloud_Fraction(iregion,ihour,ipres,iopt)       
+                tsi_3x3%cld_bin(ipres,iopt)%optdepth_mn_lnr = Cloud_Optical_Depth_Linearly_Averaged(iregion,ihour,ipres,iopt)       
+                !tsi_3x3%cld_bin(ipres,iopt)%optdepth_std_lnr
+                tsi_3x3%cld_bin(ipres,iopt)%optdepth_mn_log = Cloud_Optical_Depth(iregion,ihour,ipres,iopt)
+                !tsi_3x3%cld_bin(ipres,iopt)%optdepth_std_log
+                tsi_3x3%cld_bin(ipres,iopt)%emiss_ir_mn = Cloud_Infrared_Emissivity(iregion,ihour,ipres,iopt)          
+                !tsi_3x3%cld_bin(ipres,iopt)%emiss_ir_std
+                tsi_3x3%cld_bin(ipres,iopt)%h2opath_mn = Cloud_Liquid_Water_Path(iregion,ihour,ipres,iopt)             !74  192 TSI
+                !tsi_3x3%cld_bin(ipres,iopt)%h2opath_std
+                tsi_3x3%cld_bin(ipres,iopt)%icepath_mn = Cloud_Ice_Water_Path(iregion,ihour,ipres,iopt)           !82  202 TSI
+                !tsi_3x3%cld_bin(ipres,iopt)%icepath_std
+                tsi_3x3%cld_bin(ipres,iopt)%toppres_mn = Cloud_Top_Pressure(iregion,ihour,ipres,iopt)            !90  212 TSI
+                !tsi_3x3%cld_bin(ipres,iopt)%toppres_std
+                tsi_3x3%cld_bin(ipres,iopt)%effpres_mn = Cloud_Effective_Pressure(iregion,ihour,ipres,iopt)           !98  222 TSI
+                !tsi_3x3%cld_bin(ipres,iopt)%effpres_std
+                tsi_3x3%cld_bin(ipres,iopt)%efftemp_mn = Cloud_Effective_Temperature(iregion,ihour,ipres,iopt)           !106 232 TSI
+                !tsi_3x3%cld_bin(ipres,iopt)%efftemp_std
+                tsi_3x3%cld_bin(ipres,iopt)%effht_mn = Cloud_Effective_Height(iregion,ihour,ipres,iopt)          !114 242 TSI
+                !tsi_3x3%cld_bin(ipres,iopt)%effht_std
+                tsi_3x3%cld_bin(ipres,iopt)%botpres_mn = Cloud_Base_Pressure(iregion,ihour,ipres,iopt)             !122 252 TSI
+                !tsi_3x3%cld_bin(ipres,iopt)%botpres_std
+                tsi_3x3%cld_bin(ipres,iopt)%radius_h2o_mn = Cloud_Liquid_Particle_Radius(iregion,ihour,ipres,iopt)          !130 262 TSI
+                !tsi_3x3%cld_bin(ipres,iopt)%radius_h2o_std
+                tsi_3x3%cld_bin(ipres,iopt)%radius_ice_mn = Cloud_Ice_Particle_Radius(iregion,ihour,ipres,iopt)        !138 272 TSI
+                
+                !tsi_3x3%cld_bin(ipres,iopt)%radius_ice_std
+                !tsi_3x3%cld_bin(ipres,iopt)%phase_mn =  (iregion,ihour,ipres,iopt)      !146 282 TSI 
+                !tsi_3x3%cld_bin(ipres,iopt)%phase_std
+                !!!tsi_3x3%cld_bin(ipres,iopt)%asp_ratio_mn =  *not available*           !154 292 TSI
+                !tsi_3x3%cld_bin(ipres,iopt)%asp_ratio_std
+            
+            end do !ipress
+        end do !iopt
+
+    end subroutine fill_3x3_tsi_struct
+
+    subroutine fill_tsi_struct(tsi,iregion,ihour)
+        USE tsi_type_mod
+        TYPE(TSI_TYPE), intent(inout) :: tsi
+        integer, intent(in) :: iregion, ihour
+        integer :: ilayer, ioverlap, isurf
+
+        !timeandloc
+        tsi%timeandloc%region_num         = region_num(iregion, ihour)
+        tsi%timeandloc%hour_box_num       = hour_box_num(iregion, ihour)
+        tsi%timeandloc%geo_sat_id         = geo_sat_id(iregion, ihour)
+
+        tsi%timeandloc%julhr              = julhr(iregion, ihour)
+        tsi%timeandloc%sfc_alt            = sfc_alt(iregion, ihour)
+        tsi%timeandloc%cos_sol_zenith     = cos_sol_zenith(iregion, ihour)
+
+        tsi%timeandloc%view_angle         = view_angle(iregion, ihour)
+        tsi%timeandloc%imager_view_angle  = imager_view_angle(iregion, ihour)
+
+        do isurf = 1, 20
+            tsi%timeandloc%surf_perc_cov(isurf) = surf_perc_cov(iregion, ihour, isurf)
+        end do
+
+        !clear_sky_area_data
+        tsi%clrsky_area_data%aero_vis_opdep063 = aero_vis_opdep063(iregion, ihour)
+        tsi%clrsky_area_data%aero_vis_opdep160 = aero_vis_opdep160(iregion, ihour)
+
+        tsi%clrsky_area_data%ir_radiance       = ir_radiance(iregion, ihour)
+        tsi%clrsky_area_data%imager_rad4       = imager_rad4(iregion, ihour)
+
+        !fluxestsi
+        tsi%fluxestsi%data_flg     = data_flg(iregion, ihour)
+        tsi%fluxestsi%total_sw_mn  = total_sw_mn(iregion, ihour)
+        tsi%fluxestsi%total_lw_mn  = total_lw_mn(iregion, ihour)
+        tsi%fluxestsi%total_alb_mn = total_alb_mn(iregion, ihour)
+        tsi%fluxestsi%total_wn_mn  = total_wn_mn(iregion, ihour)
+        tsi%fluxestsi%clear_sw_mn  = clear_sw_mn(iregion, ihour)
+        tsi%fluxestsi%clear_lw_mn  = clear_lw_mn(iregion, ihour)
+        tsi%fluxestsi%clear_alb_mn = clear_alb_mn(iregion, ihour)
+        tsi%fluxestsi%clear_wn_mn  = clear_wn_mn(iregion, ihour)
+
+        do ioverlap = 1, 11
+            ! print *, "   ioverlap: ", ioverlap
+            tsi%overlap%areafrac_ov(ioverlap) = areafrac_ov(iregion, ihour,ioverlap)
+        end do
+
+        ! !aerosol
+        tsi%aerosol%init_aero_optdep = init_aero_optdep(iregion, ihour)
+        tsi%aerosol%optdepth047_land = optdepth047_land(iregion, ihour)
+        tsi%aerosol%optdepth055_land = optdepth055_land(iregion, ihour)
+        tsi%aerosol%optdepth066_land = optdepth066_land(iregion, ihour)
+        tsi%aerosol%optdepth047_ocean = optdepth047_ocean(iregion, ihour)
+        tsi%aerosol%optdepth055_ocean = optdepth055_ocean(iregion, ihour)
+        tsi%aerosol%optdepth066_ocean = optdepth066_ocean(iregion, ihour)
+        tsi%aerosol%optdepth087_ocean = optdepth087_ocean(iregion, ihour)
+        tsi%aerosol%optdepth124_ocean = optdepth124_ocean(iregion, ihour)
+        tsi%aerosol%optdepth164_ocean = optdepth164_ocean(iregion, ihour)
+        tsi%aerosol%optdepth213_ocean = optdepth213_ocean(iregion, ihour)
+        do i = 1, 7
+            tsi%aerosol%aero_const_ratio(i) = aero_const_ratio(iregion, ihour, i)
+        end do
+
+        !surface
+        tsi%surface%skintemp_flg  = skintemp_flg(iregion, ihour)
+        tsi%surface%lw_surf_emiss  = lw_surf_emiss(iregion, ihour)
+        tsi%surface%wn_surf_emiss  = wn_surf_emiss(iregion, ihour)
+        tsi%surface%sfc_skin_temp = surf_skin_temp(iregion, ihour)
+        tsi%surface%moa_skin_temp  = moa_skin_temp(iregion, ihour)
+
+        !Clouds (4 layer)
+        do ilayer = 1, 4
+
+            tsi%cld_layer(ilayer)%areafrac_total  =  areafrac_total(iregion,ihour,ilayer)       
+            tsi%cld_layer(ilayer)%optdepth_mn_lnr = optdepth_mn_lnr(iregion,ihour,ilayer)       
+            !tsi%cld_layer(ilayer)%optdepth_std_lnr
+            tsi%cld_layer(ilayer)%optdepth_mn_log = optdepth_mn_log(iregion,ihour,ilayer)
+            !tsi%cld_layer(ilayer)%optdepth_std_log
+            tsi%cld_layer(ilayer)%emiss_ir_mn = emiss_ir_mn(iregion,ihour,ilayer)          
+            !tsi%cld_layer(ilayer)%emiss_ir_std
+            tsi%cld_layer(ilayer)%h2opath_mn = h2opath_mn(iregion,ihour,ilayer)             !74  192 TSI
+            !tsi%cld_layer(ilayer)%h2opath_std
+            tsi%cld_layer(ilayer)%icepath_mn = icepath_mn(iregion,ihour,ilayer)           !82  202 TSI
+            !tsi%cld_layer(ilayer)%icepath_std
+            tsi%cld_layer(ilayer)%toppres_mn = toppres_mn(iregion,ihour,ilayer)            !90  212 TSI
+            !tsi%cld_layer(ilayer)%toppres_std
+            tsi%cld_layer(ilayer)%effpres_mn = effpres_mn(iregion,ihour,ilayer)           !98  222 TSI
+            !tsi%cld_layer(ilayer)%effpres_std
+            tsi%cld_layer(ilayer)%efftemp_mn = efftemp_mn(iregion,ihour,ilayer)           !106 232 TSI
+            !tsi%cld_layer(ilayer)%efftemp_std
+            tsi%cld_layer(ilayer)%effht_mn = effht_mn(iregion,ihour,ilayer)          !114 242 TSI
+            !tsi%cld_layer(ilayer)%effht_std
+            tsi%cld_layer(ilayer)%botpres_mn = botpres_mn(iregion,ihour,ilayer)             !122 252 TSI
+            !tsi%cld_layer(ilayer)%botpres_std
+            tsi%cld_layer(ilayer)%radius_h2o_mn = radius_h2o_mn(iregion,ihour,ilayer)          !130 262 TSI
+            !tsi%cld_layer(ilayer)%radius_h2o_std
+            tsi%cld_layer(ilayer)%radius_ice_mn = radius_ice_mn(iregion,ihour,ilayer)        !138 272 TSI
+            tsi%cld_layer(ilayer)%toptemp_mn  = toptemp_mn(iregion,ihour,ilayer)
+            tsi%cld_layer(ilayer)%bottemp_mn = bottemp_mn(iregion,ihour,ilayer)
+            tsi%cld_layer(ilayer)%top_height  = top_height(iregion,ihour,ilayer)
+            tsi%cld_layer(ilayer)%bot_height  = bot_height(iregion,ihour,ilayer)
+            
+            
+            
+            !tsi%cld_layer(ilayer)%radius_ice_std
+            tsi%cld_layer(ilayer)%phase_mn =  phase_mn_nc(iregion,ihour,ilayer)     !146 282 TSI 
+            !tsi%cld_layer(ilayer)%phase_std
+            !!!tsi%cld_layer(ilayer)%asp_ratio_mn =  *not available*           !154 292 TSI
+            !tsi%cld_layer(ilayer)%asp_ratio_std
+            
+        end do !ilayer
+
+    end subroutine fill_tsi_struct
+
+
+    subroutine deallocate_all_arrays()
+
+    ! -------------------------
+    ! TIME AND LOCATION DATA
+    ! -------------------------
+    if (allocated(region_num))        deallocate(region_num)
+    if (allocated(hour_box_num))      deallocate(hour_box_num)
+    if (allocated(geo_sat_id))        deallocate(geo_sat_id)
+    if (allocated(julhr))             deallocate(julhr)
+    if (allocated(sfc_alt))           deallocate(sfc_alt)
+    if (allocated(cos_sol_zenith))    deallocate(cos_sol_zenith)
+    if (allocated(view_angle))        deallocate(view_angle)
+    if (allocated(imager_view_angle)) deallocate(imager_view_angle)
+
+    ! -------------------------
+    ! CLEAR SKY AREA DATA
+    ! -------------------------
+    if (allocated(aero_vis_opdep063)) deallocate(aero_vis_opdep063)
+    if (allocated(aero_vis_opdep160)) deallocate(aero_vis_opdep160)
+    if (allocated(ir_radiance))       deallocate(ir_radiance)
+    if (allocated(imager_rad4))       deallocate(imager_rad4)
+
+    ! -------------------------
+    ! TOA FLUXES
+    ! -------------------------
+    if (allocated(data_flg))     deallocate(data_flg)
+    if (allocated(total_sw_mn))  deallocate(total_sw_mn)
+    if (allocated(total_lw_mn))  deallocate(total_lw_mn)
+    if (allocated(total_alb_mn)) deallocate(total_alb_mn)
+    if (allocated(total_wn_mn))  deallocate(total_wn_mn)
+    if (allocated(clear_sw_mn))  deallocate(clear_sw_mn)
+    if (allocated(clear_lw_mn))  deallocate(clear_lw_mn)
+    if (allocated(clear_alb_mn)) deallocate(clear_alb_mn)
+    if (allocated(clear_wn_mn))  deallocate(clear_wn_mn)
+
+    ! -------------------------
+    ! CLOUD INFORMATION
+    ! -------------------------
+    if (allocated(areafrac_total)) deallocate(areafrac_total)
+    if (allocated(optdepth_mn_lnr)) deallocate(optdepth_mn_lnr)
+    if (allocated(optdepth_mn_log)) deallocate(optdepth_mn_log)
+    if (allocated(emiss_ir_mn))    deallocate(emiss_ir_mn)
+    if (allocated(h2opath_mn))     deallocate(h2opath_mn)
+    if (allocated(icepath_mn))     deallocate(icepath_mn)
+    if (allocated(toppres_mn))     deallocate(toppres_mn)
+    if (allocated(effpres_mn))     deallocate(effpres_mn)
+    if (allocated(efftemp_mn))     deallocate(efftemp_mn)
+    if (allocated(effht_mn))       deallocate(effht_mn)
+    if (allocated(botpres_mn))     deallocate(botpres_mn)
+    if (allocated(radius_h2o_mn))  deallocate(radius_h2o_mn)
+    if (allocated(radius_ice_mn))  deallocate(radius_ice_mn)
+    if (allocated(phase_mn_nc))       deallocate(phase_mn_nc)
+    if (allocated(toptemp_mn))     deallocate(toptemp_mn)
+    if (allocated(bottemp_mn))     deallocate(bottemp_mn)
+    if (allocated(top_height))     deallocate(top_height)
+    if (allocated(bot_height))     deallocate(bot_height)
+
+    ! -------------------------
+    ! OVERLAP DATA
+    ! -------------------------
+    if (allocated(areafrac_ov)) deallocate(areafrac_ov)
+
+    ! -------------------------
+    ! 3x3 CLOUD DATA
+    ! -------------------------
+    if (allocated(Cloud_Fraction))                       deallocate(Cloud_Fraction)
+    if (allocated(Liquid_Cloud_Fraction))               deallocate(Liquid_Cloud_Fraction)
+    if (allocated(Ice_Cloud_Fraction))                  deallocate(Ice_Cloud_Fraction)
+    if (allocated(Cloud_Optical_Depth))                 deallocate(Cloud_Optical_Depth)
+    if (allocated(Cloud_Optical_Depth_Linearly_Averaged)) deallocate(Cloud_Optical_Depth_Linearly_Averaged)
+    if (allocated(Cloud_Infrared_Emissivity))           deallocate(Cloud_Infrared_Emissivity)
+    if (allocated(Cloud_Liquid_Water_Path))             deallocate(Cloud_Liquid_Water_Path)
+    if (allocated(Cloud_Ice_Water_Path))                deallocate(Cloud_Ice_Water_Path)
+    if (allocated(Cloud_Top_Pressure))                  deallocate(Cloud_Top_Pressure)
+    if (allocated(Cloud_Top_Temperature))               deallocate(Cloud_Top_Temperature)
+    if (allocated(Cloud_Top_Height))                    deallocate(Cloud_Top_Height)
+    if (allocated(Cloud_Effective_Pressure))            deallocate(Cloud_Effective_Pressure)
+    if (allocated(Cloud_Effective_Temperature))         deallocate(Cloud_Effective_Temperature)
+    if (allocated(Cloud_Effective_Height))              deallocate(Cloud_Effective_Height)
+    if (allocated(Cloud_Base_Pressure))                 deallocate(Cloud_Base_Pressure)
+    if (allocated(Cloud_Base_Temperature))              deallocate(Cloud_Base_Temperature)
+    if (allocated(Cloud_Liquid_Particle_Radius))        deallocate(Cloud_Liquid_Particle_Radius)
+    if (allocated(Cloud_Ice_Particle_Radius))           deallocate(Cloud_Ice_Particle_Radius)
+
+    ! -------------------------
+    ! SURFACE DATA
+    ! -------------------------
+    if (allocated(lw_surf_emiss))  deallocate(lw_surf_emiss)
+    if (allocated(wn_surf_emiss))  deallocate(wn_surf_emiss)
+    if (allocated(surf_skin_temp)) deallocate(surf_skin_temp)
+
+    ! -------------------------
+    ! AEROSOL DATA
+    ! -------------------------
+    if (allocated(init_aero_optdep)) deallocate(init_aero_optdep)
+
+    if (allocated(optdepth047_land)) deallocate(optdepth047_land)
+    if (allocated(optdepth055_land)) deallocate(optdepth055_land)
+    if (allocated(optdepth066_land)) deallocate(optdepth066_land)
+
+    if (allocated(optdepth047_ocean)) deallocate(optdepth047_ocean)
+    if (allocated(optdepth055_ocean)) deallocate(optdepth055_ocean)
+    if (allocated(optdepth066_ocean)) deallocate(optdepth066_ocean)
+    if (allocated(optdepth087_ocean)) deallocate(optdepth087_ocean)
+    if (allocated(optdepth124_ocean)) deallocate(optdepth124_ocean)
+    if (allocated(optdepth164_ocean)) deallocate(optdepth164_ocean)
+    if (allocated(optdepth213_ocean)) deallocate(optdepth213_ocean)
+
+    end subroutine deallocate_all_arrays
+
+    SUBROUTINE TSI_debug_print(tsi_rec)
+    USE tsi_type_mod
+    IMPLICIT NONE
+    
+
+    TYPE(TSI_TYPE), INTENT(IN) :: tsi_rec
+
+    INTEGER :: i
+
+    WRITE(*,*)
+    WRITE(*,*) '=============================================='
+    WRITE(*,*) 'TSI DEBUG RECORD'
+    WRITE(*,*) '=============================================='
+
+    !-------------------------------------------------
+    ! TIME AND LOCATION
+    !-------------------------------------------------
+    WRITE(*,*) '--- Time_and_location_data ---'
+
+    WRITE(*,*) 'region_num        = ', tsi_rec%timeandloc%region_num
+    WRITE(*,*) 'hour_box_num      = ', tsi_rec%timeandloc%hour_box_num
+    WRITE(*,*) 'geo_sat_id        = ', tsi_rec%timeandloc%geo_sat_id
+    WRITE(*,*) 'julhr             = ', tsi_rec%timeandloc%julhr
+    WRITE(*,*) 'sfc_alt           = ', tsi_rec%timeandloc%sfc_alt
+    WRITE(*,*) 'cos_sol_zenith    = ', tsi_rec%timeandloc%cos_sol_zenith
+    WRITE(*,*) 'view_angle        = ', tsi_rec%timeandloc%view_angle
+    WRITE(*,*) 'imager_view_angle = ', tsi_rec%timeandloc%imager_view_angle
+
+    DO i = 1, 20
+       WRITE(*,*) 'surf_perc_cov(',i,') = ', &
+            tsi_rec%timeandloc%surf_perc_cov(i)
+    END DO
+
+    !-------------------------------------------------
+    ! CLEAR SKY AREA
+    !-------------------------------------------------
+    WRITE(*,*) '--- clr_sky_area_data ---'
+
+    WRITE(*,*) 'aero_vis_opdep063 = ', &
+         tsi_rec%clrsky_area_data%aero_vis_opdep063
+
+    WRITE(*,*) 'aero_vis_opdep160 = ', &
+         tsi_rec%clrsky_area_data%aero_vis_opdep160
+
+    WRITE(*,*) 'ir_radiance       = ', &
+         tsi_rec%clrsky_area_data%ir_radiance
+
+    WRITE(*,*) 'imager_rad4       = ', &
+         tsi_rec%clrsky_area_data%imager_rad4
+
+    !-------------------------------------------------
+    ! FLUXES
+    !-------------------------------------------------
+    WRITE(*,*) '--- Fluxes_tsi ---'
+
+    WRITE(*,*) 'data_flg      = ', tsi_rec%fluxestsi%data_flg
+    WRITE(*,*) 'total_sw_mn   = ', tsi_rec%fluxestsi%total_sw_mn
+    WRITE(*,*) 'total_lw_mn   = ', tsi_rec%fluxestsi%total_lw_mn
+    WRITE(*,*) 'total_alb_mn  = ', tsi_rec%fluxestsi%total_alb_mn
+    WRITE(*,*) 'total_wn_mn   = ', tsi_rec%fluxestsi%total_wn_mn
+    WRITE(*,*) 'clear_sw_mn   = ', tsi_rec%fluxestsi%clear_sw_mn
+    WRITE(*,*) 'clear_lw_mn   = ', tsi_rec%fluxestsi%clear_lw_mn
+    WRITE(*,*) 'clear_alb_mn  = ', tsi_rec%fluxestsi%clear_alb_mn
+    WRITE(*,*) 'clear_wn_mn   = ', tsi_rec%fluxestsi%clear_wn_mn
+
+    !-------------------------------------------------
+    ! CLOUD LAYERS
+    !-------------------------------------------------
+    WRITE(*,*) '--- Cloud Layers ---'
+
+    DO i = 1, 4
+
+       WRITE(*,*)
+       WRITE(*,*) 'Cloud Layer = ', i
+
+       WRITE(*,*) 'areafrac_total = ', &
+            tsi_rec%cld_layer(i)%areafrac_total
+
+       WRITE(*,*) 'optdepth_mn_lnr = ', &
+            tsi_rec%cld_layer(i)%optdepth_mn_lnr
+
+       WRITE(*,*) 'optdepth_mn_log = ', &
+            tsi_rec%cld_layer(i)%optdepth_mn_log
+
+       WRITE(*,*) 'emiss_ir_mn = ', &
+            tsi_rec%cld_layer(i)%emiss_ir_mn
+
+       WRITE(*,*) 'h2opath_mn = ', &
+            tsi_rec%cld_layer(i)%h2opath_mn
+
+       WRITE(*,*) 'icepath_mn = ', &
+            tsi_rec%cld_layer(i)%icepath_mn
+
+       WRITE(*,*) 'toppres_mn = ', &
+            tsi_rec%cld_layer(i)%toppres_mn
+
+       WRITE(*,*) 'effpres_mn = ', &
+            tsi_rec%cld_layer(i)%effpres_mn
+
+       WRITE(*,*) 'efftemp_mn = ', &
+            tsi_rec%cld_layer(i)%efftemp_mn
+
+       WRITE(*,*) 'effht_mn = ', &
+            tsi_rec%cld_layer(i)%effht_mn
+
+       WRITE(*,*) 'botpres_mn = ', &
+            tsi_rec%cld_layer(i)%botpres_mn
+
+       WRITE(*,*) 'radius_h2o_mn = ', &
+            tsi_rec%cld_layer(i)%radius_h2o_mn
+
+       WRITE(*,*) 'radius_ice_mn = ', &
+            tsi_rec%cld_layer(i)%radius_ice_mn
+
+       WRITE(*,*) 'phase_mn = ', &
+            tsi_rec%cld_layer(i)%phase_mn
+
+       WRITE(*,*) 'toptemp_mn = ', &
+            tsi_rec%cld_layer(i)%toptemp_mn
+
+       WRITE(*,*) 'bottemp_mn = ', &
+            tsi_rec%cld_layer(i)%bottemp_mn
+
+       WRITE(*,*) 'top_height = ', &
+            tsi_rec%cld_layer(i)%top_height
+
+       WRITE(*,*) 'bot_height = ', &
+            tsi_rec%cld_layer(i)%bot_height
+
+    END DO
+
+    !-------------------------------------------------
+    ! OVERLAP
+    !-------------------------------------------------
+    WRITE(*,*) '--- Overlap_data ---'
+
+    DO i = 1, 11
+       WRITE(*,*) 'areafrac_ov(',i,') = ', &
+            tsi_rec%overlap%areafrac_ov(i)
+    END DO
+
+    !-------------------------------------------------
+    ! SURFACE
+    !-------------------------------------------------
+    WRITE(*,*) '--- Surface_data ---'
+
+    WRITE(*,*) 'skintemp_flg  = ', tsi_rec%surface%skintemp_flg
+    WRITE(*,*) 'lw_surf_emiss = ', tsi_rec%surface%lw_surf_emiss
+    WRITE(*,*) 'wn_surf_emiss = ', tsi_rec%surface%wn_surf_emiss
+    WRITE(*,*) 'sfc_skin_temp = ', tsi_rec%surface%sfc_skin_temp
+    WRITE(*,*) 'moa_skin_temp = ', tsi_rec%surface%moa_skin_temp
+
+    !-------------------------------------------------
+    ! AEROSOL
+    !-------------------------------------------------
+    WRITE(*,*) '--- aerosol_data ---'
+
+    WRITE(*,*) 'init_aero_optdep = ', &
+         tsi_rec%aerosol%init_aero_optdep
+
+    DO i = 1, 7
+       WRITE(*,*) 'aero_const_ratio(',i,') = ', &
+            tsi_rec%aerosol%aero_const_ratio(i)
+    END DO
+
+    WRITE(*,*) 'optdepth047_land  = ', tsi_rec%aerosol%optdepth047_land
+    WRITE(*,*) 'optdepth055_land  = ', tsi_rec%aerosol%optdepth055_land
+    WRITE(*,*) 'optdepth066_land  = ', tsi_rec%aerosol%optdepth066_land
+
+    WRITE(*,*) 'optdepth047_ocean = ', tsi_rec%aerosol%optdepth047_ocean
+    WRITE(*,*) 'optdepth055_ocean = ', tsi_rec%aerosol%optdepth055_ocean
+    WRITE(*,*) 'optdepth066_ocean = ', tsi_rec%aerosol%optdepth066_ocean
+    WRITE(*,*) 'optdepth087_ocean = ', tsi_rec%aerosol%optdepth087_ocean
+    WRITE(*,*) 'optdepth124_ocean = ', tsi_rec%aerosol%optdepth124_ocean
+    WRITE(*,*) 'optdepth164_ocean = ', tsi_rec%aerosol%optdepth164_ocean
+    WRITE(*,*) 'optdepth213_ocean = ', tsi_rec%aerosol%optdepth213_ocean
+
+    WRITE(*,*) '=============================================='
+    WRITE(*,*)
+
+  END SUBROUTINE TSI_debug_print
+
+END MODULE read_zonal_tsi_file

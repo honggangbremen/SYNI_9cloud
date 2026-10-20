@@ -1,0 +1,25 @@
+Note: 
+SAH files in SYN_SAHA.f90
+
+CER7.2.1P2_ERA5_9netcdf_20260916
+
+20260915
+This is for 9 clouds, but the output binary is the same as 4-cloud's size
+netcdf 9-cloud reader
+
+working on ERA5-MOA
+
+
+this is for CER7.2.1P2_9clouds_20260410
+202004
+
+
+source TERRA-AQUA-env202004.csh
+
+./cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Aqua-MODIS_Alpha4-Ed5_000000.202004Z030
+
+./compile_CER7.2.1P2.pl
+
+./CER7.2.1P2_pcfgen.pl -date 202004Z030
+
+qsub mon202004_030_debug.csh

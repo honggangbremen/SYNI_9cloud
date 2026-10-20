@@ -1,0 +1,932 @@
+! -------------------------------------------------------------------------
+! HG-202511, added
+!
+! Module SAH_NCDF_Checker  (checker for NetCDF SAH lon/lat)
+!
+! Usage: in SUBROUTINE convert_sah_to_1x1deg
+!        just after CALL sah_io_ncdf
+!
+! Nov. 2025, Gang Hong
+! 
+! -------------------------------------------------------------------------
+
+module SAH_NCDF_Checker
+  ! Module to inspect NetCDF SAH lon/lat coords and normalize sah(:,:) to baseline.
+  use netcdf
+  implicit none
+  private
+  public :: check_and_fix_sah_coords_file
+
+contains
+
+  subroutine check_and_fix_sah_coords_file(nc_filename, sah, mgrd, nsahp)
+    ! Open NetCDF SAH file, read lat/lon, and reorder sah(:,:) to be consistent with baseline:
+    ! - baseline: longitude varies fastest (2160), latitude next (1080)
+    ! - convert longitudes to 0E..360; rotate so minimum lon is column 1
+    ! - reverse longitudes within each row if descending
+    ! - flip latitude rows if lat is descending so row 1 becomes southernmost (90S)
+    character(len=*), intent(in) :: nc_filename
+    real, intent(inout) :: sah(:,:)
+    integer, intent(in) :: mgrd
+    integer, intent(in) :: nsahp
+
+    integer :: ncid, ierr
+    integer :: lat_varid, lon_varid
+    logical :: lat_found, lon_found
+    real, allocatable :: lat(:), lon(:), lon_mod(:)
+    integer :: nlat, nlon
+    integer :: nrows, ncols
+    logical :: need_flip_lat, need_flip_lon, need_rotate_lon, need_convert_lon_range
+    integer :: minpos, shift
+    real :: minval
+    integer :: i, row, col, p
+    integer :: row_start_src, row_start_dst
+    real, allocatable :: tmp_row(:)
+    real, allocatable :: sah_copy(:,:)
+
+    integer :: count_pos, count_neg
+    real :: d
+    integer :: j
+    real :: tmpv
+
+    ! baseline grid dimemsions
+    ncols = 2160
+    nrows = 1080
+
+    ! quick check
+    if (mgrd /= ncols*nrows) then
+      print *, 'SAH_NCDF_Checker: unexpected mgrd=', mgrd, ' expected ', ncols*nrows
+      return
+    end if
+
+    lat_found = .false.
+    lon_found = .false.
+    need_flip_lat = .false.
+    need_flip_lon = .false.
+    need_rotate_lon = .false.
+    need_convert_lon_range = .false.
+    lat_varid = -1
+    lon_varid = -1
+
+    ! Open file (read-only)
+    ierr = nf90_open(trim(nc_filename), NF90_NOWRITE, ncid)
+    if (ierr /= nf90_noerr) then
+      print *, 'SAH_NCDF_Checker: failed to open ', trim(nc_filename), ' ierr=', ierr, ':', trim(nf90_strerror(ierr))
+      return
+    end if
+
+    ! Try common latitude names
+    ierr = nf90_inq_varid(ncid, 'Lat', lat_varid)
+    if (ierr /= nf90_noerr) ierr = nf90_inq_varid(ncid, 'Latitude', lat_varid)
+    if (ierr == nf90_noerr) lat_found = .true.
+
+    ! Try common longitude names
+    ierr = nf90_inq_varid(ncid, 'Lon', lon_varid)
+    if (ierr /= nf90_noerr) ierr = nf90_inq_varid(ncid, 'Longitude', lon_varid)
+    if (ierr == nf90_noerr) lon_found = .true.
+
+    ! ===========================
+    ! Read lat
+    ! ===========================
+    if (lat_found) then
+      ! allocate fixed expected length (Latitude dimension = 1080)
+      if (allocated(lat)) deallocate(lat)
+      allocate(lat(1080))
+      ierr = nf90_get_var(ncid, lat_varid, lat)
+      if (ierr /= nf90_noerr) then
+        print *, 'SAH_NCDF_Checker: failed reading Latitude (ierr=', ierr, '):', trim(nf90_strerror(ierr))
+        if (allocated(lat)) deallocate(lat)
+        lat_found = .false.
+      else
+        nlat = size(lat)
+        if (nlat >= 2) then
+          if (lat(1) > lat(nlat)) then
+            need_flip_lat = .true.
+            !print *, 'SAH_NCDF_Checker: lat descending; will flip latitude rows.'
+          else
+            !print *, 'SAH_NCDF_Checker: lat ascending; no lat flip.'
+          end if
+        else
+          !print *, 'SAH_NCDF_Checker: lat length <=1; skipping lat ordering check.'
+        end if
+        !print *, 'SAH_NCDF_Checker: read Latitude length=', nlat, ' sample check=', lat(1:min(6,nlat))
+      end if
+    else
+      !print *, 'SAH_NCDF_Checker: latitude variable not found in ', trim(nc_filename)
+    end if
+    ! end fixed-size lat read
+
+    ! ===========================
+    ! Read lon
+    ! ===========================
+    if (lon_found) then
+      ! allocate fixed expected length (Longitude dimension = 2160)
+      if (allocated(lon)) deallocate(lon)
+      allocate(lon(2160))
+      ierr = nf90_get_var(ncid, lon_varid, lon)
+      if (ierr /= nf90_noerr) then
+        print *, 'SAH_NCDF_Checker: failed reading Longitude (ierr=', ierr, '):', trim(nf90_strerror(ierr))
+        if (allocated(lon)) deallocate(lon)
+        lon_found = .false.
+      else
+        nlon = size(lon)
+
+        ! Convert lon to [0,360)
+        if (allocated(lon_mod)) deallocate(lon_mod)
+        allocate(lon_mod(nlon))
+        do i = 1, nlon
+          lon_mod(i) = modulo(lon(i), 360.0)
+        end do
+
+        ! Check if original had negatives
+        need_convert_lon_range = .false.
+        do i = 1, nlon
+          if (lon(i) < 0.0) then
+            need_convert_lon_range = .true.
+            exit
+          end if
+        end do
+
+        ! Determine ascending vs descending robustly using wrapped differences
+        count_pos = 0
+        count_neg = 0
+
+        if (nlon >= 2) then
+          do i = 1, nlon-1
+            d = lon_mod(i+1) - lon_mod(i)
+
+            ! Wrap difference to (-180,180]
+            if (d <= -180.0) d = d + 360.0
+            if (d >   180.0) d = d - 360.0
+
+            if (d > 0.0) then
+              count_pos = count_pos + 1
+            else if (d < 0.0) then
+              count_neg = count_neg + 1
+            end if
+          end do
+
+          need_flip_lon = (count_neg > count_pos)
+        end if
+
+        ! If descending, reverse lon_mod BEFORE computing minpos
+        if (need_flip_lon) then
+
+          do j = 1, nlon/2
+            tmpv = lon_mod(j)
+            lon_mod(j) = lon_mod(nlon - j + 1)
+            lon_mod(nlon - j + 1) = tmpv
+          end do
+        end if
+
+        ! Find rotation index
+        minval = lon_mod(1)
+        minpos = 1
+        do i = 2, nlon
+          if (lon_mod(i) < minval) then
+            minval = lon_mod(i)
+            minpos = i
+          end if
+        end do
+
+        if (minpos /= 1) then
+          need_rotate_lon = .true.
+          shift = minpos - 1
+        else
+          need_rotate_lon = .false.
+          shift = 0
+        end if
+
+        deallocate(lon_mod)
+
+        !print *, 'SAH_NCDF_Checker: read Longitude length=', nlon, ' sample=', lon(1:min(6,nlon))
+      end if
+    else
+      print *, 'SAH_NCDF_Checker: longitude variable not found in ', trim(nc_filename)
+    end if
+    ! end fixed-size lon read
+
+    ! If nothing to do, close and exit
+    if (.not. need_flip_lat .and. .not. need_flip_lon .and. .not. need_rotate_lon) then
+      ierr = nf90_close(ncid)
+      !print *, 'SAH_NCDF_Checker: no coordinate normalization required.'
+      if (allocated(lat)) deallocate(lat)
+      if (allocated(lon)) deallocate(lon)
+      return
+    end if
+
+    ! Work on a copy
+    allocate(sah_copy(mgrd, nsahp))
+    sah_copy = sah
+
+    ! Flip latitude blocks (swap rows)
+    if (need_flip_lat) then
+      do p = 1, nsahp
+        do row = 1, nrows
+          row_start_dst = (row - 1) * ncols + 1
+          row_start_src = (nrows - row) * ncols + 1
+          sah(row_start_dst:row_start_dst + ncols - 1, p) = &
+               sah_copy(row_start_src:row_start_src + ncols - 1, p)
+        end do
+      end do
+      sah_copy = sah
+    end if
+
+    ! Reverse longitudes within each row
+    if (need_flip_lon) then
+      allocate(tmp_row(ncols))
+      do p = 1, nsahp
+        do row = 1, nrows
+          row_start_dst = (row - 1) * ncols + 1
+          tmp_row(:) = sah_copy(row_start_dst:row_start_dst + ncols - 1, p)
+          do col = 1, ncols
+            sah(row_start_dst + col - 1, p) = tmp_row(ncols - col + 1)
+          end do
+        end do
+      end do
+      if (allocated(tmp_row)) deallocate(tmp_row)
+      sah_copy = sah
+    end if
+
+    ! Rotate columns left so min longitude becomes first column
+    if (need_rotate_lon .and. shift > 0) then
+      allocate(tmp_row(ncols))
+      do p = 1, nsahp
+        do row = 1, nrows
+          row_start_dst = (row - 1) * ncols + 1
+          tmp_row(:) = sah_copy(row_start_dst:row_start_dst + ncols - 1, p)
+          ! left rotate by shift
+          do col = 1, ncols - shift
+            sah(row_start_dst + col - 1, p) = tmp_row(shift + col)
+          end do
+          do col = 1, shift
+            sah(row_start_dst + ncols - shift + col - 1, p) = tmp_row(col)
+          end do
+        end do
+      end do
+      if (allocated(tmp_row)) deallocate(tmp_row)
+      sah_copy = sah
+    end if
+
+    ! Done
+    ierr = nf90_close(ncid)
+    if (allocated(sah_copy)) deallocate(sah_copy)
+    if (allocated(lat)) deallocate(lat)
+    if (allocated(lon)) deallocate(lon)
+
+    !print *, 'SAH_NCDF_Checker: normalization complete for ', trim(nc_filename)
+
+  end subroutine check_and_fix_sah_coords_file
+
+end module SAH_NCDF_Checker
+
+!!!!!! HG-202511
+
+
+
+
+
+MODULE SAHA
+!
+!*****************************************************************************
+!
+! !F90
+!
+! !Name:
+!   SAHA
+!
+! !Description:
+!
+!    Purpose - Processes surface albedo history data for SYN
+!
+!
+! !Input Parameters:
+!   NONE
+!
+! !Output Parameters:
+!   NONE
+!
+! !Team-Unique Header:
+!
+!  Internal Routines:
+!    convert_sah_to_1x1deg - Convert sah data to 1x1 degree resolution
+!    get_igbp_for_sah      - Read IGBP data for SAH processing 
+!    sah_io                - Open SAH file and read data 
+!    merge_terra_aqua_SAH  - Combine Terra and Aqua SAH data
+!
+!  Modules Used:
+!   Syn_Spectral_Dat_18 -            Used by Sbr. convert_sah_to_1x1deg 
+!   SARB_IO_Utils       - (SARBlib)  Used by Sbr. get_igbp_for_sah, sah_io
+!   SynSARB_IO_Params   - (SARBlib)  Used by Sbr. convert_sah_to_1x1deg, get_igbp_for_sah, sah_io
+!
+! !Revision History:
+!  Version 1.0   October 1, 2013 - SCCR #nnn
+!                 Fred Rose, SSAI, Fred.G.Rose@nasa.gov
+!                 Thomas Caldwell, SSAI, Thomas.E.Caldwell@nasa.gov
+!                 Initial Version of Module
+!
+! !END
+!
+!*****************************************************************************
+!
+! USE Syn_Spectral_Dat_18 ,only: d3,wangx,dickensonx
+ USE Syn_Spectral_Dat_18 ,only: dickensonx
+ USE SARB_IO_Utils
+ USE SynSARB_IO_Params
+ USE NETCDF
+
+!HG-202511
+! Make check_and_fix_sah_coords_file available
+ USE SAH_NCDF_Checker
+
+ 
+ IMPLICIT NONE
+
+ PRIVATE
+
+ INTEGER, PARAMETER :: mgrd = 2160*1080, nsahp =3 ! v5 is OHSALB & COSSOL ,SNOWICE_FRACTION
+ REAL,    PARAMETER :: ddsah = 0.4		 ! D used for SAH OHS.
+
+ INTEGER*1, ALLOCATABLE :: igbpa(:),igbpx(:,:)
+! INTEGER*2, ALLOCATABLE :: sah(:,:),sah2(:,:) 
+ REAL, ALLOCATABLE :: sah(:,:),sah2(:,:) 
+
+ INTEGER :: ios, iunit_sah   
+
+ REAL,PUBLIC,SAVE :: adiff1x1(360,180)  !!! OUTPUT 1deg Grid!!! ( 1,1 ) = center(89.5N, 0.5E)
+ REAL,PUBLIC,SAVE :: snoice1x1(360,180) 
+ REAL,PUBLIC,SAVE :: mu0_1x1(360,180)
+
+ LOGICAL SAH_FileExist(2)
+
+ PUBLIC convert_sah_to_1x1deg
+
+ CONTAINS
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!
+ SUBROUTINE get_igbp_for_sah
+!
+!*****************************************************************************
+!
+! !F90
+!
+! !Name:
+!   get_igbp_for_sah
+!
+! !Description:
+!    Purpose - Read IGBP data for SAH processing
+!
+! 
+! !Input Parameters:
+!    NONE
+!
+! !Output Parameters:
+!    NONE
+!
+! !Team-Unique Header:
+!
+!  Modules Used: (Parameters followed by "*" are defined by this routine)
+!                                 
+!  Input Files:
+!    NONE
+!
+! !Revision History:
+!  Version 1.0   October 1, 2013 - SCCR #nnn
+!                 Fred Rose, SSAI, Fred.G.Rose@nasa.gov
+!                 Thomas Caldwell, SSAI, Thomas.E.Caldwell@nasa.gov
+!                 Initial Version of Module
+!
+! !END
+!
+!*****************************************************************************
+!
+!
+   INTEGER imap,i,j
+
+   CHARACTER (LEN = 14) :: Name_Sbr = 'get_igbp_for_s'
+   INTEGER :: VerID = 1
+
+   ALLOCATE ( igbpx(2160,1080) )
+   ALLOCATE ( igbpa(2160*1080) )
+
+   CALL SARB_GenOpen (LID_IGBP, Flag_File_Read,Flag_File_Direct, &
+                      Flag_File_Unformat, Name_Sbr, IUnit_IGBP,VerID, mgrd)
+					     
+   READ(iunit_igbp, REC = 1, IOSTAT = ios) igbpx
+
+   IF ( ios /= 0 ) CALL SARB_RdWrtError (13, ios, Name_Sbr, IRec = 1)
+ 
+   CALL CloseFile ( iunit_igbp, status=IOS)
+    
+   IF ( ios /= 0 ) CALL SARB_RdWrtError (13, ios, Name_Sbr, IRec = 1)
+  
+   igbpx(:,1:1080) = igbpx(:,1080:1:-1)  !!! THE SAH FILE REQUIRES THIS Orientation.
+ 
+   imap=0
+   LATL : DO j=1,1080 ; LONL : DO i=1,2160
+    imap=imap+1
+    igbpa(imap) = igbpx(i,j)
+   ENDDO LONL ;ENDDO LATL
+ 
+   DEALLOCATE ( igbpx)
+ 
+ END SUBROUTINE get_igbp_for_sah
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!
+SUBROUTINE sah_io
+!
+!*****************************************************************************
+!
+! !F90
+!
+! !Name:
+!   sah_io
+!
+! !Description:
+!    Purpose - Open SAH file and read data
+!
+! 
+! !Input Parameters:
+!    NONE
+!
+! !Output Parameters:
+!    NONE
+!
+! !Team-Unique Header:
+!
+!  Modules Used: (Parameters followed by "*" are defined by this routine)
+!                                 
+!  Input Files:
+!    NONE
+!
+! !Revision History:
+!  Version 1.0   October 1, 2013 - SCCR #nnn
+!                 Fred Rose, SSAI, Fred.G.Rose@nasa.gov
+!                 Thomas Caldwell, SSAI, Thomas.E.Caldwell@nasa.gov
+!                 Initial Version of Module
+!
+! !END
+!
+!*****************************************************************************
+!
+!
+ INTEGER, PARAMETER :: IncPath_Yes = 1
+ INTEGER VID ,RECL, IOS
+ CHARACTER*120 :: Name_Sbr = 'sah_io'
+ CHARACTER*512 FileName
+ 
+ VID= 1 
+ RECL=mgrd*2*nsahp
+
+! TERRA SAH map mandatory for Edition4 
+
+ CALL DetFileExist (LID_SALB, Name_Sbr, SAH_FileExist(VID), VID, FileName)  ! O (Opt)
+
+ IF ( SAH_FileExist(VID) ) THEN 
+  CALL SARB_GenOpen (LID_SALB, Flag_File_Read, Flag_File_Direct, &
+                     Flag_File_Unformat, Name_Sbr, iunit_sah, VID,RECL) 
+    
+  ALLOCATE ( sah(mgrd, nsahp) )
+
+  READ(iunit_sah,iostat=ios,rec=1) sah
+
+  IF ( IOS /= 0 )  CALL SARB_RdWrtError (LID_SALB, ios, Name_Sbr)
+  
+  CALL SARB_GenClose (Name_Sbr, iunit_sah,VID)   
+ ENDIF
+
+
+! Test for existence of AQUA SAH map :: New for Ed4
+
+ VID= 2 
+ 
+ CALL GetFileName (LID_SALB,				   & ! I
+ 		   FileName, IOS,  			   & ! O
+ 		   Version = VID, incPath = IncPath_Yes)     ! I
+
+ IF (IOS == 0) THEN
+   INQUIRE (FILE=FileName, EXIST=SAH_FileExist(VID), IOSTAT=IOS)
+ ENDIF
+
+ IF ( SAH_FileExist(VID) ) THEN
+  CALL SARB_GenOpen (LID_SALB, Flag_File_Read, Flag_File_Direct, &
+                     Flag_File_Unformat, Name_Sbr, iunit_sah, VID,RECL) 
+    
+  ALLOCATE ( sah2(mgrd, nsahp) )
+
+  READ(iunit_sah,iostat=ios,rec=1) sah2
+
+  IF ( ios /= 0 )  CALL SARB_RdWrtError (LID_SALB, ios, Name_Sbr)
+  CALL SARB_GenClose (Name_Sbr, iunit_sah,VID)
+  
+  CALL merge_terra_aqua_SAH ! New for Ed4
+ 
+ ENDIF
+
+END SUBROUTINE sah_io
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!
+SUBROUTINE sah_io_ncdf
+!
+!*****************************************************************************
+!
+! !F90
+!
+! !Name:
+!   sah_io_ncdf
+!
+! !Description:
+!    Purpose - Open netcdf SAH file and read data
+!
+! 
+! !Input Parameters:
+!    NONE
+!
+! !Output Parameters:
+!    NONE
+!
+! !Team-Unique Header:
+!
+!  Modules Used: (Parameters followed by "*" are defined by this routine)
+!                                 
+!  Input Files:
+!    NONE
+!
+! !Revision History:
+!  Version 1.0   October 1, 2013 - SCCR #nnn
+!                 Fred Rose, SSAI, Fred.G.Rose@nasa.gov
+!                 Thomas Caldwell, SSAI, Thomas.E.Caldwell@nasa.gov
+!                 Initial Version of Module
+!
+! !END
+!
+!*****************************************************************************
+!
+!
+ INTEGER, PARAMETER :: IncPath_Yes = 1
+ INTEGER VID ,RECL, IOS, dsid, i, j, k, p,irow
+ CHARACTER*120 :: Name_Sbr = 'sah_io_ncdf'
+ CHARACTER*512 FileName
+
+      INTEGER :: start2(2)
+      INTEGER :: edge2(2)
+
+
+      REAL :: buffer_sah(2160,1080)
+      REAL :: buffer_sah_1d (2160*1080)
+      REAL :: data_buf(2160)
+      
+
+      CHARACTER (LEN=50) :: sah_dataset_names(nsahp)
+
+!!HG, TOM
+!      DATA sah_dataset_names  / &
+!      'Overhead_surface_albedo', 'Cosine_solar_zenith_angle', &
+!      'Snow_ice_fraction' /
+
+!HG-note
+! Seung converted names
+!
+      DATA sah_dataset_names  / &
+      'OHS ALBEDO', 'COSSZA', &
+      'SNOW ICE Fraction' /
+
+ 
+ VID= 1 
+ RECL=mgrd*2*nsahp  ! mgrd = 2160*1080, nsahp =3
+
+! Primary SAH map mandatory for Edition4 
+
+ CALL DetFileExist (LID_SALB, Name_Sbr, SAH_FileExist(VID), VID, FileName)  ! O (Opt)
+
+ IF ( SAH_FileExist(VID) ) THEN 
+  
+  ios = nf90_open(trim(FileName), nf90_nowrite, iunit_sah)
+    
+  ALLOCATE ( sah(mgrd, nsahp) )
+
+
+  DO p = 1, nsahp  ! loop for ohs, cossza, and snow ice
+  
+   Ios = nf90_inq_varid(iunit_sah, sah_dataset_names(p), dsid) 
+
+   DO irow = 1,1080
+
+    start2(1) = 1
+    start2(2) = irow
+    edge2(1) = 2160
+    edge2(2) = 1
+  
+    Ios = nf90_get_var(iunit_sah, dsid, data_buf, start2, edge2)
+
+    buffer_sah_1d ( 2160*(irow-1)+1:2160*irow) = data_buf
+
+   ENDDO   ! irow loop
+
+   sah(:,p) = buffer_sah_1d (:) ! assign array to sah
+
+   IF ( IOS /= 0 )  CALL SARB_RdWrtError (LID_SALB, ios, Name_Sbr)
+  
+  ENDDO     ! p loop
+
+
+  ios = nf90_close(iunit_sah)
+
+ ENDIF  ! Primary SAH file exists
+
+
+ 
+! Test for existence of secondary SAH map 
+
+ VID= 2 
+ 
+ CALL GetFileName (LID_SALB,				   & ! I
+ 		   FileName, IOS,  			   & ! O
+ 		   Version = VID, incPath = IncPath_Yes)     ! I
+
+ IF (IOS == 0) THEN
+   INQUIRE (FILE=FileName, EXIST=SAH_FileExist(VID), IOSTAT=IOS)
+ ENDIF
+
+ IF ( SAH_FileExist(VID) ) THEN
+  
+  buffer_sah_1d = 0
+  buffer_sah = 0
+
+  ios = nf90_open(trim(FileName), nf90_nowrite, iunit_sah)
+    
+  ALLOCATE ( sah2(mgrd, nsahp) )
+
+  DO p = 1, nsahp  ! loop for ohs, cossza, and snow ice
+  
+   Ios = nf90_inq_varid(iunit_sah, sah_dataset_names(p), dsid) 
+
+   DO irow = 1,1080
+
+    start2(1) = 1
+    start2(2) = irow
+    edge2(1) = 2160
+    edge2(2) = 1
+  
+    Ios = nf90_get_var(iunit_sah, dsid, data_buf, start2, edge2)
+
+    buffer_sah_1d ( 2160*(irow-1)+1:2160*irow) = data_buf
+
+   ENDDO   ! irow loop
+
+   sah2(:,p) = buffer_sah_1d (:) ! assign array to sah
+
+   IF ( IOS /= 0 )  CALL SARB_RdWrtError (LID_SALB, ios, Name_Sbr)
+  
+  ENDDO     ! p loop
+  
+  ios = nf90_close(iunit_sah)
+ 
+  CALL merge_terra_aqua_SAH ! New for Ed4
+ 
+ ENDIF  ! Secondary SAH file exists
+
+END SUBROUTINE sah_io_ncdf
+
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!
+SUBROUTINE merge_terra_aqua_SAH
+!
+!*****************************************************************************
+!
+! !F90
+!
+! !Name:
+!   merge_terra_aqua_SAH
+!
+! !Description:
+!    Purpose - Combine Terra and Aqua SAH data
+!
+! 
+! !Input Parameters:
+!    NONE
+!
+! !Output Parameters:
+!    NONE
+!
+! !Team-Unique Header:
+!
+!  Modules Used: (Parameters followed by "*" are defined by this routine)
+!                                 
+!  Input Files:
+!    NONE
+!
+! !Revision History:
+!  Version 1.0   October 1, 2013 - SCCR #nnn
+!                 Fred Rose, SSAI, Fred.G.Rose@nasa.gov
+!                 Thomas Caldwell, SSAI, Thomas.E.Caldwell@nasa.gov
+!                 Initial Version of Module
+!
+! !END
+!
+!*****************************************************************************
+!
+!
+INTEGER i,j
+
+DO j = 1,3 
+ DO i = 1,mgrd
+
+!  IF( sah(i,j) >= 0     .AND. sah2(i,j) >= 0 .AND. &
+!      sah(i,j) <= 10000 .AND. sah2(i,j) <= 10000) THEN 
+!
+!      sah(i,j) = sah(i,j)/2 + sah2(i,j)/2
+! 
+!  ELSEIF ((sah(i,j) < 0  .OR.  sah(i,j) >10000 ) .AND. &
+!          sah2(i,j) > 0  .AND. sah2(i,j) <= 10000 ) THEN
+! 
+!  ENDIF
+!
+!  IF ( sah(i,j) < 0	) sah(i,j) = 0
+!  IF ( sah(i,j) > 10000 ) sah(i,j) = 10000
+
+  IF( sah(i,j) >= 0.0     .AND. sah2(i,j) >= 0.0 .AND. &
+      sah(i,j) <= 1.0 .AND. sah2(i,j) <= 1.0) THEN 
+
+      sah(i,j) = sah(i,j)/2 + sah2(i,j)/2
+ 
+  ELSEIF ((sah(i,j) < 0.0  .OR.  sah(i,j) > 1.0 ) .AND. &
+          sah2(i,j) > 0.0  .AND. sah2(i,j) <= 1.0 ) THEN
+ 
+  ENDIF
+
+  IF ( sah(i,j) < 0.0	) sah(i,j) = 0.0
+  IF ( sah(i,j) > 1.0 ) sah(i,j) = 1.0
+
+ ENDDO
+ENDDO
+
+DEALLOCATE ( sah2)
+ 
+END SUBROUTINE merge_terra_aqua_SAH
+
+
+
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!
+SUBROUTINE convert_sah_to_1x1deg
+!
+!*****************************************************************************
+!
+! !F90
+!
+! !Name:
+!   convert_sah_to_1x1deg
+!
+! !Description:
+!    Purpose - Convert sah data to 1x1 degree resolution
+!
+! 
+! !Input Parameters:
+!    NONE
+!
+! !Output Parameters:
+!    NONE
+!
+! !Team-Unique Header:
+!
+!  Modules Used: (Parameters followed by "*" are defined by this routine)
+!                                 
+!  Input Files:
+!    NONE
+!
+! !Output Parameters:
+!    NONE
+!
+! !Team-Unique Header:
+!
+!  Modules Used: (Parameters followed by "*" are defined by this routine)
+!                                 
+!  Input Files:
+!    NONE
+!
+! !Revision History:
+!  Version 1.0   October 1, 2013 - SCCR #nnn
+!                 Fred Rose, SSAI, Fred.G.Rose@nasa.gov
+!                 Thomas Caldwell, SSAI, Thomas.E.Caldwell@nasa.gov
+!                 Initial Version of Module
+!
+! !END
+!
+!*****************************************************************************
+!
+!  
+ REAL, PARAMETER :: u0diffuse =0.60 ,omit=-9999.
+ INTEGER i,ii,jj,k,ilon,ilat,nn,ineed
+
+ REAL dd,val,u1,u2,a1,a2
+ REAL*4 :: sahdif4(6,360,6,180), sahdif36(36)
+ REAL*4 :: sahdif(mgrd),snoice(mgrd),mu0(mgrd)
+
+ EQUIVALENCE ( sahdif  ,sahdif4 )
+
+ CHARACTER(LEN=512) :: sah_ncdf_fname
+ INTEGER :: ios_fname
+ LOGICAL :: exist_flag
+
+ INTEGER igbpai4
+
+ ios=0
+
+ CALL get_igbp_for_sah
+! CALL sah_io 
+ CALL sah_io_ncdf
+
+ ! HG-202511
+ ! Post-NetCDF coordinate be consistent to baseline
+ sah_ncdf_fname = ''
+ CALL GetFileName(LID_SALB, sah_ncdf_fname, ios_fname, Version = 1, incPath = 1)
+ IF ( ios_fname == 0 ) THEN
+   INQUIRE(FILE=TRIM(sah_ncdf_fname), EXIST=exist_flag, IOSTAT=ios_fname)
+   IF ( ios_fname == 0 .AND. exist_flag ) THEN
+     CALL check_and_fix_sah_coords_file(TRIM(sah_ncdf_fname), sah, mgrd, nsahp)
+   ELSE
+     !PRINT *, 'SAH coord checker: primary NetCDF file not found; skipping coordinate normalization.'
+   END IF
+ ELSE
+   !PRINT *, 'SAH coord checker: GetFileName returned ios=', ios_fname, '; skipping coordinate normalization.'
+ END IF
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+ 
+ sahdif = omit
+ TODIFFUSE : DO i=1,mgrd
+
+!  a1 = sah(i,1) *0.0001   !! SAHOHS
+  a1 = sah(i,1)    !! SAHOHS
+  u1 = 1.0 		 !! SAH stored At overhead sun.
+!  u2 = sah(i,2) *0.0001   !! COS SZA At Retrieval..
+  u2 = sah(i,2)   !! COS SZA At Retrieval..
+  a2 = dickensonx(a1,ddsah,u1,u2) ! a2 has been moved to wgtmean retrieval angle
+
+! ! Now move to diffuse angle 
+!  IF ( igbpa(i) > 12 .OR. igbpa(i) == 11 ) THEN 
+!   dd = d3(0, igbpa(i) ) ! ddef !!! 0=BB,1=Vis,2=NIR
+!   sahdif(i) = dickensonx(a2,dd,u2,u0diffuse) !!! TO DIFFUSE ALBEDO
+!  ELSE
+!   igbpai4 = igbpa(i)
+!   sahdif(i) = wangx(a2, igbpai4, u2,u0diffuse)!!! TO DIFFUSE ALBEDO
+!  ENDIF
+
+!  IN ED4 Move back to mu0 ( Mean cos(Sza) ) associated with mean ClearSky Albedo Retrieval
+  sahdif(i) = a2
+     mu0(i) = u2              !! SAH mean u0 parm=2
+!  snoice(i) = sah(i,3)*0.0001 !! SAH snowice_fraction parm=3
+  snoice(i) = sah(i,3) !! SAH snowice_fraction parm=3
+
+ ENDDO TODIFFUSE 
+ 
+ DEALLOCATE ( sah)
+ 
+ ADDSNOWICE: DO ineed=1,3 
+  if ( ineed == 2 ) sahdif = snoice
+  if ( ineed == 3 ) sahdif = mu0
+
+  DO ilon = 1,360 
+   DO ilat = 1,180
+     k=0
+     DO ii = 1,6 
+       DO jj = 1,6
+         k=k+1
+!!!      WE FLIP LATITUDE BACK TO CONVENTIONAL MAP ( 
+         sahdif36(k) = sahdif4(ii,ilon,jj,181-ilat)  
+       END DO
+     END DO
+    
+     nn = count( MASK = sahdif36 >= 0 .AND.  sahdif36<=1.0  )
+     val= 0
+        
+     IF ( nn > 0 ) THEN
+       val =  sum( sahdif36, MASK = sahdif36>0 .AND. sahdif36<=1.0  ) / float(nn)
+       IF ( ineed == 1 )  adiff1x1(ilon,ilat) = val 
+       IF ( ineed == 2 ) snoice1x1(ilon,ilat) = val
+       IF ( ineed == 3 )   mu0_1x1(ilon,ilat) = val
+       
+!  IF ( ineed == 2) print'(3I8,f10.3)',ilon,ilat,nn,val
+     ELSE
+       IF ( ineed == 1 )  adiff1x1(ilon,ilat) = omit   !!! ( 1,1 ) = center(89.5N, 0.5E)
+       IF ( ineed == 2 ) snoice1x1(ilon,ilat) = omit
+       IF ( ineed == 3 )   mu0_1x1(ilon,ilat) = omit
+     ENDIF
+   END DO
+  END DO
+
+ ENDDO ADDSNOWICE
+
+ DEALLOCATE ( igbpa )
+  
+END SUBROUTINE convert_sah_to_1x1deg
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!
+END MODULE SAHA
+

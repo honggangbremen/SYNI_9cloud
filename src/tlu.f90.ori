@@ -1,0 +1,236 @@
+ MODULE TLUXS
+!NOTES:
+! Adjust Temperature profile to input cloud top temperatue using linear interpolation in log(Pres) from
+! Surface to Cloud Top and from Cloud Top to nearest level below 'pamin' 700hpa but at least 'padjrange' 100hpa above CloudTop
+!Currently it set up to only make adjustments based upon the Cloud Top (pres,temp) of the upper most cloud that is below 700hPa
+! with a 100hpa thick adjustment region above the cloud top. It does not insert the cloud levels. It works best if the cloud level level would
+! preexist in the input profile, but will function regardless
+
+ implicit none
+ Integer , parameter:: maxlev=100,maxadj=9 !HG-20250731
+ PRIVATE
+ 
+ TYPE  TLUS_TYPE
+  sequence  
+  integer nlev 
+  real pamin !650hpa
+  real pp(maxlev) ! Input Pressure profile (hpa)
+  real pt(maxlev) ! Input Temperature  profile (K)
+  real pq(maxlev) ! Input Mixingratio (g/g)
+   real pm(maxadj) !!! Pressure corresponding to   "tlu%tm"
+   real tm(maxadj) !!! Temperature to adjust profile to at pressure "tlu%pm"
+   real padjrange   !!! Pressure range Above uppermost "tlu%pm" that Adjustment is done
+   integer status(maxlev) ! 1= No adj ,2= Above cloud Top Adj , 3= below Cldtop Adj , Negatve = Supersaturation correction of tlu%pq
+   integer ierr
+   real Pup,Tup,Ptop,Ttop,Psfc,Tsfc
+  END TYPE TLUS_TYPE
+  
+  TYPE  (TLUS_TYPE) tlu
+
+   public TLUS_TYPE
+   public tlu
+   public T_Q_profile_adjust
+   public print_tlu
+ !  public sh_rh
+
+real ,dimension(maxlev) :: pp1,tt1 ,qq1
+real pup,tup
+real ptop,ttop
+real psfc,tsfc
+
+ CONTAINS  
+
+!===========================================================
+ subroutine T_Q_profile_adjust
+ integer i,j,k
+ real ,dimension(maxlev) :: pp2,tt2,y2a
+ real t1,t2 ,rh1
+
+pp1(1:tlu%nlev )=tlu%pp(1:tlu%nlev ) ! save original
+tt1(1:tlu%nlev )=tlu%pt(1:tlu%nlev ) ! save original
+qq1(1:tlu%nlev )=tlu%pq(1:tlu%nlev ) ! save original
+
+
+Pup =  1100.
+Tup = -9999.
+
+Ptop= 1100.
+Ttop=-9999.
+
+Psfc = tlu%pp(tlu%nlev)
+Tsfc = tlu%pt(tlu%nlev)
+!print*,tlu%pamin
+tlu%ierr = -2 
+ Cld_Case_Loop : do k=1,maxadj
+ if ( tlu%pm(K) < tlu%pamin) cycle
+
+ do i=tlu%nlev,1,-1 !Find Pup Tup
+  if ( tlu%pp(i) < tlu%pamin) exit
+
+  if ( tlu%pp(i) >= tlu%pm(K)-tlu%padjrange  .and.  tlu%pp(i) <= Pup) then
+   Pup =tlu%pp(i)
+   Tup =tlu%pt(i)
+    tlu%ierr= -1
+  endif
+
+ enddo
+
+!print*,k,Pup
+
+ if ( tlu%pm(K) >= tlu%pamin  .and. tlu%pm(K) < Ptop ) then !Find Ptop Ttop
+  Ptop = tlu%pm(K)
+  Ttop = tlu%tm(K)
+  if ( tlu%ierr == -1 ) tlu%ierr=0
+  endif
+
+enddo Cld_Case_Loop
+
+tlu%Pup = Pup
+tlu%Tup = Tup
+
+tlu%Ptop = Ptop
+tlu%Ttop = Ttop
+
+tlu%PSfc = Psfc
+tlu%Tsfc = Tsfc
+
+if ( tlu%Pup == 1100. .or. tlu%Ptop == 1100. .or. tlu%Tup == -9999. .or. tlu%Ttop == -9999. )  tlu%ierr= 1
+
+
+do i=1,tlu%nlev ! Interpolate adjustment above and below Ptop segements and Check Supersaturation
+
+if ( tlu%pp(i) .LE. Pup  .or. tlu%pp(i) == Psfc) then
+! print'(i4,2f8.2,A2)',i,tlu%pp(i),tlu%pt(i),'0'
+ tlu%status(i) = 1
+elseif( tlu%pp(i) .GT. Pup  .AND. tlu%pp(i) .LE. Ptop ) then
+ t1 = rintlp(Pup,Ptop,Tup,Ttop,tlu%pp(i) )
+! print'(i4,3f8.2,A2,f8.2)',i,tlu%pp(i),tlu%pt(i),t1,'1' ,t1- tlu%pt(i)
+ tlu%pt(i) =t1
+ tlu%status(i) = 2
+elseif( tlu%pp(i) .Gt. Ptop  .AND. tlu%pp(i) .LT. Psfc ) then
+ t2 = rintlp(Ptop,Psfc,Ttop,Tsfc,tlu%pp(i) )
+! print'(i4,3f8.2,A2,f8.2)',i,tlu%pp(i),tlu%pt(i),t2,'2',t2- tlu%pt(i)
+ tlu%pt(i) = t2
+ tlu%status(i) = 3
+endif
+
+
+if ( tlu%pp(i) >=  Ptop) then ! Check for Supersaturation below uppermost adjusted level.
+rh1 = sh_rh (tlu%pt(i), tlu%pp(i), tlu%pq(i))
+ if ( rh1 > 100. ) then
+  tlu%pq(i) = rh_sh (100.0 , tlu%pt(i),tlu%pp(i) )
+!  print*,'Supersaturated @',i,Rh1
+  tlu%status(i) = tlu%status(i) * (-1)
+ endif
+endif
+
+enddo
+
+ end subroutine T_Q_profile_adjust
+!==============================================================================================
+!==============================================================================================
+real function  sh_rh (tl, pl, sh)
+real  tl,pl,sh
+real  es, ws
+!	rh (0-100)
+!	tl (K)
+!	pl (mb)
+!	q (g/g)
+es = satvap (tl)
+ws = 0.622 * es / (pl - es)
+sh_rh= sh/ws * 100.
+end function sh_rh
+!===================================================================
+real function  rh_sh (rh, tl, pl)
+real  rh,tl,pl
+real  es, ws
+!	rh (0-100)
+!	tl (K)
+!	pl (mb)
+!	q (g/g)
+es = satvap (tl)
+ws = 0.622 * es / (pl - es)
+rh_sh = (rh/100.0) * ws
+end function rh_sh
+!================================================================
+real function satvap(temp2)
+implicit none
+real ,intent(in):: temp2
+real temp,toot,toto,eilog
+real tsot,ewlog,ewlog2,ewlog3,ewlog4
+
+temp = temp2-273.155
+if (temp.lt.-20.) then   !!!! ice saturation
+toot = 273.16 / temp2
+toto = 1 / toot
+eilog = -9.09718 * (toot - 1) - 3.56654 * (log(toot) /  &
+log(10.)) + .876793 * (1 - toto) + (log(6.1071) / log(10.))
+satvap = 10 ** eilog
+else
+tsot = 373.16 / temp2
+ewlog = -7.90298 * (tsot - 1) + 5.02808 *	&
+(log(tsot) / log(10.))
+ewlog2 = ewlog - 1.3816e-07 *			&
+(10 ** (11.344 * (1 - (1 / tsot))) - 1)
+ewlog3 = ewlog2 + .0081328 *			&
+(10 ** (-3.49149 * (tsot - 1)) - 1)
+ewlog4 = ewlog3 + (log(1013.246) / log(10.))
+satvap = 10 ** ewlog4
+end if
+
+return
+end function satvap
+!==============================================================================================
+real function rintlp(p1,p2,v1,v2,px)
+real :: p1,p2,v1,v2,px
+rintlp = v1+((v1-v2)/log(p1/p2)) * log(px/p1) !ORG Log pres ~ lin height
+end function rintlp
+!=======================================================================================================
+ subroutine print_tlu
+ integer k
+ print'(A20,10f8.2)','tlu%pm=',tlu%pm
+ print'(A20,10f8.2)','tlu%tm=',tlu%tm
+
+ print'(A20,2f8.2)','tlu%Pup , tlu%Tup:',tlu%Pup,tlu%Tup
+ print'(A20,2f8.2)','tlu%Ptop,tlu%Ttop:',tlu%ptop,tlu%Ttop
+ print'(A20,2f8.2)','tlu%Psfc,tlu%Tsfc:',tlu%Psfc,tlu%Tsfc
+
+ 	print*,'     Lev Pres(hPa) TempAdj(K) Status TempMoa(K) Adj-Moa(K) QAdj(g/g) ,QMOA(g/g) QAdj-QMoa(g/g)'
+	do k=1,tlu%nlev
+	print'(a5,I4,2f10.2,I5,2f10.2,7X,3es10.2)','TLU:',k,tlu%pp(k),tlu%pt(k),tlu%status(k),tt1(k),tlu%pt(k)-tt1(k),&
+    tlu%pq(k),qq1(k),tlu%pq(k)-qq1(k)
+	enddo  
+ 
+ end subroutine print_tlu
+
+END MODULE TLUXS
+!=======================================================================================================
+!=======================================================================================================
+!=======================================================================================================
+subroutine test_tluxs
+USE TLUXS ,only : TLU, T_Q_profile_adjust, print_tlu
+implicit none
+integer i ,nlay ,j
+real skint
+
+do j = 151,151
+open(1,file= 'jmlsX.lay',status='old',action='read' )
+
+read (1,*) skint,nlay
+tlu%nlev = nlay+1 ! Set # of layers in input profiles.
+do i=1,tlu%nlev ;read(1,*) tlu%pp(i),tlu%pt(i),tlu%pq(i) ;enddo ;close(1) ! Read in P,T,Q profiles
+
+tlu%pm(1:4) = (/200.  , 500. ,600., 699.+j /) ! Set Cloud Top Pressures
+tlu%tm(1:4) = (/220. ,  250. ,270., 277./) ! Set Cloud Top Temperatures
+
+tlu%padjrange =100. ! Set pressure range(hPa) above cloud top for temperature adjustment
+
+call T_Q_profile_adjust  ! Execute the Adjustment procedure.
+
+call print_tlu  ! Print Before and After profiles.
+enddo
+
+end subroutine test_tluxs
+!===========================================================
+! call test_tluxs ; end
+

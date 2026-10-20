@@ -1,0 +1,74 @@
+PROG = CER7.2.1P2_FuLib_x86_64.a 
+
+#SRCS =  extras.f90 fuinput.f90 fuoutput.f90 fuprint.f90 \
+#	icedirsfc.f90 ma_tip.f90 qsortd.f90 vla.f90 rad_multi_200511.f90 seiji_k2d.f90 \
+#	seiji_solver_200511.f90  taucorr.f90 uvcor_all.f90 \
+#	 gflq.f90  calipso_output.f90 zjin.f90 ar_asy.f90
+
+OBJS =  extras.o fuinput.o fuoutput.o fuprint.o entropy_lw.o icedirsfc.o ma_tip.o \
+	qsortd.o vla.o rad_multi_200511.o seiji_k2d.o seiji_solver_200511.o  \
+	taucorr.o uvcor_all.o \
+	gflq.o calipso_output.o zjin.o ar_asy.o
+
+OBJS_F = aqua_wnflt_0404.o   misc_200511.o \
+	cloud_optics.o 	seiji_twostreamsolv_sw_v20.o aerosols_200511.o
+
+##X86
+#OBJS_C = qsort_c.o
+
+LIBS = 
+MOD_FLAG = 
+INC_FLAG = 
+
+#CC = 
+#CFLAGS = 
+
+F90COMP = -c -O2 -finit-local-zero -fno-second-underscore -fconvert=big-endian
+
+#
+
+all: $(PROG) 
+
+$(PROG): $(OBJS) $(OBJS_F)  $(OBJS_C)
+	 ar -rcv $(PROG) $(OBJS) $(OBJS_F) $(OBJS_C) 
+tidy:
+	-\rm -f $(PROG) $(OBJS) $(OBJS_F) $(OBJS_C)
+	-\rm -f *.mod 
+	-\rm -f *.a 
+clean:
+	-\rm -f $(PROG) $(OBJS) $(OBJS_F) $(OBJS_C)
+	-\rm -f *.mod 
+	-\rm -f *.mod 
+	-\rm -f *.a 
+
+.SUFFIXES: 
+
+.SUFFIXES: .f90 .mod .f .c .o
+
+.f90.o:
+	$(F90) $(F90COMP)  $(MOD_FLAG) $(INC_FLAG) $< 
+
+.f90.mod:
+	$(F90) $(F90COMP)  $(MOD_FLAG) $(INC_FLAG) $< 
+
+.f.o:
+	$(F77) $(FCOMP)  $(MOD_FLAG) $(INC_FLAG) $< 
+
+.c.o:
+	$(CC) $(CFLAGS)  $(MOD_FLAG) $(INC_FLAG) $< 
+
+
+
+fuinput.o: taucorr.o extras.o
+fuoutput.o: fuinput.o
+fuprint.o: fuinput.o fuoutput.o
+icedirsfc.o: fuinput.o fuoutput.o
+ma_tip.o: fuinput.o
+rad_multi_200511.o: fuinput.o fuoutput.o icedirsfc.o uvcor_all.o
+seiji_k2d.o: fuinput.o 
+seiji_solver_200511.o: fuinput.o fuoutput.o
+uvcor_all.o: fuinput.o fuoutput.o 
+wpar.o: rad_multi_200511.o
+cloud_optics.o : fuinput.o
+
+vla.o : qsortd.o

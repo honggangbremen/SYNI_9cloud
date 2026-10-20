@@ -1,0 +1,8 @@
+./cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+./CER7.2.1P2_pcfgen.pl -date 201304Z001
+
+cd pcf
+cp test.1_33_49 CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001
+cd ..
+
+./run_CER7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z001 > test.test2_3_49

@@ -1,0 +1,840 @@
+MODULE ED4_SYNI_STRUCTURE
+!
+!*****************************************************************************
+!
+! !F90
+!
+! !Name:
+!   ED4_SYNI_STRUCTURE
+!
+! !Description:
+!
+!    Purpose - To declare data structures and TYPEs for Edition4 SYNI
+!
+!
+! !Input PARAMETERs:
+!   NONE
+!
+! !Output PARAMETERs:
+!   NONE
+!
+! !Team-Unique Header:
+!
+!  Internal Routines:
+!    pfp         - Packs flux data
+!    ufp         - Unpacks flux data 
+!    SYNI4_null  - Set SYNI Ed4 structure to defaults 
+!    SYNI4_print - Diagnostic routine for printing SYNI4 values 
+!
+!  Modules Used:
+!   
+! !Revision History:
+!  Version 1.0   October 1, 2013 - SCCR #1017
+!                 Fred Rose, SSAI, Fred.G.Rose@nasa.gov
+!                 Thomas Caldwell, SSAI, Thomas.E.Caldwell@nasa.gov
+!                 Initial Version of Module
+!
+! !END
+!
+!*****************************************************************************
+!
+!
+      IMPLICIT NONE
+!
+      INTEGER,PARAMETER    :: nl=6  , nl2 = 2  ! ED4_SYNI
+      INTEGER,PARAMETER    :: nswb =  4 , nlwb=5  !20140213
+
+      REAL*8, PARAMETER    :: REAL8_DFLT = 1.7976931348623157D+308 ! HUGE(REAL8)
+
+      REAL, PARAMETER      :: REAL4_DFLT = 3.4028235E+38           ! HUGE(REAL4)
+      INTEGER , PARAMETER  :: INT4_DFLT = 2147483647 ! HUGE(int4) = (2**31)-1
+      INTEGER*2, PARAMETER :: INT2_DFLT = 32767      ! HUGE(int2) = (2**15)-1
+ 
+! Tuned FULL 6level Profile                    
+
+      TYPE PRF_TYPE
+        SEQUENCE
+        INTEGER*2 d(2:nl)   !! DOWNWELLING 
+        INTEGER*2 u(nl)     !! UPWELLNG
+      END TYPE PRF_TYPE
+             
+! UnTuned TOA and SFC as needed                    
+
+      TYPE PRF2_TYPE
+        SEQUENCE
+        INTEGER*2 d(2:2)   !! DOWNWELLING 
+        INTEGER*2 u(nl2)   !! UPWELLNG
+      END TYPE PRF2_TYPE
+
+      TYPE SFC_TYPE
+       SEQUENCE
+       INTEGER*2 direct
+       INTEGER*2 diffuse
+      END TYPE SFC_TYPE
+
+! Tuned
+
+      TYPE FLX_TYPE
+       SEQUENCE
+       TYPE(PRF_TYPE) sw !SHORTWAVE
+       TYPE(PRF_TYPE) lw !Longwave
+       TYPE(SFC_TYPE) sfc ! SFC other
+      END TYPE FLX_TYPE
+
+! Untuned
+
+      TYPE FLX2_TYPE
+       SEQUENCE
+       TYPE(PRF2_TYPE) sw !SHORTWAVE
+       TYPE(PRF2_TYPE) lw !Longwave
+      END TYPE FLX2_TYPE
+
+
+      TYPE TUNE_VARIABLES_TYPE
+       SEQUENCE
+       REAL pw
+       REAL uth
+       REAL sfcalb
+       REAL aot
+       REAL skint
+       REAL cldfrac(9)
+       REAL cldtemp(9)
+       REAL cldtau(9)
+       INTEGER*2 Iwp(9)
+       INTEGER*2 Lwp(9)  !HG-2025-0731
+      END TYPE TUNE_VARIABLES_TYPE
+
+! Spectral Fluxes
+
+      TYPE SF_SW_TYPE
+       SEQUENCE
+       INTEGER*2 d(nswb)
+       INTEGER*2 u(nswb)
+      END TYPE SF_SW_TYPE
+
+      TYPE SF_LW_SFC_TYPE
+       SEQUENCE
+       INTEGER*2 d(nlwb)
+       INTEGER*2 u(nlwb)
+      END TYPE SF_LW_SFC_TYPE
+
+      TYPE SF_LW_TOA_TYPE
+       SEQUENCE
+!       INTEGER*2 d(nlwb)
+       INTEGER*2 u(nlwb)
+      END TYPE SF_LW_TOA_TYPE
+
+      TYPE SF_TOA_TYPE
+       SEQUENCE
+       TYPE (SF_SW_TYPE) sw
+       TYPE (SF_LW_TOA_TYPE) lw
+      END TYPE SF_TOA_TYPE
+
+
+      TYPE SF_SFC_TYPE
+       SEQUENCE
+       TYPE (SF_SW_TYPE) sw
+       TYPE (SF_LW_SFC_TYPE) lw
+      END TYPE SF_SFC_TYPE
+
+      TYPE SF_LOC_TYPE
+       SEQUENCE
+       TYPE (SF_TOA_TYPE) toa
+       TYPE (SF_SFC_TYPE) sfc
+      END TYPE SF_LOC_TYPE
+
+
+      TYPE SF_CND_TYPE
+      SEQUENCE
+      TYPE (SF_LOC_TYPE) tot
+      END TYPE SF_CND_TYPE
+
+
+      TYPE AS_TYPE 
+       SEQUENCE
+       INTEGER*2  toa_uva
+       INTEGER*2  toa_uvb
+       INTEGER*2  toa_par
+       INTEGER*2 sfc_tot_uva
+       INTEGER*2 sfc_tot_uvb
+       INTEGER*2 sfc_tot_uvi
+       INTEGER*2 sfc_tot_par_dir
+       INTEGER*2 sfc_tot_par_dif
+       INTEGER*2 sfc_clr_par_dir
+       INTEGER*2 sfc_clr_par_dif
+       INTEGER*2 sfc_prs_par_dir
+       INTEGER*2 sfc_prs_par_dif
+      END TYPE AS_TYPE
+
+
+      TYPE ENT_TYPE 
+       SEQUENCE
+       REAL*4  toa_lwe_out
+       REAL*4  atm_lwe_out
+       REAL*4  sfc_lwe_out
+       REAL*4  sfc_lwe_up
+       REAL*4  sfc_lwe_dn
+       REAL*4  atm_lwe_gen
+       REAL*4  sfc_lwe_gen 
+       REAL*4  toa_swe_inc
+       REAL*4  atm_swe_inc
+       REAL*4  sfc_swe_inc
+       REAL*4  atm_swe_gen
+       REAL*4  sfc_swe_gen
+      END TYPE ENT_TYPE
+
+
+      TYPE EMM_WNOLR
+       SEQUENCE
+       INTEGER*2 tot
+       INTEGER*2 clr
+      END TYPE EMM_WNOLR
+
+
+      TYPE TU_TYPE
+       SEQUENCE
+        TYPE (FLX_TYPE) clr
+        TYPE (FLX_TYPE) tot
+        TYPE (FLX_TYPE) prs  
+        TYPE (FLX_TYPE) tna 
+        TYPE (EMM_WNOLR) wnolr !20140213
+        TYPE (TUNE_VARIABLES_TYPE) var  
+        TYPE (AS_TYPE) as
+        TYPE (SF_CND_TYPE) spec
+        TYPE (ENT_TYPE) ent
+      END TYPE TU_TYPE
+
+      TYPE UT_TYPE
+       SEQUENCE
+        TYPE (FLX2_TYPE) clr  ! 2layer
+        TYPE (FLX2_TYPE) tot  ! 2layer
+        TYPE (FLX2_TYPE) prs  ! 2layer
+        TYPE (FLX2_TYPE) tna  ! 2layer
+        TYPE (EMM_WNOLR) wnolr    !20140213 
+        TYPE (TUNE_VARIABLES_TYPE) var
+      END TYPE UT_TYPE
+
+
+      TYPE SYNI4_MISC_TYPE
+       SEQUENCE
+       INTEGER*2 hr_month !1-744
+       INTEGER*4 regnum !SSF
+       INTEGER*2 toaswinsolation 
+       INTEGER*2 sfcalbedo_source ! 0 Igbp Default, 1 Ocean ,2 Clrland, 3 Cloudy land, 4 Clr Snow, 5 Cld Snow, 6 Clear Ice, 7 Cld Ice, 8 IGBP snow
+       INTEGER*2 error(2)  !! See check_for_bad_data , 1's CERES Flux,  100's Clouds  , +1000 Untuned profile  , +2000 Untuned Model , +3000 Tuned profile, +4000 , Tuned model
+       INTEGER*2 sfc_pres
+       INTEGER*2 sfc_hgt
+       INTEGER*2 sfc_lev
+       INTEGER*2 ut_aot_840
+       INTEGER*2 o3_du
+      END TYPE SYNI4_MISC_TYPE
+
+
+      TYPE SYNI4_TYPE 
+       SEQUENCE
+        TYPE (UT_TYPE ) ut
+        TYPE (TU_TYPE ) tu
+        TYPE (SYNI4_MISC_TYPE) misc
+      END TYPE SYNI4_TYPE 
+
+
+      TYPE ( SYNI4_TYPE ) SYNI4
+
+!HG-20260908
+      TYPE (SYNI4_4_TYPE) SYNI4_OUT
+ 
+! Fuliou SW and LW bands 
+
+      INTEGER :: swb(nswb+1),lwb(nlwb+1)
+ 
+! Fuliou SW bands [ ~11wm2 solar > 2500cm in 5350:4000]
+
+      DATA swb(1:nswb+1) / 57000, 22857,14500,9060,2500/
+
+! Fuliou LW bands
+
+      DATA lwb(1:nlwb+1) / 2850, 1250,800,540,280,0/
+
+
+      TYPE SYNI4_HEAD_TYPE
+        SEQUENCE
+        INTEGER ::spec_sw_bounds(nswb+1)
+        INTEGER ::spec_lw_bounds(nlwb+1)
+      END TYPE SYNI4_HEAD_TYPE
+
+      TYPE (SYNI4_HEAD_TYPE) SYNI4_HEAD
+
+      INTEGER SYNI4_unit
+ 
+ CONTAINS
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!
+      INTEGER*2 function pfp(rflux)
+!
+!*****************************************************************************
+!
+! !F90
+!
+! !Name:
+!   pfp
+!
+! !Description:
+!    Purpose - Packs flux data
+!
+! 
+! !Input PARAMETERs:
+!    rflux - radiative flux data
+!
+! !Output PARAMETERs:
+!    pfp - packed flux data
+!
+! !Team-Unique Header:
+!
+!  Modules Used: (parameters followed by "*" are defined by this routine)
+!
+!  Input Files:
+!    NONE
+!
+!  Notes: 
+!
+! !Revision History:
+!  Version 1.0   October 1, 2013 - SCCR #1017
+!                 Fred Rose, SSAI, Fred.G.Rose@nasa.gov
+!                 Thomas Caldwell, SSAI, Thomas.E.Caldwell@nasa.gov
+!                 Initial Version of Module
+!
+! !END
+!
+!*****************************************************************************
+!
+
+      REAL*4 rflux
+      INTEGER ipack
+
+      ipack = nint(rflux*40.0) - 32767
+      pfp   = ipack
+
+      IF ( rflux < 0 .OR. rflux > 1500) pfp =  INT2_DFLT
+
+      END FUNCTION pfp
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!
+      REAL function ufp(i2flux)
+!
+!*****************************************************************************
+!
+! !F90
+!
+! !Name:
+!   ufp
+!
+! !Description:
+!    Purpose - Unpacks flux data
+!
+! 
+! !Input PARAMETERs:
+!    i2flux - radiative flux data
+!
+! !Output PARAMETERs:
+!    ufp - unpacked flux data
+!
+! !Team-Unique Header:
+!
+!  Modules Used: (parameters followed by "*" are defined by this routine)
+!
+!  Input Files:
+!    NONE
+!
+!  Notes: 
+!
+! !Revision History:
+!  Version 1.0   October 1, 2013 - SCCR #1017
+!                 Fred Rose, SSAI, Fred.G.Rose@nasa.gov
+!                 Thomas Caldwell, SSAI, Thomas.E.Caldwell@nasa.gov
+!                 Initial Version of Module
+!
+! !END
+!
+!*****************************************************************************
+!
+
+
+      INTEGER*2 i2flux
+      
+      ufp = ((i2flux+32767)/40.)
+      IF (  i2flux == INT2_DFLT ) ufp = REAL4_DFLT
+      
+      END FUNCTION ufp
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!
+      SUBROUTINE SYNI4_null
+!
+!*****************************************************************************
+!
+! !F90
+!
+! !Name:
+!   SYNI4_null
+!
+! !Description:
+!    Purpose - Set SYNI Ed4 structure to defaults
+!
+! 
+! !Input PARAMETERs:
+!    NONE
+!
+! !Output PARAMETERs:
+!    NONE
+!
+! !Team-Unique Header:
+!
+!  Modules Used: (parameters followed by "*" are defined by this routine)
+!
+!  Input Files:
+!    NONE
+!
+!  Notes: 
+!
+! !Revision History:
+!  Version 1.0   October 1, 2013 - SCCR #1017
+!                 Fred Rose, SSAI, Fred.G.Rose@nasa.gov
+!                 Thomas Caldwell, SSAI, Thomas.E.Caldwell@nasa.gov
+!                 Initial Version of Module
+!
+! !END
+!
+!*****************************************************************************
+!
+
+       SYNI4_head%spec_sw_bounds = swb
+       SYNI4_head%spec_lw_bounds = lwb
+
+! *************TUNED variables***************
+ 
+! Full Profile Fluxes
+
+       SYNI4%tu%clr%sw%d = INT2_DFLT
+       SYNI4%tu%clr%sw%u = INT2_DFLT
+       SYNI4%tu%clr%lw%d = INT2_DFLT
+       SYNI4%tu%clr%lw%u = INT2_DFLT
+
+       SYNI4%tu%tot%sw%d = INT2_DFLT
+       SYNI4%tu%tot%sw%u = INT2_DFLT
+       SYNI4%tu%tot%lw%d = INT2_DFLT
+       SYNI4%tu%tot%lw%u = INT2_DFLT
+
+       SYNI4%tu%prs%sw%d = INT2_DFLT
+       SYNI4%tu%prs%sw%u = INT2_DFLT
+       SYNI4%tu%prs%lw%d = INT2_DFLT
+       SYNI4%tu%prs%lw%u = INT2_DFLT
+
+       SYNI4%tu%tna%sw%d = INT2_DFLT
+       SYNI4%tu%tna%sw%u = INT2_DFLT
+       SYNI4%tu%tna%lw%d = INT2_DFLT
+       SYNI4%tu%tna%lw%u = INT2_DFLT
+
+       SYNI4%tu%wnolr%tot = INT2_DFLT
+       SYNI4%tu%wnolr%clr = INT2_DFLT
+
+
+! SFC DIRECT & Diffuse
+
+       SYNI4%tu%clr%sfc%direct  = INT2_DFLT
+       SYNI4%tu%clr%sfc%diffuse = INT2_DFLT
+       SYNI4%tu%tot%sfc%direct  = INT2_DFLT
+       SYNI4%tu%tot%sfc%diffuse = INT2_DFLT
+       SYNI4%tu%prs%sfc%direct  = INT2_DFLT
+       SYNI4%tu%prs%sfc%diffuse = INT2_DFLT
+       SYNI4%tu%tna%sfc%direct  = INT2_DFLT
+       SYNI4%tu%tna%sfc%diffuse = INT2_DFLT
+
+
+! ACTION_SPECTRA
+
+       SYNI4%tu%as%toa_uva 	     = INT2_DFLT
+       SYNI4%tu%as%toa_uvb	     = INT2_DFLT
+       SYNI4%tu%as%toa_par	     = INT2_DFLT
+       SYNI4%tu%as%sfc_tot_uva	     = INT2_DFLT
+       SYNI4%tu%as%sfc_tot_uvb	     = INT2_DFLT
+       SYNI4%tu%as%sfc_tot_uvi	     = INT2_DFLT
+       SYNI4%tu%as%sfc_tot_par_dir   = INT2_DFLT
+       SYNI4%tu%as%sfc_tot_par_dif   = INT2_DFLT
+       SYNI4%tu%as%sfc_clr_par_dir   = INT2_DFLT
+       SYNI4%tu%as%sfc_clr_par_dif   = INT2_DFLT
+       SYNI4%tu%as%sfc_prs_par_dir   = INT2_DFLT
+       SYNI4%tu%as%sfc_prs_par_dif   = INT2_DFLT 
+ 
+! ENTROPY 20130306
+  
+       SYNI4%tu%ent%toa_lwe_out = REAL4_DFLT
+       SYNI4%tu%ent%atm_lwe_out = REAL4_DFLT
+       SYNI4%tu%ent%sfc_lwe_out = REAL4_DFLT
+       SYNI4%tu%ent%sfc_lwe_up  = REAL4_DFLT
+       SYNI4%tu%ent%sfc_lwe_dn  = REAL4_DFLT
+       SYNI4%tu%ent%atm_lwe_gen = REAL4_DFLT
+       SYNI4%tu%ent%sfc_lwe_gen = REAL4_DFLT
+       SYNI4%tu%ent%toa_swe_inc = REAL4_DFLT
+       SYNI4%tu%ent%atm_swe_inc = REAL4_DFLT
+       SYNI4%tu%ent%sfc_swe_inc = REAL4_DFLT
+       SYNI4%tu%ent%atm_swe_gen = REAL4_DFLT
+       SYNI4%tu%ent%sfc_swe_gen = REAL4_DFLT
+  
+! SPECTRAL READDED 20140131
+
+       SYNI4%tu%spec%tot%toa%sw%d(1:nswb) = INT2_DFLT
+       SYNI4%tu%spec%tot%toa%sw%u(1:nswb) = INT2_DFLT
+       SYNI4%tu%spec%tot%toa%lw%u(1:nlwb) = INT2_DFLT
+
+       SYNI4%tu%spec%tot%sfc%sw%d(1:nswb) = INT2_DFLT
+       SYNI4%tu%spec%tot%sfc%sw%u(1:nswb) = INT2_DFLT
+       SYNI4%tu%spec%tot%sfc%lw%d(1:nlwb) = INT2_DFLT
+       SYNI4%tu%spec%tot%sfc%lw%u(1:nlwb) = INT2_DFLT
+
+! Misc
+
+       SYNI4%misc%hr_month 	    =  INT2_DFLT
+       SYNI4%misc%regnum            =  INT4_DFLT
+       SYNI4%misc%toaswinsolation   = INT2_DFLT
+       SYNI4%misc%sfcalbedo_source  = INT2_DFLT
+       SYNI4%misc%sfc_pres 	    = INT2_DFLT
+       SYNI4%misc%sfc_hgt   	    = INT2_DFLT
+       SYNI4%misc%sfc_lev   	    = INT2_DFLT
+       SYNI4%misc%error 	    = INT2_DFLT
+       SYNI4%misc%ut_aot_840   	    = INT2_DFLT
+       SYNI4%misc%o3_du 	    = INT2_DFLT
+  
+  
+! *************UNTUNED variables***************
+
+! TOA&SFC UNTUNED Fluxes
+
+       SYNI4%ut%clr%sw%d = INT2_DFLT
+       SYNI4%ut%clr%sw%u = INT2_DFLT
+       SYNI4%ut%clr%lw%d = INT2_DFLT
+       SYNI4%ut%clr%lw%u = INT2_DFLT
+
+       SYNI4%ut%tot%sw%d = INT2_DFLT
+       SYNI4%ut%tot%sw%u = INT2_DFLT
+       SYNI4%ut%tot%lw%d = INT2_DFLT
+       SYNI4%ut%tot%lw%u = INT2_DFLT
+
+       SYNI4%ut%prs%sw%d = INT2_DFLT
+       SYNI4%ut%prs%sw%u = INT2_DFLT
+       SYNI4%ut%prs%lw%d = INT2_DFLT
+       SYNI4%ut%prs%lw%u = INT2_DFLT
+
+       SYNI4%ut%tna%sw%d = INT2_DFLT
+       SYNI4%ut%tna%sw%u = INT2_DFLT
+       SYNI4%ut%tna%lw%d = INT2_DFLT
+       SYNI4%ut%tna%lw%u = INT2_DFLT
+
+       SYNI4%ut%wnolr%tot = INT2_DFLT
+       SYNI4%ut%wnolr%clr = INT2_DFLT 
+ 
+       SYNI4%ut%var%pw           = REAL4_DFLT   
+       SYNI4%ut%var%uth	         = REAL4_DFLT  
+       SYNI4%ut%var%sfcalb       = REAL4_DFLT  
+       SYNI4%ut%var%aot	         = REAL4_DFLT 
+       SYNI4%ut%var%skint	 = REAL4_DFLT   
+       SYNI4%ut%var%cldfrac(1:9) = REAL4_DFLT
+       SYNI4%ut%var%cldtemp(1:9) = REAL4_DFLT
+       SYNI4%ut%var%cldtau(1:9)  = REAL4_DFLT
+       SYNI4%ut%var%Iwp(1:9)     = INT2_DFLT
+       SYNI4%ut%var%Lwp(1:9)     = INT2_DFLT
+  
+       SYNI4%tu%var%pw           = REAL4_DFLT   
+       SYNI4%tu%var%uth	         = REAL4_DFLT  
+       SYNI4%tu%var%sfcalb       = REAL4_DFLT  
+       SYNI4%tu%var%aot	         = REAL4_DFLT 
+       SYNI4%tu%var%skint	 = REAL4_DFLT   
+       SYNI4%tu%var%cldfrac(1:9) = REAL4_DFLT
+       SYNI4%tu%var%cldtemp(1:9) = REAL4_DFLT
+       SYNI4%tu%var%cldtau(1:9)  = REAL4_DFLT
+       SYNI4%tu%var%Iwp(1:9)     = INT2_DFLT
+       SYNI4%tu%var%Lwp(1:9)     = INT2_DFLT   !HG-20250801
+ 
+      END  SUBROUTINE SYNI4_null
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!
+      SUBROUTINE SYNI4_print
+!
+!*****************************************************************************
+!
+! !F90
+!
+! !Name:
+!   SYNI4_print
+!
+! !Description:
+!    Purpose - Diagnostic routine for printing SYNI4 values
+!
+! 
+! !Input PARAMETERs:
+!    NONE
+!
+! !Output PARAMETERs:
+!    NONE
+!
+! !Team-Unique Header:
+!
+!  Modules Used: (parameters followed by "*" are defined by this routine)
+!
+!  Input Files:
+!    NONE
+!
+!  Notes: 
+!
+! !Revision History:
+!  Version 1.0   October 1, 2013 - SCCR #1017
+!                 Fred Rose, SSAI, Fred.G.Rose@nasa.gov
+!                 Thomas Caldwell, SSAI, Thomas.E.Caldwell@nasa.gov
+!                 Initial Version of Module
+!
+! !END
+!
+!*****************************************************************************
+!
+
+      INTEGER il
+
+100 FORMAT ( a28, 132(I9,1x) )
+101 FORMAT ( a28, 132(f9.4,1x) )
+!101 FORMAT ( a26, 132 es10.3 )
+102 FORMAT ( a28, 132(es10.3,1x) )
+103 FORMAT ( a28, 132(f9.1,1x) )
+
+      print*,('=',il=1,120)
+      Print*,' SYNI4 Header:'
+      print 100 ,'SYNI4_head%spec_sw_bounds',(SYNI4_head%spec_sw_bounds(il),il=1,nswb+1)
+      print 100 ,'SYNI4_head%spec_lw_bounds',(SYNI4_head%spec_lw_bounds(il),il=1,nlwb+1)
+      print*,('-',il=1,120)
+      
+
+!--------------------------------------------------------------------------------------------------------------------
+!Print Untuned
+!--------------------------------------------------------------------------------------------------------------------
+
+      print*,('-',il=1,120)
+      print*,'UNtuned Flux Profiles:(TOA & Surface ONLY)'
+      print*,'untuned Clear Sky'
+      print 101, 'SYNI4%ut%clr%sw%d',-1.,(ufp(SYNI4%ut%clr%sw%d(il)) ,il=2,nl2)
+      print 101, 'SYNI4%ut%clr%sw%u',(ufp(SYNI4%ut%clr%sw%u(il)) ,il=1,nl2)
+
+      print 101, 'SYNI4%ut%clr%lw%d',-1.,(ufp(SYNI4%ut%clr%lw%d(il)) ,il=2,nl2)
+      print 101, 'SYNI4%ut%clr%lw%u',(ufp(SYNI4%ut%clr%lw%u(il)) ,il=1,nl2)
+ 
+!      print 101, 'SYNI4%ut%clr%wn%d',-1.,(ufp(SYNI4%ut%clr%wn%d(il)) ,il=2,nl2)
+!      print 101, 'SYNI4%ut%clr%wn%u',(ufp(SYNI4%ut%clr%wn%u(il)) ,il=1,nl2)
+
+      print*,'untuned Total Sky'
+
+      print 101, 'SYNI4%ut%tot%sw%d',-1.,(ufp(SYNI4%ut%tot%sw%d(il)) ,il=2,nl2)
+      print 101, 'SYNI4%ut%tot%sw%u',(ufp(SYNI4%ut%tot%sw%u(il)) ,il=1,nl2)
+
+      print 101, 'SYNI4%ut%tot%lw%d',-1.,(ufp(SYNI4%ut%tot%lw%d(il)) ,il=2,nl2)
+      print 101, 'SYNI4%ut%tot%lw%u',(ufp(SYNI4%ut%tot%lw%u(il)) ,il=1,nl2)
+ 
+!      print 101, 'SYNI4%ut%tot%wn%d',-1.,(ufp(SYNI4%ut%tot%wn%d(il)) ,il=2,nl2)
+!      print 101, 'SYNI4%ut%tot%wn%u',(ufp(SYNI4%ut%tot%wn%u(il)) ,il=1,nl2)
+
+      print*,'untuned Pristine Sky'
+
+      print 101, 'SYNI4%ut%prs%sw%d',-1.,(ufp(SYNI4%ut%prs%sw%d(il)) ,il=2,nl2)
+      print 101, 'SYNI4%ut%prs%sw%u',(ufp(SYNI4%ut%prs%sw%u(il)) ,il=1,nl2)
+
+      print 101, 'SYNI4%ut%prs%lw%d',-1.,(ufp(SYNI4%ut%prs%lw%d(il)) ,il=2,nl2)
+      print 101, 'SYNI4%ut%prs%lw%u',(ufp(SYNI4%ut%prs%lw%u(il)) ,il=1,nl2)
+ 
+!      print 101, 'SYNI4%ut%prs%wn%d',-1.,(ufp(SYNI4%ut%prs%wn%d(il)) ,il=2,nl2)
+!      print 101, 'SYNI4%ut%prs%wn%u',(ufp(SYNI4%ut%prs%wn%u(il)) ,il=1,nl2)
+
+      print*,'untuned Total Noaerosol Sky'
+
+      print 101, 'SYNI4%ut%tna%sw%d',-1.,(ufp(SYNI4%ut%tna%sw%d(il)) ,il=2,nl2)
+      print 101, 'SYNI4%ut%tna%sw%u',(ufp(SYNI4%ut%tna%sw%u(il)) ,il=1,nl2)
+
+      print 101, 'SYNI4%ut%tna%lw%d',-1.,(ufp(SYNI4%ut%tna%lw%d(il)) ,il=2,nl2)
+      print 101, 'SYNI4%ut%tna%lw%u',(ufp(SYNI4%ut%tna%lw%u(il)) ,il=1,nl2)
+ 
+      print*,'Untuned Emmulated Window OLR' 
+      print 101, 'SYNI4%ut%wnolr%tot', ufp(SYNI4%ut%wnolr%tot )
+      print 101, 'SYNI4%ut%wnolr%clr', ufp(SYNI4%ut%wnolr%clr )
+
+
+
+!------------------------------------
+      print*,('-',il=1,20)
+!----
+      print*,'UNTuned Variables'
+      print 101,'SYNI4%ut%var%pw',SYNI4%ut%var%pw         
+      print 101,'SYNI4%ut%var%uth ',SYNI4%ut%var%uth        
+      print 101,'SYNI4%ut%var%sfcalb',SYNI4%ut%var%sfcalb
+      print 101,'SYNI4%ut%var%aot',SYNI4%ut%var%aot        
+      print 101,'SYNI4%ut%var%skint',SYNI4%ut%var%skint      
+      print 101,'SYNI4%ut%var%cldfrac(1:4)',SYNI4%ut%var%cldfrac(1:4)
+      print 101,'SYNI4%ut%var%cldtemp(1:4)',SYNI4%ut%var%cldtemp(1:4)
+      print 101,'SYNI4%ut%var%cldtau(1:4)' ,SYNI4%ut%var%cldtau(1:4) 
+      print 101,'SYNI4%ut%var$Iwp(1:4)',(ufp(SYNI4%ut%var%Iwp(il)) ,il=1,4)
+      print 101,'SYNI4%ut%var$Lwp(1:4)',(ufp(SYNI4%ut%var%Lwp(il)) ,il=1,4)
+
+  
+      print*,('-',il=1,120)
+
+!-------------------------------------------------------------------------------------------------------------------
+! Tuned
+!------------------------------------------------------------------------------------------------------------------
+ 
+      print*,'TUNED ::Ed4 SYNI Profiles:'
+      print*,'tuned  Clear Sky'
+      print 101, 'SYNI4%tu%clr%sw%d',-1.,(ufp(SYNI4%tu%clr%sw%d(il)) ,il=2,nl)
+      print 101, 'SYNI4%tu%clr%sw%u',(ufp(SYNI4%tu%clr%sw%u(il)) ,il=1,nl)
+
+      print 101, 'SYNI4%tu%clr%lw%d',-1.,(ufp(SYNI4%tu%clr%lw%d(il)) ,il=2,nl)
+      print 101, 'SYNI4%tu%clr%lw%u',(ufp(SYNI4%tu%clr%lw%u(il)) ,il=1,nl)
+ 
+!      print 101, 'SYNI4%tu%clr%wn%d',(ufp(SYNI4%tu%clr%wn%d(il)) ,il=1,nl)
+!      print 101, 'SYNI4%tu%clr%wn%u',(ufp(SYNI4%tu%clr%wn%u(il)) ,il=1,nl)
+
+      print*,'tuned Total Sky'
+
+      print 101, 'SYNI4%tu%tot%sw%d',-1.,(ufp(SYNI4%tu%tot%sw%d(il)) ,il=2,nl)
+      print 101, 'SYNI4%tu%tot%sw%u',(ufp(SYNI4%tu%tot%sw%u(il)) ,il=1,nl)
+
+      print 101, 'SYNI4%tu%tot%lw%d',-1.,(ufp(SYNI4%tu%tot%lw%d(il)) ,il=2,nl)
+      print 101, 'SYNI4%tu%tot%lw%u',(ufp(SYNI4%tu%tot%lw%u(il)) ,il=1,nl)
+ 
+!      print 101, 'SYNI4%tu%tot%wn%d',(ufp(SYNI4%tu%tot%wn%d(il)) ,il=1,nl)
+!      print 101, 'SYNI4%tu%tot%wn%u',(ufp(SYNI4%tu%tot%wn%u(il)) ,il=1,nl)
+
+      print*,'tuned Pristine Sky'
+
+      print 101, 'SYNI4%tu%prs%sw%d',-1.,(ufp(SYNI4%tu%prs%sw%d(il)) ,il=2,nl)
+      print 101, 'SYNI4%tu%prs%sw%u',(ufp(SYNI4%tu%prs%sw%u(il)) ,il=1,nl)
+
+      print 101, 'SYNI4%tu%prs%lw%d',-1.,(ufp(SYNI4%tu%prs%lw%d(il)) ,il=2,nl)
+      print 101, 'SYNI4%tu%prs%lw%u',(ufp(SYNI4%tu%prs%lw%u(il)) ,il=1,nl)
+ 
+!      print 101, 'SYNI4%tu%prs%wn%d',(ufp(SYNI4%tu%prs%wn%d(il)) ,il=1,nl)
+!      print 101, 'SYNI4%tu%prs%wn%u',(ufp(SYNI4%tu%prs%wn%u(il)) ,il=1,nl)
+
+      print*,'tuned Total_Noaerosol Sky'
+
+      print 101, 'SYNI4%tu%tna%sw%d',-1.,(ufp(SYNI4%tu%tna%sw%d(il)) ,il=2,nl)
+      print 101, 'SYNI4%tu%tna%sw%u',(ufp(SYNI4%tu%tna%sw%u(il)) ,il=1,nl)
+
+      print 101, 'SYNI4%tu%tna%lw%d',-1.,(ufp(SYNI4%tu%tna%lw%d(il)) ,il=2,nl)
+      print 101, 'SYNI4%tu%tna%lw%u',(ufp(SYNI4%tu%tna%lw%u(il)) ,il=1,nl)
+ 
+ 
+      print*,'Tuned Emmulated Window OLR'
+      print 101, 'SYNI4%tu%wnolr%tot', ufp(SYNI4%tu%wnolr%tot )
+      print 101, 'SYNI4%tu%wnolr%clr', ufp(SYNI4%tu%wnolr%clr )
+ 
+ 
+!      print 101, 'SYNI4%tu%tna%wn%d',(ufp(SYNI4%tu%tna%wn%d(il)) ,il=1,nl)
+!      print 101, 'SYNI4%tu%tna%wn%u',(ufp(SYNI4%tu%tna%wn%u(il)) ,il=1,nl)
+      print*,('-',il=1,20)
+!----
+      print*,'Tuned Variables'
+      print 101,'SYNI4%tu%var%pw',SYNI4%tu%var%pw         
+      print 101,'SYNI4%tu%var%uth ',SYNI4%tu%var%uth        
+      print 101,'SYNI4%tu%var%sfcalb',SYNI4%tu%var%sfcalb     
+      print 101,'SYNI4%tu%var%aot',SYNI4%tu%var%aot        
+      print 101,'SYNI4%tu%var%skint',SYNI4%tu%var%skint      
+      print 101,'SYNI4%tu%var%cldfrac(1:4)',SYNI4%tu%var%cldfrac(1:4)
+      print 101,'SYNI4%tu%var%cldtemp(1:4)',SYNI4%tu%var%cldtemp(1:4)
+      print 101,'SYNI4%tu%var%cldtau(1:4)' ,SYNI4%tu%var%cldtau(1:4) 
+      print 101,'SYNI4%tu%var$Iwp(1:4)',(ufp(SYNI4%tu%var%Iwp(il)) ,il=1,4)
+      print 101,'SYNI4%tu%var$Lwp(1:4)',(ufp(SYNI4%tu%var%Lwp(il)) ,il=1,4)
+
+!------------------------------------------------------------------
+      print*,('-',il=1,20)
+      print*,'tuned Surface Direct & Diffuse'
+      print 101, 'SYNI4%tu%clr%sfc%direct'  	, ufp(SYNI4%tu%clr%sfc%direct)
+      print 101, 'SYNI4%tu%clr%sfc%diffuse'  , ufp(SYNI4%tu%clr%sfc%diffuse) 
+      print 101, 'SYNI4%tu%tot%sfc%direct'   , ufp(SYNI4%tu%tot%sfc%direct)
+      print 101, 'SYNI4%tu%tot%sfc%diffuse'  , ufp(SYNI4%tu%tot%sfc%diffuse) 
+      print 101, 'SYNI4%tu%prs%sfc%direct'   , ufp(SYNI4%tu%prs%sfc%direct)  
+      print 101, 'SYNI4%tu%prs%sfc%diffuse'  , ufp(SYNI4%tu%prs%sfc%diffuse) 
+      print 101, 'SYNI4%tu%tna%sfc%direct'   , ufp(SYNI4%tu%tna%sfc%direct)  
+      print 101, 'SYNI4%tu%tna%sfc%diffuse'  , ufp(SYNI4%tu%tna%sfc%diffuse) 
+
+
+!------------------------------------------------------------------
+      print*,('-',il=1,20)
+      print*,'tuned Surface Action Spectra'
+      print 101, 'SYNI4%tu%as%toa_uva         ', ufp(SYNI4%tu%as%toa_uva)	     
+      print 101, 'SYNI4%tu%as%toa_uvb         ', ufp(SYNI4%tu%as%toa_uvb)	     
+      print 101, 'SYNI4%tu%as%toa_par         ', ufp(SYNI4%tu%as%toa_par)	     
+      print 101, 'SYNI4%tu%as%sfc_tot_uva     ', ufp(SYNI4%tu%as%sfc_tot_uva)    
+      print 101, 'SYNI4%tu%as%sfc_tot_uvb     ', ufp(SYNI4%tu%as%sfc_tot_uvb)    
+      print 101, 'SYNI4%tu%as%sfc_tot_uvi     ', ufp(SYNI4%tu%as%sfc_tot_uvi)    
+      print 101, 'SYNI4%tu%as%sfc_tot_par_dir ', ufp(SYNI4%tu%as%sfc_tot_par_dir)
+      print 101, 'SYNI4%tu%as%sfc_tot_par_dif ', ufp(SYNI4%tu%as%sfc_tot_par_dif)
+      print 101, 'SYNI4%tu%as%sfc_clr_par_dir ', ufp(SYNI4%tu%as%sfc_clr_par_dir)    
+      print 101, 'SYNI4%tu%as%sfc_clr_par_dif ', ufp(SYNI4%tu%as%sfc_clr_par_dif) 
+      print 101, 'SYNI4%tu%as%sfc_prs_par_dir ', ufp(SYNI4%tu%as%sfc_prs_par_dir)    
+      print 101, 'SYNI4%tu%as%sfc_prs_par_dif ', ufp(SYNI4%tu%as%sfc_prs_par_dif) 
+
+
+
+!------------------------------------------------------------------
+      print*,('-',il=1,20)
+      Print*, 'tuned Spectral Fluxes Toa Full Sky:'
+      print 101, 'SYNI4%tu%spec%tot%toa%sw%d',(ufp(SYNI4%tu%spec%tot%toa%sw%d(il)) ,il=1,nswb)
+      print 101, 'SYNI4%tu%spec%tot%toa%sw%u',(ufp(SYNI4%tu%spec%tot%toa%sw%u(il)) ,il=1,nswb) 
+!!      print 101, 'SYNI4%tu%spec%tot%toa%lw%d',(ufp(SYNI4%tu%spec%tot%toa%lw%d(il)) ,il=1,nlwb)
+      print 101, 'SYNI4%tu%spec%tot%toa%lw%u',(ufp(SYNI4%tu%spec%tot%toa%lw%u(il)) ,il=1,nlwb)
+      
+      Print*, 'tuned Spectral Fluxes Surface Full Sky:'
+      print 101, 'SYNI4%tu%spec%tot%sfc%sw%d',(ufp(SYNI4%tu%spec%tot%sfc%sw%d(il)) ,il=1,nswb)
+      print 101, 'SYNI4%tu%spec%tot%sfc%sw%u',(ufp(SYNI4%tu%spec%tot%sfc%sw%u(il)) ,il=1,nswb)
+      print 101, 'SYNI4%tu%spec%tot%sfc%lw%d',(ufp(SYNI4%tu%spec%tot%sfc%lw%d(il)) ,il=1,nlwb)
+      print 101, 'SYNI4%tu%spec%tot%sfc%lw%u',(ufp(SYNI4%tu%spec%tot%sfc%lw%u(il)) ,il=1,nlwb)
+
+!-----------------------------------------------------------------
+      print*,('-',il=1,20)
+      print*,'Tuned Entropy Production'
+
+      
+      print 103, ' SYNI4%tu%ent%toa_lwe_out', SYNI4%tu%ent%toa_lwe_out
+      print 103, ' SYNI4%tu%ent%atm_lwe_out', SYNI4%tu%ent%atm_lwe_out
+      print 103, ' SYNI4%tu%ent%sfc_lwe_out', SYNI4%tu%ent%sfc_lwe_out
+      print 103, ' SYNI4%tu%ent%sfc_lwe_up',  SYNI4%tu%ent%sfc_lwe_up
+      print 103, ' SYNI4%tu%ent%sfc_lwe_dn',  SYNI4%tu%ent%sfc_lwe_dn
+      print 103, ' SYNI4%tu%ent%atm_lwe_gen', SYNI4%tu%ent%atm_lwe_gen
+      print 103, ' SYNI4%tu%ent%sfc_lwe_gen', SYNI4%tu%ent%sfc_lwe_gen
+      print 103, ' SYNI4%tu%ent%toa_swe_inc', SYNI4%tu%ent%toa_swe_inc
+      print 103, ' SYNI4%tu%ent%atm_swe_inc', SYNI4%tu%ent%atm_swe_inc
+      print 103, ' SYNI4%tu%ent%sfc_swe_inc', SYNI4%tu%ent%sfc_swe_inc
+      print 103, ' SYNI4%tu%ent%atm_swe_gen', SYNI4%tu%ent%atm_swe_gen
+      print 103, ' SYNI4%tu%ent%sfc_swe_gen', SYNI4%tu%ent%sfc_swe_gen
+
+!------------------------------------------------------------------
+      print*,('-',il=1,120)
+      print*,'SYNI4 MISC'
+
+      print 100,'SYNI4%misc%hr_month' ,SYNI4%misc%hr_month
+      print 100,'SYNI4%misc%regnum' ,SYNI4%misc%regnum
+      print 101 ,'SYNI4%misc%toaswinsolation' , ufp(SYNI4%misc%toaswinsolation) 
+      print 100 ,'SYNI4%misc%sfcalbedo_source',SYNI4%misc%sfcalbedo_source
+      print 100,'SYNI4%misc%sfc_lev', SYNI4%misc%sfc_lev
+      print 100,'SYNI4%misc%sfc_pres', SYNI4%misc%sfc_pres
+      print 100,'SYNI4%misc%sfc_hgt', SYNI4%misc%sfc_hgt
+      print 100 ,'SYNI4%misc%error (untuned) '  ,SYNI4%misc%error(1)
+      print 100 ,'SYNI4%misc%error (tuned)   '  ,SYNI4%misc%error(2)
+
+      print 101 ,'SYNI4%misc%ut_aot_840' , SYNI4%misc%ut_aot_840 *0.0001  !!!!! different packing not ufp
+      print 101 ,'SYNI4%misc%o3_du' , ufp(SYNI4%misc%o3_du)
+
+ 
+      print*,('=',il=1,120)
+
+      END SUBROUTINE SYNI4_print
+!
+!
+END MODULE ED4_SYNI_STRUCTURE

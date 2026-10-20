@@ -1,0 +1,587 @@
+MODULE SAHA
+!
+!*****************************************************************************
+!
+! !F90
+!
+! !Name:
+!   SAHA
+!
+! !Description:
+!
+!    Purpose - Processes surface albedo history data for SYN
+!
+!
+! !Input Parameters:
+!   NONE
+!
+! !Output Parameters:
+!   NONE
+!
+! !Team-Unique Header:
+!
+!  Internal Routines:
+!    convert_sah_to_1x1deg - Convert sah data to 1x1 degree resolution
+!    get_igbp_for_sah      - Read IGBP data for SAH processing 
+!    sah_io                - Open SAH file and read data 
+!    merge_terra_aqua_SAH  - Combine Terra and Aqua SAH data
+!
+!  Modules Used:
+!   Syn_Spectral_Dat_18 -            Used by Sbr. convert_sah_to_1x1deg 
+!   SARB_IO_Utils       - (SARBlib)  Used by Sbr. get_igbp_for_sah, sah_io
+!   SynSARB_IO_Params   - (SARBlib)  Used by Sbr. convert_sah_to_1x1deg, get_igbp_for_sah, sah_io
+!
+! !Revision History:
+!  Version 1.0   October 1, 2013 - SCCR #nnn
+!                 Fred Rose, SSAI, Fred.G.Rose@nasa.gov
+!                 Thomas Caldwell, SSAI, Thomas.E.Caldwell@nasa.gov
+!                 Initial Version of Module
+!
+! !END
+!
+!*****************************************************************************
+!
+! USE Syn_Spectral_Dat_18 ,only: d3,wangx,dickensonx
+ USE Syn_Spectral_Dat_18 ,only: dickensonx
+ USE SARB_IO_Utils
+ USE SynSARB_IO_Params
+ USE NETCDF
+
+
+ IMPLICIT NONE
+
+ PRIVATE
+
+ INTEGER, PARAMETER :: mgrd = 2160*1080, nsahp =3 ! v5 is OHSALB & COSSOL ,SNOWICE_FRACTION
+ REAL,    PARAMETER :: ddsah = 0.4		 ! D used for SAH OHS.
+
+ INTEGER*1, ALLOCATABLE :: igbpa(:),igbpx(:,:)
+ INTEGER*2, ALLOCATABLE :: sah(:,:),sah2(:,:) 
+
+ INTEGER :: ios, iunit_sah   
+
+ REAL,PUBLIC,SAVE :: adiff1x1(360,180)  !!! OUTPUT 1deg Grid!!! ( 1,1 ) = center(89.5N, 0.5E)
+ REAL,PUBLIC,SAVE :: snoice1x1(360,180) 
+ REAL,PUBLIC,SAVE :: mu0_1x1(360,180)
+
+ LOGICAL SAH_FileExist(2)
+
+ PUBLIC convert_sah_to_1x1deg
+
+ CONTAINS
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!
+ SUBROUTINE get_igbp_for_sah
+!
+!*****************************************************************************
+!
+! !F90
+!
+! !Name:
+!   get_igbp_for_sah
+!
+! !Description:
+!    Purpose - Read IGBP data for SAH processing
+!
+! 
+! !Input Parameters:
+!    NONE
+!
+! !Output Parameters:
+!    NONE
+!
+! !Team-Unique Header:
+!
+!  Modules Used: (Parameters followed by "*" are defined by this routine)
+!                                 
+!  Input Files:
+!    NONE
+!
+! !Revision History:
+!  Version 1.0   October 1, 2013 - SCCR #nnn
+!                 Fred Rose, SSAI, Fred.G.Rose@nasa.gov
+!                 Thomas Caldwell, SSAI, Thomas.E.Caldwell@nasa.gov
+!                 Initial Version of Module
+!
+! !END
+!
+!*****************************************************************************
+!
+!
+   INTEGER imap,i,j
+
+   CHARACTER (LEN = 14) :: Name_Sbr = 'get_igbp_for_s'
+   INTEGER :: VerID = 1
+
+   ALLOCATE ( igbpx(2160,1080) )
+   ALLOCATE ( igbpa(2160*1080) )
+
+   CALL SARB_GenOpen (LID_IGBP, Flag_File_Read,Flag_File_Direct, &
+                      Flag_File_Unformat, Name_Sbr, IUnit_IGBP,VerID, mgrd)
+					     
+   READ(iunit_igbp, REC = 1, IOSTAT = ios) igbpx
+
+   IF ( ios /= 0 ) CALL SARB_RdWrtError (13, ios, Name_Sbr, IRec = 1)
+ 
+   CALL CloseFile ( iunit_igbp, status=IOS)
+    
+   IF ( ios /= 0 ) CALL SARB_RdWrtError (13, ios, Name_Sbr, IRec = 1)
+  
+   igbpx(:,1:1080) = igbpx(:,1080:1:-1)  !!! THE SAH FILE REQUIRES THIS Orientation.
+ 
+   imap=0
+   LATL : DO j=1,1080 ; LONL : DO i=1,2160
+    imap=imap+1
+    igbpa(imap) = igbpx(i,j)
+   ENDDO LONL ;ENDDO LATL
+ 
+   DEALLOCATE ( igbpx)
+ 
+ END SUBROUTINE get_igbp_for_sah
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!
+SUBROUTINE sah_io
+!
+!*****************************************************************************
+!
+! !F90
+!
+! !Name:
+!   sah_io
+!
+! !Description:
+!    Purpose - Open SAH file and read data
+!
+! 
+! !Input Parameters:
+!    NONE
+!
+! !Output Parameters:
+!    NONE
+!
+! !Team-Unique Header:
+!
+!  Modules Used: (Parameters followed by "*" are defined by this routine)
+!                                 
+!  Input Files:
+!    NONE
+!
+! !Revision History:
+!  Version 1.0   October 1, 2013 - SCCR #nnn
+!                 Fred Rose, SSAI, Fred.G.Rose@nasa.gov
+!                 Thomas Caldwell, SSAI, Thomas.E.Caldwell@nasa.gov
+!                 Initial Version of Module
+!
+! !END
+!
+!*****************************************************************************
+!
+!
+ INTEGER, PARAMETER :: IncPath_Yes = 1
+ INTEGER VID ,RECL, IOS
+ CHARACTER*120 :: Name_Sbr = 'sah_io'
+ CHARACTER*512 FileName
+ 
+ VID= 1 
+ RECL=mgrd*2*nsahp
+
+! TERRA SAH map mandatory for Edition4 
+
+ CALL DetFileExist (LID_SALB, Name_Sbr, SAH_FileExist(VID), VID, FileName)  ! O (Opt)
+
+ IF ( SAH_FileExist(VID) ) THEN 
+  CALL SARB_GenOpen (LID_SALB, Flag_File_Read, Flag_File_Direct, &
+                     Flag_File_Unformat, Name_Sbr, iunit_sah, VID,RECL) 
+    
+  ALLOCATE ( sah(mgrd, nsahp) )
+
+  READ(iunit_sah,iostat=ios,rec=1) sah
+
+  IF ( IOS /= 0 )  CALL SARB_RdWrtError (LID_SALB, ios, Name_Sbr)
+  
+  CALL SARB_GenClose (Name_Sbr, iunit_sah,VID)   
+ ENDIF
+
+
+! Test for existence of AQUA SAH map :: New for Ed4
+
+ VID= 2 
+ 
+ CALL GetFileName (LID_SALB,				   & ! I
+ 		   FileName, IOS,  			   & ! O
+ 		   Version = VID, incPath = IncPath_Yes)     ! I
+
+ IF (IOS == 0) THEN
+   INQUIRE (FILE=FileName, EXIST=SAH_FileExist(VID), IOSTAT=IOS)
+ ENDIF
+
+ IF ( SAH_FileExist(VID) ) THEN
+  CALL SARB_GenOpen (LID_SALB, Flag_File_Read, Flag_File_Direct, &
+                     Flag_File_Unformat, Name_Sbr, iunit_sah, VID,RECL) 
+    
+  ALLOCATE ( sah2(mgrd, nsahp) )
+
+  READ(iunit_sah,iostat=ios,rec=1) sah2
+
+  IF ( ios /= 0 )  CALL SARB_RdWrtError (LID_SALB, ios, Name_Sbr)
+  CALL SARB_GenClose (Name_Sbr, iunit_sah,VID)
+  
+  CALL merge_terra_aqua_SAH ! New for Ed4
+ 
+ ENDIF
+
+END SUBROUTINE sah_io
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!
+SUBROUTINE sah_io_ncdf
+!
+!*****************************************************************************
+!
+! !F90
+!
+! !Name:
+!   sah_io_ncdf
+!
+! !Description:
+!    Purpose - Open netcdf SAH file and read data
+!
+! 
+! !Input Parameters:
+!    NONE
+!
+! !Output Parameters:
+!    NONE
+!
+! !Team-Unique Header:
+!
+!  Modules Used: (Parameters followed by "*" are defined by this routine)
+!                                 
+!  Input Files:
+!    NONE
+!
+! !Revision History:
+!  Version 1.0   October 1, 2013 - SCCR #nnn
+!                 Fred Rose, SSAI, Fred.G.Rose@nasa.gov
+!                 Thomas Caldwell, SSAI, Thomas.E.Caldwell@nasa.gov
+!                 Initial Version of Module
+!
+! !END
+!
+!*****************************************************************************
+!
+!
+ INTEGER, PARAMETER :: IncPath_Yes = 1
+ INTEGER VID ,RECL, IOS, dsid, i, j, k, p
+ CHARACTER*120 :: Name_Sbr = 'sah_io_ncdf'
+ CHARACTER*512 FileName
+
+      INTEGER :: start2(2)
+      INTEGER :: count2(2)
+
+
+      REAL :: buffer_sah(2160,1080)
+      REAL :: buffer_sah_1d (2160*1080)
+      
+
+      CHARACTER (LEN=50) :: sah_dataset_names(nsahp)
+
+! Tom's netcdf      
+!      DATA sah_dataset_names  / &
+!      'Overhead_surface_albedo', 'Cosine_solar_zenith_angle', &
+!      'Snow_ice_fraction' /
+
+! Seung converted names
+
+      DATA sah_dataset_names  / &
+      'OHS ALBEDO', 'COSSZA', &
+      'SNOW ICEF raction' /
+      
+      
+      start2 = (/1,1/)
+      count2 = (/2160,1080/)
+
+ 
+ VID= 1 
+ RECL=mgrd*2*nsahp  ! mgrd = 2160*1080, nsahp =3
+
+! TERRA SAH map mandatory for Edition4 
+
+ CALL DetFileExist (LID_SALB, Name_Sbr, SAH_FileExist(VID), VID, FileName)  ! O (Opt)
+
+ IF ( SAH_FileExist(VID) ) THEN 
+  
+  ios = nf90_open(trim(FileName), nf90_nowrite, iunit_sah)
+    
+  ALLOCATE ( sah(mgrd, nsahp) )
+
+
+  DO p = 1, nsahp
+  
+  Ios = nf90_inq_varid(iunit_sah, sah_dataset_names(p), dsid) 
+  Ios = nf90_get_var(iunit_sah, dsid, buffer_sah, start2, count2)
+
+  k = 1
+  
+  do i=1,2160   ! convert to 1d array
+   do j=1,1080
+    !buffer_sah_1d(k) = buffer_sah (i,j)
+    buffer_sah_1d(k) = buffer_sah (i, 1081-j)   !HG, read Seung-Hee ED4 netcdf SAH, 20251114
+    k = k + 1
+   enddo
+  enddo
+
+  sah(:,p) = buffer_sah_1d (:)
+
+  IF ( IOS /= 0 )  CALL SARB_RdWrtError (LID_SALB, ios, Name_Sbr)
+  
+  ENDDO
+
+
+  ios = nf90_close(iunit_sah)
+
+ ENDIF
+
+ buffer_sah_1d = 0
+ buffer_sah = 0
+ 
+! Test for existence of AQUA SAH map :: New for Ed4
+
+ VID= 2 
+ 
+ CALL GetFileName (LID_SALB,				   & ! I
+ 		   FileName, IOS,  			   & ! O
+ 		   Version = VID, incPath = IncPath_Yes)     ! I
+
+ IF (IOS == 0) THEN
+   INQUIRE (FILE=FileName, EXIST=SAH_FileExist(VID), IOSTAT=IOS)
+ ENDIF
+
+ IF ( SAH_FileExist(VID) ) THEN
+
+  ios = nf90_open(trim(FileName), nf90_nowrite, iunit_sah)
+    
+  ALLOCATE ( sah2(mgrd, nsahp) )
+
+  DO p = 1, nsahp
+  
+  Ios = nf90_inq_varid(iunit_sah, sah_dataset_names(p), dsid) 
+  Ios = nf90_get_var(iunit_sah, dsid, buffer_sah, start2, count2)
+
+  k = 1
+  
+  do i=1,2160   ! convert to 1d array
+   do j=1,1080
+    buffer_sah_1d(k) = buffer_sah (i,j)
+    buffer_sah_1d(k) = buffer_sah (i,1081-j) ! HG-20251114, read Seung-Hee's ED4 netcdf SAH
+    k = k + 1
+   enddo
+  enddo
+
+  sah2(:,p) = buffer_sah_1d (:)
+
+  IF ( IOS /= 0 )  CALL SARB_RdWrtError (LID_SALB, ios, Name_Sbr)
+  
+  ENDDO
+  
+  ios = nf90_close(iunit_sah)
+
+  
+  CALL merge_terra_aqua_SAH ! New for Ed4
+ 
+ ENDIF
+
+END SUBROUTINE sah_io_ncdf
+
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!
+SUBROUTINE merge_terra_aqua_SAH
+!
+!*****************************************************************************
+!
+! !F90
+!
+! !Name:
+!   merge_terra_aqua_SAH
+!
+! !Description:
+!    Purpose - Combine Terra and Aqua SAH data
+!
+! 
+! !Input Parameters:
+!    NONE
+!
+! !Output Parameters:
+!    NONE
+!
+! !Team-Unique Header:
+!
+!  Modules Used: (Parameters followed by "*" are defined by this routine)
+!                                 
+!  Input Files:
+!    NONE
+!
+! !Revision History:
+!  Version 1.0   October 1, 2013 - SCCR #nnn
+!                 Fred Rose, SSAI, Fred.G.Rose@nasa.gov
+!                 Thomas Caldwell, SSAI, Thomas.E.Caldwell@nasa.gov
+!                 Initial Version of Module
+!
+! !END
+!
+!*****************************************************************************
+!
+!
+INTEGER i,j
+
+DO j = 1,3 
+ DO i = 1,mgrd
+
+  IF( sah(i,j) >= 0     .AND. sah2(i,j) >= 0 .AND. &
+      sah(i,j) <= 10000 .AND. sah2(i,j) <= 10000) THEN 
+
+      sah(i,j) = sah(i,j)/2 + sah2(i,j)/2
+ 
+  ELSEIF ((sah(i,j) < 0  .OR.  sah(i,j) >10000 ) .AND. &
+          sah2(i,j) > 0  .AND. sah2(i,j) <= 10000 ) THEN
+ 
+  ENDIF
+
+  IF ( sah(i,j) < 0	) sah(i,j) = 0
+  IF ( sah(i,j) > 10000 ) sah(i,j) = 10000
+
+ ENDDO
+ENDDO
+
+DEALLOCATE ( sah2)
+ 
+END SUBROUTINE merge_terra_aqua_SAH
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!
+SUBROUTINE convert_sah_to_1x1deg
+!
+!*****************************************************************************
+!
+! !F90
+!
+! !Name:
+!   convert_sah_to_1x1deg
+!
+! !Description:
+!    Purpose - Convert sah data to 1x1 degree resolution
+!
+! 
+! !Input Parameters:
+!    NONE
+!
+! !Output Parameters:
+!    NONE
+!
+! !Team-Unique Header:
+!
+!  Modules Used: (Parameters followed by "*" are defined by this routine)
+!                                 
+!  Input Files:
+!    NONE
+!
+! !Revision History:
+!  Version 1.0   October 1, 2013 - SCCR #nnn
+!                 Fred Rose, SSAI, Fred.G.Rose@nasa.gov
+!                 Thomas Caldwell, SSAI, Thomas.E.Caldwell@nasa.gov
+!                 Initial Version of Module
+!
+! !END
+!
+!*****************************************************************************
+!
+!
+ REAL, PARAMETER :: u0diffuse =0.60 ,omit=-9999.
+ INTEGER i,ii,jj,k,ilon,ilat,nn,ineed
+
+ REAL dd,val,u1,u2,a1,a2
+ REAL*4 :: sahdif4(6,360,6,180), sahdif36(36)
+ REAL*4 :: sahdif(mgrd),snoice(mgrd),mu0(mgrd)
+
+ EQUIVALENCE ( sahdif  ,sahdif4 )
+
+ INTEGER igbpai4
+
+ ios=0
+
+ CALL get_igbp_for_sah
+! CALL sah_io 
+ CALL sah_io_ncdf 
+
+ sahdif = omit
+ TODIFFUSE : DO i=1,mgrd
+
+  a1 = sah(i,1) *0.0001   !! SAHOHS
+  u1 = 1.0 		 !! SAH stored At overhead sun.
+  u2 = sah(i,2) *0.0001   !! COS SZA At Retrieval..
+  a2 = dickensonx(a1,ddsah,u1,u2) ! a2 has been moved to wgtmean retrieval angle
+
+! ! Now move to diffuse angle 
+!  IF ( igbpa(i) > 12 .OR. igbpa(i) == 11 ) THEN 
+!   dd = d3(0, igbpa(i) ) ! ddef !!! 0=BB,1=Vis,2=NIR
+!   sahdif(i) = dickensonx(a2,dd,u2,u0diffuse) !!! TO DIFFUSE ALBEDO
+!  ELSE
+!   igbpai4 = igbpa(i)
+!   sahdif(i) = wangx(a2, igbpai4, u2,u0diffuse)!!! TO DIFFUSE ALBEDO
+!  ENDIF
+
+!  IN ED4 Move back to mu0 ( Mean cos(Sza) ) associated with mean ClearSky Albedo Retrieval
+  sahdif(i) = a2
+     mu0(i) = u2              !! SAH mean u0 parm=2
+  snoice(i) = sah(i,3)*0.0001 !! SAH snowice_fraction parm=3
+
+ ENDDO TODIFFUSE 
+ 
+ DEALLOCATE ( sah)
+ 
+ ADDSNOWICE: DO ineed=1,3 
+  if ( ineed == 2 ) sahdif = snoice
+  if ( ineed == 3 ) sahdif = mu0
+
+  DO ilon = 1,360 
+   DO ilat = 1,180
+     k=0
+     DO ii = 1,6 
+       DO jj = 1,6
+         k=k+1
+!!!      WE FLIP LATITUDE BACK TO CONVENTIONAL MAP ( 
+         sahdif36(k) = sahdif4(ii,ilon,jj,181-ilat)  
+       END DO
+     END DO
+    
+     nn = count( MASK = sahdif36 >= 0 .AND.  sahdif36<=1.0  )
+     val= 0
+        
+     IF ( nn > 0 ) THEN
+       val =  sum( sahdif36, MASK = sahdif36>0 .AND. sahdif36<=1.0  ) / float(nn)
+       IF ( ineed == 1 )  adiff1x1(ilon,ilat) = val 
+       IF ( ineed == 2 ) snoice1x1(ilon,ilat) = val
+       IF ( ineed == 3 )   mu0_1x1(ilon,ilat) = val
+       
+!  IF ( ineed == 2) print'(3I8,f10.3)',ilon,ilat,nn,val
+     ELSE
+       IF ( ineed == 1 )  adiff1x1(ilon,ilat) = omit   !!! ( 1,1 ) = center(89.5N, 0.5E)
+       IF ( ineed == 2 ) snoice1x1(ilon,ilat) = omit
+       IF ( ineed == 3 )   mu0_1x1(ilon,ilat) = omit
+     ENDIF
+   END DO
+  END DO
+
+ ENDDO ADDSNOWICE
+
+ DEALLOCATE ( igbpa )
+  
+END SUBROUTINE convert_sah_to_1x1deg
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!
+END MODULE SAHA
+
+

@@ -1,0 +1,72 @@
+
+PROGRAM SYN_Drv
+!
+!*****************************************************************************
+!
+! !F90
+!
+! !Name:
+!   SYN_Drv
+!
+! !Description:
+!    Routine ID - 7.2.0
+!
+!    Purpose - To drive processing of the CERES Synoptic SARB Subsystem.
+!
+!
+! !Input Parameters:
+!    NONE
+!
+! !Output Parameters:
+!    NONE
+!
+! !Team-Unique Header:
+!
+!  Modules Used:
+!    ceres_status   - (CERESlib) Params: Exit_Success
+!    Init_SS7_2     - (SynSARB)  Sbr. Start_2
+!    MSG            - (CERESlib) Sbr. FinUtl
+!    Reg_Drv        - (SynSARB)  Sbr. Reg_Proc
+!    SARB_QC_PARAMS - (SARBlib)  Structures: fqc_type
+!    Wrap_Up_SS7_2  - (SynSARB)  Sbr. Finish7_2
+!
+! !Revision History:
+!  Version 3.4  June 20, 2003 - SCCR #445  
+!               Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                Initial version of Release 3 code
+!
+! !END
+!
+!*****************************************************************************
+!
+!
+      USE ceres_status, ONLY: Exit_Success
+      USE Init7_2, ONLY: Start7_2
+      USE MSG, ONLY: FinUtl
+      USE Reg_Drv, ONLY: Reg_Proc
+      USE SARB_QC_Params, ONLY: fqc_type
+      USE Wrap_Up_SS7_2, ONLY: Finish7_2 
+!      
+!
+!
+      IMPLICIT NONE
+!
+      TYPE (fqc_type) :: fqc
+!
+! *** Initialize processing  
+      CALL Start7_2(fqc)                                              ! O
+!
+!
+! *** Process each record of footprint data
+      CALL Reg_Proc (fqc)                                              ! O
+!
+! 
+! *** Finalize processing  
+      CALL Finish7_2 (fqc)                                             ! I
+!
+!
+! *** Complete exit
+      CALL FinUtl (Exit_Success)                                       ! I
+!
+!
+END PROGRAM SYN_Drv

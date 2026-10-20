@@ -1,0 +1,409 @@
+MODULE SYNI_OVERLAP
+implicit none
+logical,save:: BTinit = .false.
+
+ TYPE  SYNI_OVERLAP_TYPE 
+  sequence
+  real cfi(0:4)		!INPUT::! Clr+ 4 Space viewed Cloud Fractions 
+  real ptop(4)		!INPUT::! 4 Cloud Top Pressures
+  real pbot(4)		!INPUT::! 4 Cloud Bottom Pressures
+  real tau(4,2)         !INPUT::!4 spacview tau ( Log,Lin)  
+  
+  real Fcnd(0:15)	!Output ! Clr + 15 cloud overlapp fractions
+  integer IPcnd(0:4)	 !Output ! Index to 15 cases of Clear + 4 most probable overlap cases
+  logical BT(0:15,4)     !Output ! T/F matrix of cloud layer existence 
+  integer novl(15)       !Output ! # of overlap layers in condition
+  real oprf(15,4,2)	!Output ! Cloud Optical partitioning to overlap layers ( Log ,Lin)
+  integer it(15)          !Output Top(1-4) for overlap case 
+  integer isp(4)
+  real thr ! Method 3 Tau Threshold
+  real tmp(0:15)
+  integer nnz
+ end TYPE SYNI_OVERLAP_TYPE 
+
+type (SYNI_OVERLAP_TYPE) so 
+
+
+ CONTAINS
+!====================================================================================
+subroutine overlap_four_syni
+real*8 c1,c2,c3,c4 ,one,sum1,sum2
+integer i,j ,k,nnz ,itop
+real stau(2)
+real tau_below
+integer nnz1,nnz2,nnz3,nnz4
+real ss(4) 
+logical ifirst(4)
+!----------------------------------------------------------------------------------
+if ( .not. BTinit ) then
+!Overlap Cases T=CLD  F=nocld
+ do j=1,4
+ do i=1,15
+ so%BT(I,J)=.not. btest(i-1,4-j)
+ !print*,i,j,so%BT(i,J)
+ enddo
+ so%BT(0,J)=.not. btest(15,4-j)
+ enddo
+ BTinit=.true.
+! so%thr =0.0001
+! so%thr =1.4 ! Method 3 Tau Threshold pre 20130927
+  so%thr =6.0 ! Method 3 Tau Threshold  20130927
+! so%thr =512 ! This should turn off Cloud Overlap (20140618)
+
+endif
+
+
+!------------------------------------------------------------------------------------
+! No-OVERLAP: HG-2025.07.17
+!
+  c1 = dble(so%cfi(1))
+  one = 1.0d0
+
+  if (sum(so%cfi(1:4)) == 0.00) then
+    ! CLEAR SKY CASE
+    so%Fcnd(0) = 1.0
+    so%Fcnd(1:15) = 0.0
+    so%IPcnd(0) = 0
+    so%IPcnd(1:4) = -1  ! comment out, no effect, keep for safety
+    so%nnz = 0
+    so%BT = .false.
+    so%oprf = 0.0
+    so%novl = 0
+    so%it = 0
+  else
+    ! NO-OVERLAP: only clear and single-cloud cases
+
+    ! Limit cloud fractions to < 1.0
+    where (so%cfi(1:4) >= 1.0) so%cfi(1:4) = 0.99999
+    if (sum(so%cfi(1:4)) >= 1.00) so%cfi(1:4) = 0.99999 * so%cfi(1:4) / sum(so%cfi(1:4))
+
+    ! Initialize outputs
+    so%Fcnd = 0.0
+    so%BT = .false.
+    so%oprf = 0.0
+    so%novl = 0
+    so%it = 0
+    so%IPcnd = -1   ! comment out, no effect, keep for safety
+    so%nnz = 4
+
+    ! Clear sky (case 0)
+    so%Fcnd(0) = 1.0 - sum(so%cfi(1:4))
+    so%IPcnd(0) = 0
+
+    ! Single cloud cases (cases 1 to 4)
+    do i = 1, 4
+      so%Fcnd(i) = so%cfi(i)
+      so%BT(i, :) = .false.
+      so%BT(i, i) = .true.
+      so%novl(i) = 1
+      so%it(i) = i
+      so%oprf(i, i, 1:2) = so%tau(i, 1:2)
+      so%IPcnd(i) = i
+    end do
+
+    ! All other cases remain zero/false
+
+  end if
+
+
+end subroutine overlap_four_syni
+!=============================================================================
+SUBROUTINE qsortd(x,ind,n)
+ 
+! Code converted using TO_F90 by Alan Miller
+! Date: 2002-12-18  Time: 11:55:47
+
+IMPLICIT NONE
+!INTEGER, PARAMETER  :: dp = SELECTED_REAL_KIND(12, 60)
+
+!REAL (dp), INTENT(IN)  :: x(:)
+REAL , INTENT(IN)  :: x(n)
+INTEGER, INTENT(OUT)   :: ind(n)
+INTEGER, INTENT(IN)    :: n
+
+!***************************************************************************
+
+!                                                         ROBERT RENKA
+!                                                 OAK RIDGE NATL. LAB.
+
+!   THIS SUBROUTINE USES AN ORDER N*LOG(N) QUICK SORT TO SORT A REAL (dp)
+! ARRAY X INTO INCREASING ORDER.  THE ALGORITHM IS AS FOLLOWS.  IND IS
+! INITIALIZED TO THE ORDERED SEQUENCE OF INDICES 1,...,N, AND ALL INTERCHANGES
+! ARE APPLIED TO IND.  X IS DIVIDED INTO TWO PORTIONS BY PICKING A CENTRAL
+! ELEMENT T.  THE FIRST AND LAST ELEMENTS ARE COMPARED WITH T, AND
+! INTERCHANGES ARE APPLIED AS NECESSARY SO THAT THE THREE VALUES ARE IN
+! ASCENDING ORDER.  INTERCHANGES ARE THEN APPLIED SO THAT ALL ELEMENTS
+! GREATER THAN T ARE IN THE UPPER PORTION OF THE ARRAY AND ALL ELEMENTS
+! LESS THAN T ARE IN THE LOWER PORTION.  THE UPPER AND LOWER INDICES OF ONE
+! OF THE PORTIONS ARE SAVED IN LOCAL ARRAYS, AND THE PROCESS IS REPEATED
+! ITERATIVELY ON THE OTHER PORTION.  WHEN A PORTION IS COMPLETELY SORTED,
+! THE PROCESS BEGINS AGAIN BY RETRIEVING THE INDICES BOUNDING ANOTHER
+! UNSORTED PORTION.
+
+! INPUT PARAMETERS -   N - LENGTH OF THE ARRAY X.
+
+!                      X - VECTOR OF LENGTH N TO BE SORTED.
+
+!                    IND - VECTOR OF LENGTH >= N.
+
+! N AND X ARE NOT ALTERED BY THIS ROUTINE.
+
+! OUTPUT PARAMETER - IND - SEQUENCE OF INDICES 1,...,N PERMUTED IN THE SAME
+!                          FASHION AS X WOULD BE.  THUS, THE ORDERING ON
+!                          X IS DEFINED BY Y(I) = X(IND(I)).
+
+!*********************************************************************
+
+! NOTE -- IU AND IL MUST BE DIMENSIONED >= LOG(N) WHERE LOG HAS BASE 2.
+
+!*********************************************************************
+
+INTEGER   :: iu(21), il(21)
+INTEGER   :: m, i, j, k, l, ij, it, itt, indx
+REAL      :: r
+!REAL (dp) :: t
+REAL  :: t
+! LOCAL PARAMETERS -
+
+! IU,IL =  TEMPORARY STORAGE FOR THE UPPER AND LOWER
+!            INDICES OF PORTIONS OF THE ARRAY X
+! M =      INDEX FOR IU AND IL
+! I,J =    LOWER AND UPPER INDICES OF A PORTION OF X
+! K,L =    INDICES IN THE RANGE I,...,J
+! IJ =     RANDOMLY CHOSEN INDEX BETWEEN I AND J
+! IT,ITT = TEMPORARY STORAGE FOR INTERCHANGES IN IND
+! INDX =   TEMPORARY INDEX FOR X
+! R =      PSEUDO RANDOM NUMBER FOR GENERATING IJ
+! T =      CENTRAL ELEMENT OF X
+
+IF (n <= 0) RETURN
+
+! INITIALIZE IND, M, I, J, AND R
+
+DO  i = 1, n
+  ind(i) = i
+END DO
+m = 1
+i = 1
+j = n
+r = .375
+
+! TOP OF LOOP
+
+20 IF (i >= j) GO TO 70
+IF (r <= .5898437) THEN
+  r = r + .0390625
+ELSE
+  r = r - .21875
+END IF
+
+! INITIALIZE K
+
+30 k = i
+
+! SELECT A CENTRAL ELEMENT OF X AND SAVE IT IN T
+
+ij = i + r*(j-i)
+it = ind(ij)
+t = x(it)
+
+! IF THE FIRST ELEMENT OF THE ARRAY IS GREATER THAN T,
+!   INTERCHANGE IT WITH T
+
+indx = ind(i)
+IF (x(indx) > t) THEN
+  ind(ij) = indx
+  ind(i) = it
+  it = indx
+  t = x(it)
+END IF
+
+! INITIALIZE L
+
+l = j
+
+! IF THE LAST ELEMENT OF THE ARRAY IS LESS THAN T,
+!   INTERCHANGE IT WITH T
+
+indx = ind(j)
+IF (x(indx) >= t) GO TO 50
+ind(ij) = indx
+ind(j) = it
+it = indx
+t = x(it)
+
+! IF THE FIRST ELEMENT OF THE ARRAY IS GREATER THAN T,
+!   INTERCHANGE IT WITH T
+
+indx = ind(i)
+IF (x(indx) <= t) GO TO 50
+ind(ij) = indx
+ind(i) = it
+it = indx
+t = x(it)
+GO TO 50
+
+! INTERCHANGE ELEMENTS K AND L
+
+40 itt = ind(l)
+ind(l) = ind(k)
+ind(k) = itt
+
+! FIND AN ELEMENT IN THE UPPER PART OF THE ARRAY WHICH IS
+!   NOT LARGER THAN T
+
+50 l = l - 1
+indx = ind(l)
+IF (x(indx) > t) GO TO 50
+
+! FIND AN ELEMENT IN THE LOWER PART OF THE ARRAY WHCIH IS NOT SMALLER THAN T
+
+60 k = k + 1
+indx = ind(k)
+IF (x(indx) < t) GO TO 60
+
+! IF K <= L, INTERCHANGE ELEMENTS K AND L
+
+IF (k <= l) GO TO 40
+
+! SAVE THE UPPER AND LOWER SUBSCRIPTS OF THE PORTION OF THE
+!   ARRAY YET TO BE SORTED
+
+IF (l-i > j-k) THEN
+  il(m) = i
+  iu(m) = l
+  i = k
+  m = m + 1
+  GO TO 80
+END IF
+
+il(m) = k
+iu(m) = j
+j = l
+m = m + 1
+GO TO 80
+
+! BEGIN AGAIN ON ANOTHER UNSORTED PORTION OF THE ARRAY
+
+70 m = m - 1
+IF (m == 0) RETURN
+i = il(m)
+j = iu(m)
+
+80 IF (j-i >= 11) GO TO 30
+IF (i == 1) GO TO 20
+i = i - 1
+
+! SORT ELEMENTS I+1,...,J.  NOTE THAT 1 <= I < J AND J-I < 11.
+
+90 i = i + 1
+IF (i == j) GO TO 70
+indx = ind(i+1)
+t = x(indx)
+it = indx
+indx = ind(i)
+IF (x(indx) <= t) GO TO 90
+k = i
+
+100 ind(k+1) = ind(k)
+k = k - 1
+indx = ind(k)
+IF (t < x(indx)) GO TO 100
+
+ind(k+1) = it
+GO TO 90
+END SUBROUTINE qsortd
+
+END MODULE SYNI_OVERLAP 
+!=====================================================================================
+subroutine test_overlap_four
+USE SYNI_OVERLAP, only: so ,overlap_four_syni
+implicit none
+ character*10 otag(0:15)
+integer i,j,k
+otag(1:15) = ' Overlap'
+otag(0) = ' *CLEAR*'
+otag(8) = ''
+otag(12) = ''
+otag(14) = ''
+otag(15) = ''
+
+so%ptop(1)= 200.
+
+so%ptop(2)= 500.
+so%ptop(3)= 700.
+so%ptop(4)= 850.
+
+
+
+so%Tau(1,1) = 1
+so%Tau(2,1) = 4
+so%Tau(3,1) = 2
+so%Tau(4,1) = 3
+
+so%Tau(1,2) = 50
+so%Tau(2,2) = 30
+so%Tau(3,2) = 10
+so%Tau(4,2) = 5
+
+
+so%pbot=so%ptop+50.
+
+do j=50,50,5
+!Input space view cloud fractions 
+ so%cfi(1)=0.20
+ so%cfi(2)=0.15
+ so%cfi(3)=j*0.01 !0.10
+ so%cfi(4)=0.05 
+ so%cfi(0)=1.0-sum(so%cfi(1:4))
+ 
+if ( so%cfi(0) < 0 ) then 
+print*,'bad clr'
+stop
+endif
+ call overlap_four_syni
+ 
+!-------------------------------------------------------------------------------------
+!Print results
+ !     go to 20
+ print*,''
+ print'(I6,3x,8I6,3x,4I6,3x,2I6,3x,I6,3x,I6)',(i,i=0,15)
+ print'(f6.3,3x,8f6.3,3x,4f6.3,3x,2f6.3,3x,f6.3)',so%Fcnd(0:15)
+ print*,''
+ do i=1,4
+ print'(L6,3x,8L6,3x,4L6,3x,2L6,3x,L6,3x,L6)',so%BT(0:15,i)
+ enddo
+  
+ print*,''
+ print'(a48,f8.4,3x,4f8.4)','Input Space View Cloud Fractions(0:4)::',so%cfi(0:4)
+ print'(a48,f8.4,3x,4f8.4,f10.5)','Space View Cloud Fractions sumcheck so%Fcnd(0:15)::', &
+ so%Fcnd(0),sum(so%Fcnd(1:8)),sum(so%Fcnd(9:12)),sum(so%Fcnd(13:14)),sum(so%Fcnd(15:15))
+ print*,'Sumcheck: = 1.0??? ::',sum(so%Fcnd(0:15))
+ print*,'Overlap LWP partitioning 15case:'
+ print'(15f9.3)',so%oprf
+
+10 continue 
+ print*,''
+ print*,'Most Probable Cases ...'
+ print*,'     I  Case#    Case_Frac SpaceViewFrac  Difference   OverlapProfile' 
+ do i=0,4
+ if ( so%cfi(i) > 0 ) &
+ print'(2I7,3f13.3,4L3,a10)',i,so%IPcnd(i),so%Fcnd(so%IPcnd(i)) , so%cfi(i) ,so%Fcnd(so%IPcnd(i))-so%cfi(i) &
+       ,so%BT(so%IPcnd(i),1:4),otag(so%IPcnd(i))
+ enddo
+
+ print*,'Overlap LWP partitioning 4 case:'
+! print'(4f8.1)',so%oprf(so%IPcnd(1:4),1:4,1:2)
+
+ do k = 1,2
+  print*,'K:',k
+  do i=1,4 
+   print'(i4,F8.1,a1,4f12.4)' ,i,so%tau(i,k),':' ,so%oprf(so%IPcnd(i),1:4,k)
+  enddo
+ enddo
+20 continue
+enddo !!!
+
+ end subroutine test_overlap_four
+
+! call  test_overlap_four ;end

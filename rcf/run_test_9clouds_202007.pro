@@ -1,0 +1,88 @@
+pro run_test_9clouds_202007
+
+
+  ;spawn, 'source source-this-one.csh' ;!!!!! do this under IDL
+
+  ;wait, 3600*3
+  
+  ;for ilat=161, 180 do begin
+  for ilat=1, 180 do Begin
+     
+;for ilat=119 140 do begin
+;for ilat=136, 180 do begin
+;for ilat=46, 90 do begin
+
+  
+   print, 'ilat, ',  ilat
+   
+one_lat=STRING(ilat, FORMAT='(I3.3)')
+
+;spawn, './cleanup_7.2.1P2.pl CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z'+one_lat
+spawn, './CER7.2.1P2_pcfgen.pl -date 202007Z'+one_lat
+
+
+
+;pcf_file='/homedir/ghong/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.202004Z'+one_lat
+;pcf_file_out='/homedir/ghong/sarb/CER7.2.1P2/rcf/pcf/temp/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z'+one_lat
+
+;nnn=numlines(pcf_file)
+;
+;lines=strarr(nnn)
+
+;close, 1
+;openr, 1, pcf_file
+;readf, 1, lines
+;close, 1
+
+;stop
+
+;print, lines(30)
+
+; 4_9_4
+;lines(30)='12|CER_TSIB_Terra-Aqua-MODIS_Edition4A_401405.201304Z'+one_lat+'|/homedir/ghong/tmp/SARB/tsi/04_09_04||||1'
+
+;; 4_9_9
+;lines(30)='12|CER_TSIB_Aqua-MODIS_Alpha4-Ed5_000000.202004Z'+one_lat+'|/CERES/sarb/hong/temp/sarb/tsi_test/09_09_202004||||1'
+
+;stop
+
+
+;close, 2
+;openw, 2, pcf_file
+;for iii=0, nnn-1 do begin
+;   printf, 2, lines(iii)
+;endfor
+;close, 2
+
+;if (ilat mod 30) eq 0 then begin
+;   wait, 3600*3
+;endif
+
+
+openw, 3, 'mon202007_'+one_lat+'.csh'
+printf, 3, '#!/bin/csh'
+printf, 3, '#$ -S /bin/csh'
+printf, 3, '#$ -l arch=lx-amd64'
+printf, 3, '#$ -q scf.q'
+printf, 3, '#$ -o /CERES/clouds/workArea/hong/temp/sarb/data/output.log'
+printf, 3, '#$ -e /CERES/clouds/workArea/hong/temp/sarb/data/error.log'
+printf, 3, ' '
+printf, 3, ' '
+printf, 3, ' '
+
+printf, 3, 'set workdir=/homedir/ghong/sarb/CER7.2.1P2/rcf/'
+printf, 3, 'cd ${workdir}'
+printf, 3, '${workdir}run_CER7.2.1P2.pl CER7.2.1P2_PCF_Aqua-MODIS_Alpha4-Ed5_000000.202007Z'+one_lat
+printf, 3, ' '
+close, 3
+
+spawn, 'qsub  mon202007_'+one_lat+'.csh'
+
+wait, 3
+;stop
+
+endfor
+
+
+
+  end

@@ -1,0 +1,48 @@
+IDL Version 8.3 (linux x86_64 m64). (c) 2013, Exelis Visual Information Solutions, Inc.
+Installation number: 9074-24.
+Licensed for use by: ECS/EDF
+
+
+pro run_20130416_script
+                       ^
+% Programs can't be compiled from single statement mode.
+  At: /homedir/ghong/sarb/CER7.2.1P2/rcf/run_20130416_script.pro, Line 3
+ilat,      181
+source-this-one.csh: No such file or directory.
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z181': No such file or directory
+rm: cannot remove '/CERES/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z181.log': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z181': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/SYNI/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_SYNI_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z181.met': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z181': No such file or directory
+rm: cannot remove '/CERES/sarb/data/CERES/KQCR/Terra-Aqua-MODIS_Edition4-SSIT/2013/04/CER_KQCR_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z181.met': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogStatus_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z181': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogReport_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z181': No such file or directory
+rm: cannot remove '/CERES/sarb/runlogs/CER7.2.1P2/CER7.2.1P2_LogUser_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z181': No such file or directory
+rm: cannot remove '/CERES/sarb/data/scr/CER_SARBCRH_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z181': No such file or directory
+source-this-one.csh: No such file or directory.
+PCF Failure
+Exit code = 203
+Please stage missing file(s) if available
+Check log file for more information:
+/homedir/ghong/sarb/CER7.2.1P2/rcf/pcf/CER7.2.1P2_PCF_Terra-Aqua-MODIS_Edition4-SSIT_999999.201304Z181.log
+Exiting with code 203
+source-this-one.csh: No such file or directory.
+Your job 1139038 ("day20130416_181.csh") has been submitted
+ilat,      181
+Submitted 10 jobs, sleeping 5 hours...
+
+    END
+     ^
+% Syntax error.
+  At: /homedir/ghong/sarb/CER7.2.1P2/rcf/run_20130416_script.pro, Line 68
+
+ endfor
+  ^
+% Syntax error.
+  At: /homedir/ghong/sarb/CER7.2.1P2/rcf/run_20130416_script.pro, Line 72
+% Stop encountered: $MAIN$          
+% Prematurely closing batch file: /homedir/ghong/sarb/CER7.2.1P2/rcf/run_201304
+  16_script.pro.
+% Unable to read/modify terminal characteristics.
+  Input/output error
+IDL> 

@@ -1,0 +1,940 @@
+MODULE TuneDrive
+!
+!*****************************************************************************
+!
+! !F90
+!
+! !Name
+!   TuneDrive
+!
+! !Description:
+!   Routine ID -
+!
+!   Purpose - To provide a module of routines to drive the SARB tuning process
+!
+!
+! !Input Parameters:
+!    NONE
+!
+! !Output Parameters:
+!    NONE
+!
+! !Team-Unique Header:
+!
+!  Modules Used:
+!    Constrain_Params   - (SARBlib) Used by Sbr. CompressInit, CompressLoad,
+!                                                Tune_Drv, TunedAer,
+!                                                TunedClouds, UnCompressClds
+!    Convert_OptDepth   - (SARBlib) Used by Sbr. CompressLoad, TunedClouds,
+!                                                UnCompressClds
+!    FL_IO_Params       - (SARBlib) Used by Sbr. CompressInit, CompressLoad,
+!                                                Tune_Drv, TunedAer,
+!                                                TunedClouds,
+!                                                TunedSfcAlb, UnCompressClds
+!    Profile_Params     - (SARBlib) Used by Sbr. CompressInit, CompressLoad,
+!                                                Tune_Drv, TunedClouds, 
+!                                                TunedSfcAlb, UnCompressClds
+!    SARB_Error_Process - (SARBlib) Used by Sbr. TunedAer
+!    SARBInput_Params   - (SARBlib) Used by Sbr. TunedAer
+!    SARB_QC_Params     - (SARBlib) Used by Sbr. Tune_Drv
+!    SARB_General       - (SARBlib) Used by Sbr. TunedClouds  
+!    SARB_Var           - (SARBlib) Used by Sbr. CompressInit, CompressLoad, 
+!                                                istat_tune, Tune_Drv,  
+!                                                TunedClouds, TunedSfcAlb,
+!                                                TunedWV, UnCompressClds
+!    Tune_Code          - (SARBlib) Used by Sbr. Tune_Drv
+!
+!  Internal Routines:
+!    CompressLoad   - Defines values for the compressed cloud property arrays   
+!                     used by the SARB constrainment process
+!    CompressInit   - Initializes values for the compressed cloud property 
+!                     arrays used and output by the SARB constrainment
+!                     process to zero
+!    TunedAer       - Computes ratio to be applied to aerosol profile values
+!                     input to the next pass through the radiative transfer 
+!                     model
+!    TunedClouds    - Drives adjustment of the cloud heights
+!    Tune_Drv       - Drives tuning process
+!    TunedSfcAlb    - Defines surface albedo values input to the next pass 
+!                     through the radiative transfer model
+!    TunedWV        - Computes ratios to be applied to humidity profile values
+!                     input to the next pass through the radiative transfer 
+!                     model
+!    UnCompressClds - Uncompresses the cloud property arrays returned from the
+!                     SARB Constrainment process
+!
+! !Revision History:
+!  Version 4.0   August 18, 2006 - SCCR #634  
+!                Thomas Caldwell, SAIC, t.e.caldwell@larc.nasa.gov
+!                  Modified Sbr. TunedSfcAlb
+!  Version 3.5   August 1, 2003 - SCCR #458  
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                  1. Modified Sbr. CompressLoad
+!  Version 3.4   December 20, 2002 - SCCR #408
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                  1. Modified Sbr. Tune_Drv
+!                  2. Modified Sbr. TunedClouds
+!                  3. Added Sbr. CompressInit 
+!                  4. Added Sbr. CompressLoad
+!                  5. Added Sbr. TunedAer
+!                  6. Added Sbr. TunedPW
+!                  7. Added Sbr. TunedSfcAlb
+!                  8. Added Sbr. UnCompressClds
+!  Version 3.0   March 9, 2001 - SCCR #246  
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                   Modified Sbr. Tune_Drv
+!  Version 2.4   March 15, 1999 - SCCR #132
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                  Modified Sbr. Tune_Drv
+!  Version 2.3   June 16, 1998 - SCCR #89
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                Shalini Gupta, SAIC, s.gupta@larc.nasa.gov
+!                  Modified Sbr. Tune_Drv
+!  Version 2.0   November 21, 1997
+!                Shalini Gupta, SAIC, s.gupta@larc.nasa.gov
+!                Initial Version of Release 2 Code 
+!  Version 1.0   March 21, 1996
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                Initial Version of Code
+!
+! !END
+!
+!*****************************************************************************
+!
+!
+     USE Constrain_Params
+     USE Convert_OptDepth
+     USE FL_IO_Params
+
+     USE nclouds_params  ! HG-2025.0722
+     
+     USE Profile_Params
+     USE SARB_Error_Process
+     USE SARB_General      
+     USE SARBInput_Params
+     USE SARB_QC_Params
+     USE SARB_Var
+     USE Tune_Code
+!
+     IMPLICIT NONE
+!
+  CONTAINS
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!
+      SUBROUTINE Tune_Drv (P1, P2,                                     & ! I
+                                   BadFlag)                              ! O
+! 
+! 
+!*****************************************************************************
+!
+! !F90
+!
+! !Name
+!    Tune_Drv
+!
+! !Description:
+!    Routine ID -
+!
+!    Purpose - To drive the SARB tuning process
+!
+!
+! !Input Parameters:
+!    P1 - Index to the previous pass through the Fu-Liou model
+!    P2 - Index to the upcoming pass through the Fu-Liou model
+!
+! !Output Parameters:
+!    BadFlag - Flag indicating whether or not the tuning process was successful
+!                = 0; Tuning process successful.
+!                > 0; Tuning process unsuccessful. Value of BadFlag indicates
+!                     cause of failure. For interpretation of value,
+!                     see Sbr. Tune_Error_Process in Module SARB_Error_Process
+!   
+! !Team-Unique Header:
+!
+!  Modules Used:
+!    Constrain_Params - (SARBlib) Parameters: cfs, clwpi, CompTOA_SW, 
+!                                             CompTOA_LW, CompTOA_WN,
+!                                             CompTotLWrad, CompWNrad_SatEm,
+!                                             cpz, ctemp, t_cfs, t_ctemp, 
+!                                             t_cwpath
+!    FL_IO_Params     - (SARBlib) Parameters: AerOptDepth, pts, ur, u0 
+!    Profile_Params   - (SARBlib) Parameters: ClrIdx, MaxLev_Cld
+!    SARBInput_Params - (SARBlib) Parameters: Daytime
+!    SARB_QC_Params   - (SARBlib) Parameters: ICnt_TuneErr
+!    SARB_Var         - (SARBlib) Parameters: bbout, clwp, cw, DayNite, EffTemp,  
+!                                             igpb_sid, ipz, itp_scene, 
+!                                             LW_TOA_Flux, LW_TOA_UnfiltRad,
+!                                             Part_Rad, SW_TOA_Flux, t_clwp, 
+!                                             uth, WN_TOA_Flux, 
+!                                             WN_TOA_FiltRad, wv
+!    Tune_Code        - (SARBlib) Sbr. dt_tune_mem
+!
+!  Internal Routines Called:
+!    CompressLoad
+!    CompressInit
+!    TunedAer
+!    TunedSfcAlb
+!    TunedWV
+!    UnCompressClds
+!
+!  Complex Algorithm Description:
+!    1. Only properties for defined cloud height categories (non-default) 
+!       are passed to the tuning process.  Cloud property arrays are
+!       "compressed" so that they only contain non-default values.
+!    2. The tuning algorithm adjusts the cloud temperatures.  Upon a 
+!       successful return from the tuning algorithm, the adjusted 
+!       temperatures must be converted to cloud heights (hPa).
+!        
+! !Revision History:
+!  Version 3.3   December 20, 2002 - SCCR #408
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                 1. Broken down into multiple routines.  Code moved to 
+!                    Sbrs. CompressInit, CompressLoad, TunedAer, TunedPW,
+!                    TunedSfcAlb, and UnCompressClds.
+!                 2. Use of new parameter modules Constrain_Params and 
+!                    FL_IO_Params.
+!  Version 3.0   March 9, 2001 - SCCR #246  
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                 1. Commented out call to Sbr. Tune_Error_Process in an effort
+!                    to have log report files of a more reasonable size.  This
+!                    information in the log report files is not being used at
+!                    this time.
+!  Version 2.4   March 15, 1999 - SCCR #132
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                 1. Updated call to constrainment algorithm for the inclusion
+!                    of window channel fluxes and constrainment of the upper
+!                    tropospheric relative humidity
+!                 2. Modified humidity profile adjustment ratio to separate the 
+!                    upper and lower troposphere--variable PW_Ratio replaced 
+!                    with PW_Ratio_LowTrp and PW_Ratio_UpTrop
+!                 3. Moved logic to increment ICnt_NumPass counters (QC report) 
+!                    to Sbr. InitTune_Drv                    
+!  Version 2.3   June 16, 1998 - SCCR #89
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                 1. Rearranged calling argument list order so that the
+!                    input parameter appears before the output parameters.
+!  Version 2.0   November 21, 1997
+!                Shalini Gupta, SAIC, s.gupta@larc.nasa.gov
+!                Initial Version of Release 2 Code 
+!  Version 1.0   March 21, 1996
+!                Fred Rose, AS&M, f.g.rose@larc.nasa.gov
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                Initial Version of Code
+!
+! !END
+!
+!*****************************************************************************
+!
+!
+      INTEGER, INTENT (OUT) :: BadFlag
+      INTEGER, INTENT (IN)  :: P1
+      INTEGER, INTENT (IN)  :: P2
+!
+!
+! *** Initialize
+!
+      BadFlag = 0
+!
+      IF ( SW_TOA_Flux == 0.0 .AND. DayNite == Daytime) THEN
+       SW_TOA_Flux = FL_TOA_SW ( P1, TotSky)
+      ENDIF
+!
+      CALL CompressInit (P2)                                              ! I
+!
+      CALL CompressLoad (P1, P2)                                          ! I
+!
+!
+! *** Constrain
+!
+      CALL dt_tune_mem ( nclouds, SW_TOA_Flux, LW_TOA_Flux,           & ! I
+                         WN_TOA_Flux, LW_TOA_UnfiltRad, WN_TOA_FiltRad,  & ! I
+                         CompTOA_SW, CompTOA_LW, CompTOA_WN,             & ! I
+                         CompTotLWrad, CompWNrad_SatEm, cfs,             & ! I
+                         pts ( P1), wv ( P1),                            & ! I
+                         bbout ( P1), clwpi, ctemp,  AerOptDepth ( P1),  & ! I
+                         uth ( P1), cpz, u0, itp_scene, igbp_sid, ur,    & ! I
+                         t_cfs, pts ( P2), wv ( P2), bbout ( P2),        & ! O 
+                         t_cwpath,  t_ctemp,                             & ! O
+                         AerOptDepth ( P2), uth ( P2),                   & ! O
+                                                istat_tune, BadFlag)       ! O
+!
+!
+      IF ( BadFlag == 0) THEN
+!     *** Tuning process indicates initial successful. Uncompress cloud  
+!         property arrays, compute aerosol optical depth, surface albedo, and 
+!         water vapor adjustment ratios.
+!
+          CALL UnCompressClds ( P1, P2)                                    ! I
+!
+          CALL TunedWV (P1, P2)                                            ! I
+!
+          CALL TunedSfcAlb (P1, P2)                                        ! I
+!
+          CALL TunedAer (P1, P2,                                         & ! I
+                                 BadFlag)                                  ! I/O
+!
+      END IF
+!
+      IF ( BadFlag /= 0) THEN
+!     *** Tuning process unsuccessful.  Increment counters for QC report 
+!         and issue diagnostic message.
+!
+          ICnt_TuneErr ( BadFlag) = ICnt_TuneErr ( BadFlag) + 1
+!
+      END IF
+!
+!
+      END SUBROUTINE Tune_Drv
+!
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!
+      SUBROUTINE CompressInit ( P2)                                    ! I
+! 
+!*****************************************************************************
+!
+! !F90
+!
+! !Name
+!    CompressInit
+!
+! !Description:
+!    Routine ID -
+!
+!    Purpose - Initializes values for the compressed cloud property arrays 
+!              used and output by the SARB constrainment process to zero.
+!
+!
+! !Input Parameters:
+!    P2 - Index to the upcoming pass through the Fu-Liou model
+!
+! !Output Parameters:
+!    NONE
+!
+! !Team-Unique Header
+!
+!  Modules Used:
+!   Constrain_Params - (SARBlib) Parameters: cfs, clwp, clwpi, cpz, ctemp,
+!                                            CompTOA_SW, CompTOA_LW, CompTOA_WN,
+!                                            CompTotLWrad, CompWNrad_SatEm
+!   FL_IO_Params     - (SARBlib) Parameters: Default_REAL4_FL, IW_content, 
+!                                            LW_content
+!   Profile_Params   - (SARBlib) Parameters: MaxLev_Cld
+!   SARB_Var         - (SARBlib) Parameters: CldBot, CldTop, EffTemp, 
+!                                            OptDepth_mn
+!
+! !Revision History:
+!  Version 3.3   December 20, 2002 - SCCR #408  
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!
+! !END
+! 
+!*****************************************************************************
+!
+!
+      INTEGER, INTENT (IN)  :: P2
+!
+      cfs ( 0:nclouds)                = 0.0
+      clwp ( 1:nclouds)               = 0.0
+      clwpi ( 1:nclouds)              = 0.0
+      cpz ( 1:nclouds)                = 0.0
+      ctemp ( 1:nclouds)              = 0.0
+      CompTOA_LW ( 0:nclouds)         = 0.0
+      CompTOA_SW ( 0:nclouds)         = 0.0
+      CompTOA_WN ( 0:nclouds)         = 0.0
+      CompTotLWrad ( 0:nclouds)       = 0.0
+      CompWNrad_SatEm ( 0:nclouds)    = 0.0
+      CF ( P2:P2, 0:nclouds)          = 0.0
+      EffTemp ( P2:P2, 1:nclouds)     = 0.0
+      OptDepth_mn ( P2:P2, 1:nclouds) = 0.0
+      CldTop ( P2:P2, 1:nclouds)      = Default_REAL4_FL
+      CldBot ( P2:P2, 1:nclouds)      = Default_REAL4_FL
+      IW_content ( P2:P2, 1:nclouds)  = 0.0
+      LW_content ( P2:P2, 1:nclouds)  = 0.0
+!
+!
+      END SUBROUTINE CompressInit
+!
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!
+      SUBROUTINE CompressLoad ( P1, P2)                                   ! I
+!
+! 
+!*****************************************************************************
+!
+! !F90
+!
+! !Name
+!    CompressLoad
+!
+! !Description:
+!    Routine ID -
+!
+!    Purpose - Defines values for the compressed cloud property arrays used  
+!              by the SARB constrainment process
+!
+!
+! !Input Parameters:
+!    P1 - Index to the previous pass through the Fu-Liou model
+!    P2 - Index to the upcoming pass through the Fu-Liou model
+!
+! !Output Parameters:
+!    NONE
+!
+! !Team-Unique Header
+!
+!  Modules Used:
+!   Constrain_Params - (SARBlib) Params: BaseRad, cfs, clwp, clwpi, cpz, 
+!                                        ctemp, CompTOA_SW, CompTOA_LW, 
+!                                        CompTOA_WN, CompTotLWrad, 
+!                                        CompWNrad_SatEm, TauNeg, TauPos
+!   Convert_OptDepth - (SARBlib) Func. tau_wp
+!   FL_IO_Params     - (SARBlib) Params: CF, Default_REAL4_FL, FL_TOA_LW,  
+!                                        FL_TOA_SW, FL_TOA_WN, 
+!                                        LW_TOA_UnfiltRad, TotLWrad, 
+!                                        WN_TOA_FiltRad, WNrad_SatEm
+!   Profile_Params   - (SARBlib) Params: Cld_Id1, ClrIdx, MaxLev_Cld, TotSky
+!   SARB_Var         - (SARBlib) Params: cw, EffTemp, ipz, PartRad
+!
+!  Algorithm Description:
+!    To optimize the matrix operations within the SARB constrainment algorithm,
+!    the arrays for cloud properties are compressed, i.e., the compressed
+!    array elements are filled first with the non-zero values.
+!
+! !Revision History:
+!  Version 3.5   August 1, 2003 - SCCR #458   
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                 1. Addition of logic to load non-instantaneous modeled 
+!                    radiance data into variables otherwise defined
+!                    upon ingesting instantaneous input data.  This is due to
+!                    the radiance data that is available from the instantaneous
+!                    input product, SSF, not being available from the
+!                    regionally, hourly averaged input product, TSI. 
+!  Version 3.3   December 20, 2002 - SCCR #408  
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!
+! !END
+! 
+!*****************************************************************************
+!
+
+      USE FULIOUMULTI, ONLY: fi, fo,focc ! Get Inputs and outputs of last Fu_Liou run
+      USE SYNI_OVERLAP, only: so 
+      INTEGER itop,kk
+
+
+      INTEGER, INTENT (IN)  :: P1
+      INTEGER, INTENT (IN)  :: P2
+!
+      INTEGER :: CH_Idx
+      INTEGER :: icdy
+      INTEGER :: ISky
+      REAL    :: xtau      
+!
+! *** Define clear sky array elements
+!
+      cfs ( ClrIdx)             = 1.0 - sum(fi%fc(1:nclouds)%cldfrac) !!! CF ( P1, ClrIdx)
+      
+      CompTOA_LW ( ClrIdx)      = FL_TOA_LW ( P1, ClrSky)
+      CompTOA_SW ( ClrIdx)      = FL_TOA_SW ( P1, ClrSky)
+      CompTOA_WN ( ClrIdx)      = FL_TOA_WN ( P1, ClrSky)
+      CompTotLWrad ( ClrIdx)    = TotLWrad ( P1, ClrSky) * CF ( P1, ClrIdx)
+      CompWNrad_SatEm ( ClrIdx) = WNrad_SatEm ( P1, ClrSky) * CF ( P1, ClrIdx)
+!
+!
+! *** Define compressed array cloudy sky elements
+!
+      icdy = 0
+!
+      DO kk = 1, nclouds
+       itop = so%it(so%ipcnd(kk))
+      
+       CH_Idx   = so%isp(itop) !!! SORT According to cloud top
+ 
+       IF(fi%fc(kk)%cldfrac > 0.0) THEN 
+ 	  	  
+!         *** There is a cloud for this cloud height category. Account for 
+!             cloud particle size in determining liquid water path for Xum
+!             in terms of 10um water or 60um ice. 
+!
+          xtau = tau_wp (TauNeg, cw(CH_Idx), Part_Rad (CH_Idx), ipz(CH_Idx) )
+!
+          clwp( CH_Idx) = tau_wp (TauPos, xtau, BaseRad(ipz(CH_Idx)), ipz(CH_Idx))
+!
+!         *** Load next compressed array elements passed to constrainment 
+!             algorithm with properties from current cloud layer.
+!
+              icdy = icdy + 1
+              ISky = Cld_Id1 + CH_Idx - 1
+!
+              cfs ( icdy)             = fi%fc(kk)%cldfrac  !!!CF ( P1, CH_Idx)
+              clwpi ( icdy)           = clwp(CH_Idx)
+              CompTOA_LW ( icdy)      = focc(kk,1)%fuir(1)   !FL_TOA_LW ( P1, ISky)
+              CompTOA_SW ( icdy)      = focc(kk,1)%fus(1)    !FL_TOA_SW ( P1, ISky)
+              CompTOA_WN ( icdy)      = focc(kk,1)%trwn_f   !FL_TOA_WN ( P1, ISky)
+              CompTotLWrad ( icdy)    = focc(kk,1)%fiurt(1)  !( P1, ISky) * CF ( P1, CH_Idx)
+              CompWNrad_SatEm ( icdy) = focc(kk,1)%trwn_flt_r            !WNrad_SatEm !( P1, ISky) * CF ( P1, CH_Idx)
+              cpz ( icdy)             = REAL ( ipz(CH_Idx) )
+              ctemp ( icdy)           = ModLev_Temp(P1,CCLyr_Idx(P1,CH_Idx,1) )
+!
+       END IF
+!
+      END DO
+!
+      IF (LW_TOA_UnfiltRad == Default_REAL4_FL                                 &
+          .AND.  TotLWrad ( P1, TotSky) /= Default_REAL4_FL) THEN
+!     *** Processing in a non-instantaneous mode, for which radiance values are 
+!         not available from the primary input product.  Load modeled results 
+!         into parameters required for the constrainment algorithm.
+!
+          LW_TOA_UnfiltRad = TotLWrad ( P1, TotSky)
+!
+          WN_TOA_FiltRad = WNrad_SatEm ( P1, TotSky)
+!
+      END IF
+! 
+!
+
+      END SUBROUTINE CompressLoad
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!
+      SUBROUTINE UnCompressClds ( P1, P2)                                  ! I
+!
+! 
+!*****************************************************************************
+!
+! !F90
+!
+! !Name
+!    UnCompressClds
+!
+! !Description:
+!    Routine ID -
+!
+!    Purpose - Uncompresses the cloud property arrays returned from the
+!              SARB Constrainment process
+!
+!
+! !Input Parameters:
+!    P1 - Index to the previous pass through the Fu-Liou model
+!    P2 - Index to the upcoming pass through the Fu-Liou model
+!
+! !Output Parameters:
+!    NONE
+!
+! !Team-Unique Header
+!
+!  Internal Routines Called:
+!    TunedClouds
+!
+!  Key Local Parameters:
+!    icdy - Index into the compressed arrays that are passed to the
+!           SARB constrainment algorithm
+!
+!  Modules Used:
+!   Constrain_Params - (SARBlib) Parameters: BaseRad, cfs, clwp, TauNeg, 
+!                                            TauPos, t_cfs, t_ctemp, t_cwpath
+!   Convert_OptDepth - (SARBlib) Func. tau_wp
+!   FL_IO_Params     - (SARBlib) Parameters: CF, IW_content, LW_content
+!   Profile_Params   - (SARBlib) Parameters: ClrIdx, MaxLev_Cld
+!   SARB_Var         - (SARBlib) Parameters: EffTemp, ipz, OptDepth_mn, Part_Rad
+!
+! !Revision History:
+!  Version 3.3   December 20, 2002 - SCCR #408  
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!
+! !END
+! 
+!*****************************************************************************
+!
+!
+      USE SYNI_OVERLAP, only: so
+      INTEGER, INTENT (IN)  :: P1
+      INTEGER, INTENT (IN)  :: P2
+!
+      INTEGER :: CH_Idx
+      INTEGER :: icdy
+      REAL    :: xtau
+      integer kk,itop     
+      
+      icdy = 0
+
+! *** Define clear sky array elements
+
+      CF ( P2, ClrIdx) = t_cfs ( ClrIdx)
+!
+      DO kk = 1, nclouds
+        itop   = so%it(so%ipcnd(kk))      
+        CH_Idx   = so%isp(itop) !!! SORT According to cloud
+        IF( t_cfs(kk) > 0.0 ) THEN
+      
+!         *** There is a cloud for this cloud layer. Load appropriate
+!             values from the constrained cloud property arrays. 
+!                
+
+              CF( P2,kk)    = t_cfs(kk)
+              t_CldTemp(kk) = t_ctemp(kk)
+!
+!
+!         *** Reverse cloud droplet size adjustment and convert adjusted
+!             cloud temperatures to cloud heights
+!
+               xtau = tau_wp (TauNeg, t_cwpath(kk),BaseRad(ipz(CH_Idx)),ipz(CH_Idx))
+!
+
+               OptDepth_mn (P2, kk) = xtau
+
+               t_clwp(kk) = tau_wp (TauPos, xtau, Part_Rad (CH_Idx),ipz(CH_Idx))
+
+               CALL TunedClouds ( kk, CH_Idx, P1, P2)                           ! I
+!
+        END IF
+!
+      END DO
+!
+!
+
+      END SUBROUTINE UnCompressClds 
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!
+      SUBROUTINE TunedClouds ( kk,CH_Idx, P1, P2)                          ! I
+! 
+!*****************************************************************************
+!
+! !F90
+!
+! !Name
+!   TunedClouds
+!
+! !Description:
+!   Routine ID -
+!
+!   Purpose - To determine cloud top and bottom pressures from adjusted
+!             cloud temperatures
+!
+!
+! !Input Parameters:
+!    CH_Idx - Cloud height category index
+!    P1     - Index to the previous pass through the Fu-Liou model
+!    P2     - Index to the upcoming pass through the Fu-Liou model
+!
+! !Output Parameters:
+!    NONE
+!
+! !Team-Unique Header:
+!
+!  Modules Used:
+!    Constrain_Params - (SARBlib)  Parameters: ct_adj, TauNeg, t_CldTemp
+!    Convert_OptDepth - (SARBlib)  Func. cld_thk, gppb, tau_wp, wp_wc
+!    FL_IO_Params     - (SARBlib)  Parameters: CF, Default_REAL4_FL,
+!                                              IW_content, LW_content, 
+!                                              ModLev, ModLev_Cnt, ModLev_Temp
+!    Profile_Params   - (SARBlib)  Parameters: MetIn
+!    SARB_General     - (SARBlib)  Sbr. Temp_Pres           
+!    SARB_Var         - (SARBlib)  Parameters: CldBot, CldTop, EffTemp, ipz
+!                                              Part_Rad, t_clwc, t_clwp
+!    SARBInput_Params - (SARBlib)  Parameters: IcePhase
+!                                  
+! !Revision History:
+!  Version 1.0   March 21, 1996
+!                Fred Rose, AS&M, f.g.rose@larc.nasa.gov
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!                Initial Version of Code
+!
+! !END
+!
+!*****************************************************************************
+!
+!
+      INTEGER, INTENT (IN) :: kk
+      INTEGER, INTENT (IN) :: CH_Idx
+      INTEGER, INTENT (IN) :: P1
+      INTEGER, INTENT (IN) :: P2
+!
+      REAL    :: dz
+      INTEGER :: IStat
+      INTEGER :: MLev
+      REAL    :: taucc
+!
+!
+      MLev = ModLev_Cnt ( MetIn)
+!
+!
+! *** Determine water content and bottom pressure for tuned clouds
+!
+      IF (CF ( P2, kk) > 0.0) THEN
+!     *** Cloud exists for this height category
+!
+          ct_adj ( kk) =   t_CldTemp ( kk)                            &
+                             - ModLev_Temp ( P1, CCLyr_Idx ( P1, CH_Idx, 1))
+!
+          CALL Temp_Pres (  ModLev ( MetIn, 1:MLev),                       & ! I
+                           ModLev_Temp ( MetIn, 1:MLev), MLev,            & ! I
+                           MLev-5, ModLev ( MetIn,MLev),                  & ! I
+                           ModLev_Temp ( MetIn, MLev),                    & ! I
+                           t_CldTemp ( kk),                           & ! I
+                           CldTop ( P2, kk), IStat)                     ! O
+!
+          taucc = tau_wp (TauNeg, t_clwp(kk), Part_Rad(CH_Idx),ipz(CH_Idx) )
+
+
+          dz = cld_thk (EffTemp ( P1, CH_Idx) + ct_adj(kk), taucc)
+!
+          t_clwc (kk) = wp_wc (t_clwp (kk), dz)
+!
+          CldBot ( P2, kk) = gppb (CldTop ( P2, kk), dz,             &
+                   (ModLev_Temp ( MetIn, MLev) + t_CldTemp (kk)) * 0.5)
+!
+!
+!
+          IF (ipz ( CH_Idx) == INT (IcePhase)) THEN
+!         *** This cloud condition has ice water
+!
+              IW_content ( P2, kk) = t_clwc (kk)
+              LW_content ( P2, kk) = 0.0
+!
+          ELSE
+!         *** This cloud condition has liquid water
+!
+              IW_content ( P2, kk) = 0.0
+              LW_content ( P2, kk) = t_clwc (kk)
+!
+          END IF
+!
+      ELSE
+!     *** No clouds in this cloud height category
+!
+          ct_adj ( kk) =   0.0
+          CldTop ( P2, kk) = Default_REAL4_FL
+          CldBot ( P2, kk) = Default_REAL4_FL
+          IW_content ( P2, kk) = 0.0
+          LW_content ( P2, kk) = 0.0
+!
+!
+      END IF
+!
+!
+! *** Define partical size for next pass.  Currently, not constrained.
+!
+      IcePart_size ( P2, kk) = IcePart_size ( P1, kk)
+      LiquidPart_size ( P2, kk) = LiquidPart_size ( P1, kk)
+!
+!
+      END SUBROUTINE TunedClouds
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!
+      SUBROUTINE TunedAer (P1, P2,                                     & ! I
+                                   BadFlag)                              ! I/O
+! 
+!*****************************************************************************
+!
+! !F90
+!
+! !Name
+!    TunedAer
+!
+! !Description:
+!    Routine ID -
+!
+!    Purpose - Computes ratio to be applied to aerosol profile values
+!              input to the next pass through the radiative transfer model.
+!
+!
+! !Input Parameters:
+!    P1 - Index to the previous pass through the Fu-Liou model
+!    P2 - Index to the upcoming pass through the Fu-Liou model
+!
+!  Input/Output Parameters:
+!    BadFlag - Flag indicating the level of the SARB constrainment process
+!
+! !Output Parameters:
+!    NONE
+!
+! !Team-Unique Header
+!
+!  Modules Used:
+!   FL_IO_Params       - (SARBlib) Parameters: AerOptDepth, AerRatio
+!   SARB_Error_Process - (SARBlib) Parameters: RVar1_temp
+!   SARBInput_Params   - (SARBlib) Parameters: MaxAdjust_Aer
+!
+! !Revision History:
+!  Version 4.0   June 10, 2004 - SCCR #541  
+!                Thomas Caldwell, SAIC, t.e.caldwell@larc.nasa.gov
+! 1. Modified code to prevent division by zero when
+!    assigning aerosol ratio for tuned pass
+!  Version 3.3   December 20, 2002 - SCCR #408  
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!
+! !END
+! 
+!*****************************************************************************
+!
+!
+      INTEGER, INTENT (INOUT) :: BadFlag
+      INTEGER, INTENT (IN)    :: P1
+      INTEGER, INTENT (IN)    :: P2
+!
+      REAL :: ADiff
+!
+!
+      ADiff = ABS (AerOptDepth ( P2) - AerOptDepth ( P1))
+!
+      IF (ADiff > MaxAdjust_Aer) THEN
+!     *** Error adjusting aerosol optical depth
+!
+         BadFlag = 8
+         RVar1_temp = AerOptDepth ( P2)
+!
+      ELSE 
+!     *** Compute ratio to be applied to constituency percentages used
+!         in previous pass through the model.
+!
+          IF (AerOptDepth ( P1) == 0.0) THEN
+           AerRatio ( P2) = 1
+          ELSE
+           AerRatio ( P2) = AerOptDepth ( P2) / AerOptDepth ( P1)
+          ENDIF
+!
+      END IF 
+!
+!
+      END SUBROUTINE TunedAer
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!
+      SUBROUTINE TunedSfcAlb (P1, P2)                                     ! I
+!
+! 
+!*****************************************************************************
+!
+! !F90
+!
+! !Name
+!    TunedSfcAlb
+!
+! !Description:
+!    Routine ID -
+!
+!    Purpose - Defines surface albedo values input to the next pass through
+!              the radiative transfer model
+!
+!
+! !Input Parameters:
+!    P1 - Index to the previous pass through the Fu-Liou model
+!    P2 - Index to the upcoming pass through the Fu-Liou model
+!
+! !Output Parameters:
+!    NONE
+!
+! !Team-Unique Header
+!
+!  Modules Used:
+!   FL_IO_Params   - (SARBlib) Parameters: Default_REAL4_FL, SfcEmiss, SpSfcAlb
+!   Profile_Params - (SARBlib) Parameters: MaxLev_Cld, Num_BndSA, Num_BndSfcEm
+!   SARB_Var       - (SARBlib) Parameters: bbout, DayNite, DayTime
+!
+! !Revision History:
+!  Version 4.0   August 18, 2006 - SCCR #634  
+!                Thomas Caldwell, SAIC, t.e.caldwell@larc.nasa.gov
+!                Changed ANDs in WHERE statements to ORs
+!                to make albedos zero for negative and default values
+!  Version 3.3   December 20, 2002 - SCCR #408  
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!
+! !END
+! 
+!*****************************************************************************
+!
+      INTEGER, INTENT (IN)  :: P1
+      INTEGER, INTENT (IN)  :: P2
+!
+      REAL    :: SA_Ratio
+!
+      IF (DayNite == DayTime .AND. bbout(P1) /= 0.0) THEN
+          SA_Ratio = bbout ( P2) / bbout ( P1)
+      ELSE
+          SA_Ratio = 0.0
+      END IF
+!
+      SpSfcAlb ( P2:P2, 1:Num_BndSA, 0:MaxLev_Cld) =                          &
+                        SpSfcAlb ( P1:P1, 1:Num_BndSA, 0:MaxLev_Cld) * SA_Ratio
+!
+      WHERE (SpSfcAlb > 1.0) SpSfcAlb = 1.0
+      WHERE (SpSfcAlb < 0.0 .OR. SpSfcAlb >= Default_REAL4_FL) SpSfcAlb = 0.0
+!
+      SfcEmiss ( P2, 1:Num_BndSfcEm) = SfcEmiss ( P1, 1:Num_BndSfcEm)
+!
+      IF (FLAG_OP == CERSYN) THEN
+!
+       SpSfcAlb_Clear ( P2:P2, 1:Num_BndSA, 0:MaxLev_Cld) =                          &
+                        SpSfcAlb_Clear ( P1:P1, 1:Num_BndSA, 0:MaxLev_Cld) * SA_Ratio
+       SpSfcAlb_Pris ( P2:P2, 1:Num_BndSA, 0:MaxLev_Cld) =                          &
+                        SpSfcAlb_Pris ( P1:P1, 1:Num_BndSA, 0:MaxLev_Cld) * SA_Ratio
+!
+       WHERE (SpSfcAlb_Clear > 1.0) SpSfcAlb_Clear = 1.0
+       WHERE (SpSfcAlb_Clear < 0.0 .OR. SpSfcAlb_Clear >= Default_REAL4_FL) SpSfcAlb_Clear = 0.0
+!
+       WHERE (SpSfcAlb_Pris > 1.0) SpSfcAlb_Pris = 1.0
+       WHERE (SpSfcAlb_Pris < 0.0 .OR. SpSfcAlb_Pris >= Default_REAL4_FL) SpSfcAlb_Pris = 0.0
+!
+      ENDIF
+!
+      END SUBROUTINE TunedSfcAlb
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!
+      SUBROUTINE TunedWV (P1, P2)                                        ! I
+! 
+!*****************************************************************************
+!
+! !F90
+!
+! !Name
+!    TunedWV
+!
+! !Description:
+!    Routine ID -
+!
+!    Purpose - Computes ratios to be applied to humidity profile values
+!              input to the next pass through the radiative transfer model.
+!
+!
+! !Input Parameters:
+!    P1 - Index to the previous pass through the Fu-Liou model
+!    P2 - Index to the upcoming pass through the Fu-Liou model
+!
+! !Output Parameters:
+!    NONE
+!
+! !Team-Unique Header
+!
+!  Modules Used:
+!   SARB_Var - (SARBlib) Parameters: PW_Ratio_LowTrop, PW_Ratio_UpTrop, uth, wv
+!
+! !Revision History:
+!  Version 3.3   December 20, 2002 - SCCR #408  
+!                Lisa Coleman, SAIC, l.h.coleman@larc.nasa.gov
+!
+! !END
+! 
+!*****************************************************************************
+!
+!
+      INTEGER, INTENT (IN)  :: P1
+      INTEGER, INTENT (IN)  :: P2
+!
+      PW_Ratio_LowTrop = wv ( P2) / wv ( P1)
+      PW_Ratio_UpTrop = uth ( P2) / uth ( P1)
+!
+!
+      END SUBROUTINE TunedWV
+!
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!
+!
+END MODULE TuneDrive
